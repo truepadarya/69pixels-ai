@@ -1,0 +1,409 @@
+---
+import Section from "@/components/Wrapper/Section.astro";
+import Heading from "@/components/Typography/Heading.astro";
+import Paragraph from "@/components/Typography/Paragraph.astro";
+import Button from "@/components/Button.astro";
+import Img from "@/components/Media/Img.astro";
+import ButtonWrapper from "@/components/Wrapper/ButtonWrapper.astro";
+import concepts from "@/assets/graphics/second/Concepts_3.webp";
+import teachly from "@/assets/graphics/second/visuals_teachly-mockup.webp";
+import creative from "@/assets/graphics/second/visuals_guy.webp";
+import product from "@/assets/graphics/second/Concepts_5.webp";
+import web from "@/assets/graphics/second/dev_1.webp";
+import direction from "@/assets/graphics/second/visuals_clock.webp";
+
+interface Props {
+  /** Set to `false` to skip rendering this component. */
+  render?: boolean;
+}
+
+const { render = true } = Astro.props;
+
+const lanes = [
+  [
+    {
+      src: concepts,
+      alt: "Creative campaign in New York",
+      ratio: "16 / 5",
+    },
+    {
+      src: teachly,
+      alt: "Teachly campaign displayed in a metro station",
+      ratio: "4 / 3",
+    },
+    {
+      src: creative,
+      alt: "Fashion campaign in a grocery store",
+      ratio: "16 / 9",
+    },
+  ],
+  [
+    {
+      src: web,
+      alt: "Digital product interface",
+      ratio: "3 / 2",
+    },
+    {
+      src: product,
+      alt: "Product concept artwork",
+      ratio: "16 / 9",
+    },
+    {
+      src: direction,
+      alt: "Creative direction visual",
+      ratio: "4 / 5",
+    },
+  ],
+];
+---
+
+{
+  render && (
+    <Section
+      theme="dark"
+      paddingTop="none"
+      paddingBottom="small"
+      gap="0"
+      class="cta-marquee_section"
+      id="contact"
+      aria-labelledby="cta-marquee-title"
+    >
+      <div class="cta-marquee_wrap theme-light">
+        <div class="cta-marquee_content">
+          <Heading
+            tag="h2"
+            variant="h1"
+            maxWidth={11}
+            class="cta-marquee_heading"
+            id="cta-marquee-title"
+          >
+            What are
+            <br />
+            you waiting
+            <br />
+            to build?
+          </Heading>
+          <Paragraph variant="main" maxWidth={32} class="cta-marquee_text">
+            Tell us what’s next. We’ll bring the team, the approach and a clear
+            proposal.
+          </Paragraph>
+          <ButtonWrapper marginTop="auto" class="cta-marquee_actions">
+            <Button
+              element="link"
+              href="mailto:hello@69pixels.com?subject=Schedule%20a%20call"
+            >
+              Schedule a call
+            </Button>
+            <Button
+              element="link"
+              href="mailto:hello@69pixels.com?subject=Project%20enquiry"
+              emphasis="secondary"
+            >
+              Write us
+            </Button>
+          </ButtonWrapper>
+        </div>
+
+        <div
+          class="cta-marquee_gallery"
+          data-cta-marquee
+          role="group"
+          aria-label="Selected work"
+        >
+          <div class="cta-marquee_lanes">
+            {
+              lanes.map((items, laneIndex) => (
+                <div
+                  class:list={[
+                    "cta-marquee_lane",
+                    laneIndex === 1 && "reverse",
+                  ]}
+                >
+                  <div class="cta-marquee_track">
+                    {[false, true].map((duplicate) => (
+                      <div
+                        class="cta-marquee_panel"
+                        aria-hidden={duplicate ? "true" : undefined}
+                        inert={duplicate ? true : undefined}
+                      >
+                        {items.map((item) => (
+                          <figure
+                            class="cta-marquee_media"
+                            style={`--_media-ratio: ${item.ratio}`}
+                          >
+                            <Img
+                              src={item.src}
+                              alt={duplicate ? "" : item.alt}
+                              width={700}
+                              height={525}
+                              variant="constrained"
+                              sizes="(min-width: 90rem) 16vw, (min-width: 64rem) 28vw, 68vw"
+                              quality="mid"
+                              class="cta-marquee_image"
+                            />
+                          </figure>
+                        ))}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              ))
+            }
+          </div>
+        </div>
+      </div>
+    </Section>
+  )
+}
+
+<style is:global>
+  @layer components {
+    .cta-marquee_wrap {
+      width: 100%;
+      height: clamp(38rem, 44vw, 44rem);
+      display: grid;
+      grid-template-columns: minmax(0, 1.35fr) minmax(24rem, 0.8fr);
+      overflow: clip;
+      background-color: var(--background);
+      color: var(--text);
+    }
+
+    .cta-marquee_content {
+      min-width: 0;
+      padding: var(--space-48);
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+    }
+
+    .cta-marquee_heading {
+      margin: 0;
+      font-size: clamp(3.25rem, 8.33vw, 7.5rem);
+      line-height: var(--line-height-small);
+      letter-spacing: var(--letter-spacing-tight);
+    }
+
+    .cta-marquee_text {
+      margin-top: var(--space-48);
+      color: var(--text);
+      font-size: var(--h6);
+      line-height: var(--line-height-compact);
+    }
+
+    .cta-marquee_actions {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      gap: var(--space-8);
+    }
+
+    .cta-marquee_gallery {
+      min-width: 0;
+      min-height: 0;
+      position: relative;
+      overflow: clip;
+      background-color: var(--background);
+    }
+
+    .cta-marquee_lanes {
+      height: 100%;
+      display: grid;
+      grid-template-columns: minmax(0, 1fr);
+      gap: var(--space-20);
+      padding-inline: var(--space-28);
+    }
+
+    .cta-marquee_lane {
+      min-width: 0;
+      height: 100%;
+      overflow: clip;
+      mask-image: linear-gradient(
+        to bottom,
+        transparent,
+        black 3%,
+        black 97%,
+        transparent
+      );
+    }
+
+    .cta-marquee_lane.reverse {
+      display: none;
+    }
+
+    .cta-marquee_track {
+      --_marquee-gap: var(--space-32);
+      width: 100%;
+      height: max-content;
+      display: flex;
+      flex-direction: column;
+      gap: var(--_marquee-gap);
+      animation: cta-marquee-y 30s linear infinite;
+      will-change: transform;
+    }
+
+    .cta-marquee_lane.reverse .cta-marquee_track {
+      animation-direction: reverse;
+      animation-duration: 36s;
+    }
+
+    .cta-marquee_panel {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: var(--_marquee-gap);
+    }
+
+    .cta-marquee_media {
+      width: 100%;
+      aspect-ratio: var(--_media-ratio, 4 / 3);
+      position: relative;
+      flex: none;
+      overflow: hidden;
+      background-color: var(--background-3);
+    }
+
+    .cta-marquee_image.image {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .cta-marquee_gallery:is(:hover, :focus-within) .cta-marquee_track {
+      animation-play-state: paused;
+    }
+
+    @keyframes cta-marquee-y {
+      to {
+        transform: translate3d(
+          0,
+          calc(-50% - var(--_marquee-gap) / 2),
+          0
+        );
+      }
+    }
+
+    @keyframes cta-marquee-x {
+      to {
+        transform: translate3d(
+          calc(-50% - var(--_marquee-gap) / 2),
+          0,
+          0
+        );
+      }
+    }
+
+    @media (width >= 110rem) {
+      .cta-marquee_wrap {
+        grid-template-columns: minmax(0, 1.2fr) minmax(40rem, 1fr);
+      }
+
+      .cta-marquee_lanes {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        padding-inline: var(--space-20);
+      }
+
+      .cta-marquee_lane.reverse {
+        display: block;
+      }
+    }
+
+    @media (width < 64rem) {
+      .cta-marquee_wrap {
+        height: auto;
+        min-height: 0;
+        grid-template-columns: 1fr;
+      }
+
+      .cta-marquee_content {
+        min-height: 0;
+      }
+
+      .cta-marquee_gallery {
+        height: 16rem;
+        border-top: var(--border-width) solid var(--border);
+        border-left: 0;
+      }
+
+      .cta-marquee_lanes {
+        padding: var(--space-16) 0;
+      }
+
+      .cta-marquee_lane {
+        width: 100%;
+        height: 100%;
+        mask-image: linear-gradient(
+          to right,
+          transparent,
+          black 3%,
+          black 97%,
+          transparent
+        );
+      }
+
+      .cta-marquee_track {
+        width: max-content;
+        height: 100%;
+        flex-direction: row;
+        animation-name: cta-marquee-x;
+        animation-duration: 24s;
+      }
+
+      .cta-marquee_panel {
+        width: max-content;
+        height: 100%;
+        flex-direction: row;
+      }
+
+      .cta-marquee_media {
+        width: auto;
+        height: 100%;
+      }
+    }
+
+    @media (width < 48rem) {
+      .cta-marquee_wrap {
+        max-width: calc(100vw - 2 * var(--space-24));
+      }
+
+      .cta-marquee_content {
+        width: 100%;
+        padding: var(--space-24);
+      }
+
+      .cta-marquee_text {
+        width: calc(100vw - 4 * var(--space-24));
+        max-width: calc(100vw - 4 * var(--space-24)) !important;
+        font-size: var(--text-main);
+        line-height: var(--line-height-medium);
+        overflow-wrap: anywhere;
+      }
+
+      .cta-marquee_actions {
+        width: calc(100vw - 4 * var(--space-24));
+        min-width: 0;
+        max-width: calc(100vw - 4 * var(--space-24));
+        margin-top: var(--space-32);
+        display: grid;
+        grid-template-columns: minmax(0, 1fr);
+
+        & > .button_wrap.main {
+          min-width: 0;
+          max-width: 100%;
+          width: 100%;
+          padding-inline: var(--space-12);
+          font-size: var(--text-main);
+        }
+      }
+
+      .cta-marquee_gallery {
+        height: 13rem;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .cta-marquee_track {
+        animation-name: none;
+      }
+    }
+  }
+</style>

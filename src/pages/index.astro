@@ -1,0 +1,35 @@
+---
+import Layout from "@/layouts/BaseLayout.astro";
+import Section from "@/components/Wrapper/Section.astro";
+import NavMinimal from "@/components/Global/NavMinimal.astro";
+import Hero from "@/components/Hero.astro";
+import SectionCapabilities from "@/components/SectionCapabilities.astro";
+import SectionCreatorsDirection from "@/components/SectionCreatorsDirection.astro";
+import SectionServicesOverview from "@/components/SectionServicesOverview.astro";
+import SectionWorkSetup from "@/components/SectionWorkSetup.astro";
+import SectionEngagementPricing from "@/components/SectionEngagementPricing.astro";
+import SectionCtaMarquee from "@/components/SectionCtaMarquee.astro";
+import ContentWorkAi from "@/components/ContentWorkAi.astro";
+import SectionCases from "@/components/SectionCases.astro";
+---
+
+<Layout theme="dark">
+  <NavMinimal />
+  <Hero />
+  <SectionCapabilities id="capabilities" />
+  <Section
+    theme="dark"
+    paddingTop="small"
+    paddingBottom="small"
+    gap="0"
+    aria-labelledby="work-ai-title"
+  >
+    <ContentWorkAi />
+  </Section>
+  <SectionCases />
+  <SectionCreatorsDirection />
+  <SectionServicesOverview />
+  <SectionWorkSetup />
+  <SectionEngagementPricing />
+  <SectionCtaMarquee />
+</Layout>

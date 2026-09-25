@@ -1,0 +1,358 @@
+---
+import type { HTMLAttributes } from "astro/types";
+import Button from "@/components/Button.astro";
+import Img from "@/components/Media/Img.astro";
+import Heading from "@/components/Typography/Heading.astro";
+import Paragraph from "@/components/Typography/Paragraph.astro";
+import ContentWrapper from "@/components/Wrapper/ContentWrapper.astro";
+import Grid from "@/components/Wrapper/Grid.astro";
+import workAi1 from "@/assets/graphics/work-ai_1.png";
+import workAi2 from "@/assets/graphics/work-ai_2.png";
+import experienceIlya from "@/assets/graphics/work-ai-experience/experience-ilya.png";
+import experienceVadim from "@/assets/graphics/work-ai-experience/experience-vadim.png";
+import experienceIlona from "@/assets/graphics/work-ai-experience/experience-ilona.png";
+import experiencePrism from "@/assets/graphics/work-ai-experience/experience-prism.png";
+import experiencePasha from "@/assets/graphics/work-ai-experience/experience-pasha.png";
+import experienceGlowRight from "@/assets/graphics/work-ai-experience/experience-glow-right.svg";
+import experienceGlowLeft from "@/assets/graphics/work-ai-experience/experience-glow-left.svg";
+import experienceOpenAi from "@/assets/graphics/work-ai-experience/experience-openai.svg";
+import experienceStar from "@/assets/graphics/work-ai-experience/experience-star.svg";
+import experienceM from "@/assets/graphics/work-ai-experience/experience-m.svg";
+
+interface Props extends HTMLAttributes<"div"> {
+  /** Set to `false` to skip rendering this component and its children. */
+  render?: boolean;
+}
+
+const { render = true, class: className, ...rest } = Astro.props;
+
+const cardText =
+  "Senior talent, custom tools and new workflows that give ambitious ideas more room to happen.";
+
+const cards = [
+  { heading: "Months become days", image: workAi2 },
+  { heading: "Experience sparks action", visual: "experience" },
+  { heading: "Build the tools", image: workAi1 },
+];
+---
+
+{
+  render && (
+    <div class:list={["work-ai_wrap", className]} {...rest}>
+      <ContentWrapper variant="auto-width" class="work-ai_intro">
+        <Heading id="work-ai-title" tag="h2" variant="h1">
+          Rebuilding
+          <br />
+          work around AI
+        </Heading>
+        <Heading slot="column2" tag="h3" variant="h5" maxWidth={24}>
+          Same creative fire.
+          <br />
+          Entirely new firepower.
+        </Heading>
+        <Paragraph
+          slot="column2"
+          variant="main"
+          maxWidth={36}
+          class="work-ai_intro-text"
+        >
+          {cardText}
+        </Paragraph>
+      </ContentWrapper>
+
+      <Grid medium={2} large={3} class="gap-16">
+        {cards.map((card) => (
+          <div class="work-ai_card">
+            <div class="work-ai_card-zone">
+              {card.visual === "experience" ? (
+                <div class="experience-artboard" aria-hidden="true">
+                  <img class="experience-glow experience-glow-left" src={experienceGlowLeft.src} alt="" />
+                  <img class="experience-glow experience-glow-right" src={experienceGlowRight.src} alt="" />
+
+                  <div class="experience-tile experience-openai">
+                    <img src={experienceOpenAi.src} alt="" />
+                  </div>
+                  <div class="experience-photo experience-ilya">
+                    <img src={experienceIlya.src} alt="" />
+                  </div>
+                  <div class="experience-photo experience-ilona">
+                    <img src={experienceIlona.src} alt="" />
+                  </div>
+                  <div class="experience-tile experience-prism">
+                    <img src={experiencePrism.src} alt="" />
+                  </div>
+                  <div class="experience-photo experience-vadim">
+                    <img src={experienceVadim.src} alt="" />
+                  </div>
+                  <div class="experience-tile experience-star">
+                    <img src={experienceStar.src} alt="" />
+                  </div>
+                  <div class="experience-tile experience-m">
+                    <img src={experienceM.src} alt="" />
+                  </div>
+                  <div class="experience-photo experience-pasha">
+                    <img src={experiencePasha.src} alt="" />
+                  </div>
+                </div>
+              ) : (
+                <Img
+                  src={card.image!}
+                  alt=""
+                  variant="constrained"
+                  sizes="(width < 48rem) 100vw, (width < 64rem) 50vw, 33vw"
+                  transparent
+                />
+              )}
+            </div>
+            <div class="work-ai_card-content margin-trim">
+              <Heading tag="h3" variant="h5">
+                {card.heading}
+              </Heading>
+              <Paragraph variant="main">{cardText}</Paragraph>
+            </div>
+          </div>
+        ))}
+      </Grid>
+
+      <ContentWrapper
+        centered
+        class="work-ai_cta padding-top-64"
+        column1Class="gap-16"
+      >
+        <Heading tag="h3" variant="h5" maxWidth={18}>
+          Here&rsquo;s what that looks
+          <br />
+          like in practice
+        </Heading>
+        <Button
+          element="link"
+          href="#cases"
+          variant="arrow"
+          emphasis="secondary"
+          label="See what that looks like in practice"
+        />
+      </ContentWrapper>
+    </div>
+  )
+}
+
+<style is:global>
+  @layer components {
+    .work-ai_wrap {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-80);
+    }
+
+    .work-ai_card {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      background-color: var(--background-2);
+      overflow: clip;
+    }
+
+    .work-ai_card-content {
+      display: flex;
+      flex-direction: column;
+      gap: 1.25rem;
+      padding: 2.5rem;
+
+      & > .text {
+        color: var(--text-2);
+      }
+    }
+
+    .work-ai_intro-text {
+      color: var(--text-2);
+    }
+
+    .work-ai_card-zone {
+      position: relative;
+      aspect-ratio: 17 / 11;
+      background-color: var(--dark-850);
+      overflow: clip;
+
+      & > .image {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+    }
+
+    .experience-artboard {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 82.2%;
+      aspect-ratio: 331.25 / 186.636;
+      translate: -50% -50%;
+    }
+
+    .experience-artboard img {
+      display: block;
+      max-width: none;
+    }
+
+    .experience-glow,
+    .experience-photo,
+    .experience-tile {
+      position: absolute;
+    }
+
+    .experience-glow {
+      pointer-events: none;
+    }
+
+    .experience-glow-left {
+      top: -30%;
+      left: -19.6%;
+      width: 64.3%;
+    }
+
+    .experience-glow-right {
+      top: -21.1%;
+      left: 60.1%;
+      width: 61.2%;
+    }
+
+    .experience-photo,
+    .experience-tile {
+      overflow: clip;
+      background-color: #171718;
+    }
+
+    .experience-openai {
+      top: 0;
+      left: 12.8%;
+      width: 21.1%;
+      height: 38.9%;
+      border-radius: 18%;
+    }
+
+    .experience-openai img {
+      position: absolute;
+      top: 19.8%;
+      left: 18.6%;
+      width: 62.8%;
+    }
+
+    .experience-ilya {
+      top: 23.3%;
+      left: 0;
+      width: 20.5%;
+      height: 37.7%;
+      border-radius: 50%;
+    }
+
+    .experience-ilya img {
+      position: absolute;
+      top: -32.6%;
+      left: -53.9%;
+      width: 348.3%;
+    }
+
+    .experience-ilona {
+      top: 1%;
+      left: 58.7%;
+      width: 10.4%;
+      height: 19%;
+      border-radius: 50%;
+    }
+
+    .experience-ilona img {
+      width: 112%;
+      height: 109%;
+      object-fit: cover;
+      translate: -6% -4%;
+    }
+
+    .experience-prism {
+      top: 8.5%;
+      left: 72.8%;
+      width: 20.1%;
+      height: 36.9%;
+      border-radius: 21%;
+    }
+
+    .experience-prism img {
+      position: absolute;
+      top: -13.7%;
+      left: -66.6%;
+      width: 222.7%;
+      height: 177%;
+    }
+
+    .experience-vadim {
+      top: 32.6%;
+      left: 82.1%;
+      width: 17.9%;
+      height: 32.7%;
+      border-radius: 50%;
+    }
+
+    .experience-vadim img {
+      width: 112.1%;
+      height: 108.8%;
+      object-fit: cover;
+      translate: -6% -4.4%;
+    }
+
+    .experience-star {
+      top: 78.1%;
+      left: 68.5%;
+      width: 12%;
+      height: 21.9%;
+      background: transparent;
+    }
+
+    .experience-star img,
+    .experience-m img {
+      width: 100%;
+      height: 100%;
+    }
+
+    .experience-m {
+      top: 62.5%;
+      left: 25.1%;
+      width: 17.7%;
+      height: 32.7%;
+      background: transparent;
+    }
+
+    .experience-pasha {
+      top: 34.1%;
+      left: 36.3%;
+      width: 27.5%;
+      height: 50.6%;
+      border-radius: 50%;
+      box-shadow: 0 0.7rem 11.7rem -0.7rem #000;
+    }
+
+    .experience-pasha img {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 152.8%;
+      height: 147.9%;
+      object-fit: cover;
+      translate: -50% -49.2%;
+    }
+
+    .work-ai_cta .button_wrap {
+      font-size: var(--text-main-xl);
+    }
+
+    .work-ai_cta .button_mark {
+      rotate: 90deg;
+    }
+
+    @media (width < 64rem) {
+      .work-ai_wrap > .work-ai_intro {
+        row-gap: var(--space-96);
+        margin-bottom: var(--space-32);
+      }
+    }
+  }
+</style>

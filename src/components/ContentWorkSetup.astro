@@ -1,0 +1,78 @@
+---
+import type { HTMLAttributes } from "astro/types";
+import Card from "@/components/Item/Card.astro";
+import Heading from "@/components/Typography/Heading.astro";
+import Grid from "@/components/Wrapper/Grid.astro";
+
+interface Props extends HTMLAttributes<"div"> {
+  /** Set to `false` to skip rendering this component and its children. */
+  render?: boolean;
+}
+
+const { render = true, class: className, ...rest } = Astro.props;
+
+const cards = [
+  {
+    heading: "Fixed project",
+    text: "A defined scope, an agreed timeline and a fixed fee. We take ownership of delivery from kickoff to handoff.",
+    footer: "For launches, redesigns and projects with a clear finish line.",
+  },
+  {
+    heading: "Dedicated subscription",
+    text: "An embedded team with design, art direction and project management. We learn your product and move through priorities together.",
+    footer: "For ongoing work. Scale the team as your needs grow.",
+  },
+  {
+    heading: "Custom partnership",
+    text: "A setup shaped around your business: multiple workstreams, specialist expertise or a blend of project work and support.",
+    footer: "Team, responsibilities and commercial terms agreed together.",
+  },
+];
+---
+
+{
+  render && (
+    <div class:list={["work-setup_wrap", className]} {...rest}>
+      <Heading id="work-setup-title" tag="h2" variant="h3" maxWidth={18}>
+        Your ambition.
+        <br />
+        The right setup.
+      </Heading>
+
+      <Grid medium={2} large={3} class="gap-16">
+        {cards.map((card) => (
+          <Card
+            class="work-setup_card"
+            variant="service"
+            heading={card.heading}
+            text={card.text}
+            footer={card.footer}
+          />
+        ))}
+      </Grid>
+    </div>
+  )
+}
+
+<style is:global>
+  @layer components {
+    .work-setup_wrap {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      margin-top: var(--space-24);
+      gap: var(--space-88);
+    }
+
+    .work-setup_card.card_wrap.service {
+      min-height: 22rem;
+    }
+
+    .work-setup_card .card_footer .paragraph {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+  }
+</style>

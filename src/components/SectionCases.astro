@@ -1,0 +1,389 @@
+---
+import type { HTMLAttributes } from "astro/types";
+import Card from "@/components/Item/Card.astro";
+import Eyebrow from "@/components/Typography/Eyebrow.astro";
+import Heading from "@/components/Typography/Heading.astro";
+import Paragraph from "@/components/Typography/Paragraph.astro";
+import ContentWrapper from "@/components/Wrapper/ContentWrapper.astro";
+import Grid from "@/components/Wrapper/Grid.astro";
+import Section from "@/components/Wrapper/Section.astro";
+import TagWrapper from "@/components/Wrapper/TagWrapper.astro";
+import mediaPlaceholder from "@/assets/graphics/media-placeholder.svg";
+
+interface Props extends HTMLAttributes<"section"> {
+  /** Set to `false` to skip rendering this component and its children. */
+  render?: boolean;
+}
+
+type CaseStudy = {
+  title: string;
+  description: string;
+  tags: string[];
+  cards: Array<{
+    heading: string;
+    text: string;
+  }>;
+};
+
+const cardText =
+  "A mobile workflow assistant that helps teams manage tasks, monitor progress, and administer information more safely.";
+
+const cases: CaseStudy[] = [
+  {
+    title: "Four healthcare app prototypes ready for testing",
+    description:
+      "Figma Make turned four ideas for INI Hannover into fully clickable prototypes. Teams can explore each flow, gather feedback and see what needs work before full development.",
+    tags: ["7 days", "Apps"],
+    cards: [
+      { heading: "From hospital workflows to care at home", text: "Research into staff workload, hospital stays, recovery and cognitive health shaped four app concepts. They show where INI could improve daily work and extend its expertise beyond the clinic." },
+      { heading: "NurseCopilot on a staff tablet", text: "NurseCopilot was designed for staff tablets from the start. The prototype shows how alerts, patient details, tasks and handover would look during a shift." },
+      { heading: "The app and the code behind it", text: "69pixels worked out the app architecture, user flows and screen logic, then refined what the tool produced. Figma Make generated the code." },
+    ],
+  },
+  {
+    title: "Product sequence",
+    description:
+      "A product story built around the moments people actually move through: entry, decision, action and result. Clear enough to use, distinct enough to remember.",
+    tags: ["7 days", "Apps"],
+    cards: [
+      { heading: "NurseCopilot", text: cardText },
+      { heading: "NurseCopilot", text: cardText },
+      { heading: "NurseCopilot", text: cardText },
+    ],
+  },
+  {
+    title: "Content system",
+    description:
+      "A repeatable way to turn one visual direction into campaign assets, formats and social cuts without flattening the original idea.",
+    tags: ["7 days", "Apps"],
+    cards: [
+      { heading: "NurseCopilot", text: cardText },
+      { heading: "NurseCopilot", text: cardText },
+      { heading: "NurseCopilot", text: cardText },
+    ],
+  },
+];
+
+const { render = true, class: className, ...rest } = Astro.props;
+---
+
+{
+  render && (
+    <Section
+      id="cases"
+      theme="dark"
+      paddingTop="small"
+      paddingBottom="small"
+      gap="0"
+      class:list={["cases_wrap", className]}
+      data-cases
+      {...rest}
+    >
+      <ContentWrapper variant="sticky-content" class="cases_layout">
+        <div class="cases_panel">
+          <div class="cases_copy-stage">
+            {cases.map((caseStudy, index) => (
+              <div
+                class:list={["cases_copy", index === 0 && "is-active"]}
+                data-case-copy={index}
+                aria-hidden={index === 0 ? "false" : "true"}
+              >
+                <Heading tag="h2" variant="h4">
+                  {caseStudy.title}
+                </Heading>
+                <Paragraph variant="main">{caseStudy.description}</Paragraph>
+                <TagWrapper marginTop="0">
+                  {caseStudy.tags.map((tag) => (
+                    <Eyebrow tag="span" variant="tag">
+                      {tag}
+                    </Eyebrow>
+                  ))}
+                </TagWrapper>
+              </div>
+            ))}
+          </div>
+
+          <ol class="cases_indicator" aria-hidden="true">
+            {cases.map((_, index) => (
+              <li
+                class:list={[
+                  "cases_indicator-segment",
+                  index === 0 && "is-active",
+                ]}
+                data-case-indicator={index}
+              />
+            ))}
+          </ol>
+        </div>
+
+        <div slot="column2" class="cases_groups">
+          {cases.map((caseStudy, caseIndex) => (
+            <article
+              class:list={["cases_group", caseIndex === 0 && "is-active"]}
+              data-case-group={caseIndex}
+            >
+              <Grid
+                class="cases_cards gap-72"
+                role="group"
+                aria-label={`${caseStudy.title} cards`}
+              >
+                {caseStudy.cards.map((card) => (
+                  <Card
+                    variant="case"
+                    heading={card.heading}
+                    headingTag="h3"
+                    text={card.text}
+                    image={mediaPlaceholder}
+                    imageAlt=""
+                  />
+                ))}
+              </Grid>
+            </article>
+          ))}
+        </div>
+      </ContentWrapper>
+    </Section>
+  )
+}
+
+<script>
+  import { gsap } from "gsap";
+  import { ScrollTrigger } from "gsap/ScrollTrigger";
+
+  gsap.registerPlugin(ScrollTrigger);
+
+  const initCases = (root: HTMLElement) => {
+    const copies = gsap.utils.toArray<HTMLElement>("[data-case-copy]", root);
+    const indicators = gsap.utils.toArray<HTMLElement>(
+      "[data-case-indicator]",
+      root,
+    );
+    const groups = gsap.utils.toArray<HTMLElement>("[data-case-group]", root);
+    const reduceMotion = window.matchMedia(
+      "(prefers-reduced-motion: reduce)",
+    ).matches;
+    if (copies.length !== groups.length || indicators.length !== groups.length)
+      return;
+
+    const media = gsap.matchMedia();
+
+    const addCaseTriggers = (
+      query: string,
+      start: string,
+      updateGroups: boolean,
+    ) => {
+      media.add(query, () => {
+        let activeIndex = -1;
+
+        const setActive = (nextIndex: number, animate = true) => {
+          if (nextIndex === activeIndex) return;
+
+          const previousCopy = copies[activeIndex];
+          const nextCopy = copies[nextIndex];
+          const duration = reduceMotion || !animate ? 0 : 0.24;
+
+          previousCopy?.classList.remove("is-active");
+          previousCopy?.setAttribute("aria-hidden", "true");
+          indicators[activeIndex]?.classList.remove("is-active");
+          if (updateGroups) groups[activeIndex]?.classList.remove("is-active");
+
+          nextCopy?.classList.add("is-active");
+          nextCopy?.setAttribute("aria-hidden", "false");
+          indicators[nextIndex]?.classList.add("is-active");
+          if (updateGroups) groups[nextIndex]?.classList.add("is-active");
+
+          if (previousCopy) {
+            gsap.to(previousCopy, {
+              autoAlpha: 0,
+              duration,
+              ease: "power1.out",
+              overwrite: true,
+            });
+          }
+          gsap.fromTo(
+            nextCopy,
+            { autoAlpha: 0 },
+            {
+              autoAlpha: 1,
+              duration,
+              ease: "power1.out",
+              overwrite: true,
+            },
+          );
+
+          activeIndex = nextIndex;
+        };
+
+        copies.forEach((copy, index) => {
+          copy.classList.toggle("is-active", index === 0);
+          copy.setAttribute("aria-hidden", index === 0 ? "false" : "true");
+        });
+        indicators.forEach((indicator, index) =>
+          indicator.classList.toggle("is-active", index === 0),
+        );
+        if (updateGroups) {
+          groups.forEach((group, index) =>
+            group.classList.toggle("is-active", index === 0),
+          );
+        }
+        gsap.set(copies, { autoAlpha: 0 });
+        setActive(0, false);
+
+        const triggers = groups.map((group, index) =>
+          ScrollTrigger.create({
+            trigger: group,
+            start,
+            end: `bottom ${start.split(" ")[1]}`,
+            onEnter: () => setActive(index),
+            onEnterBack: () => setActive(index),
+            onRefresh: (trigger) => trigger.isActive && setActive(index, false),
+          }),
+        );
+
+        return () => {
+          triggers.forEach((trigger) => trigger.kill());
+          gsap.set(copies, { clearProps: "opacity,visibility" });
+        };
+      });
+    };
+
+    addCaseTriggers("(width >= 48.75rem)", "top center", true);
+    addCaseTriggers("(width < 48.75rem)", "top 70%", true);
+  };
+
+  document.querySelectorAll<HTMLElement>("[data-cases]").forEach(initCases);
+</script>
+
+<style is:global>
+  @layer components {
+    .cases_layout > :first-child {
+      min-height: calc(100svh - var(--nav-height) - var(--site-margin) * 2);
+    }
+
+    .cases_panel {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      flex-grow: 1;
+      width: 100%;
+      min-height: inherit;
+      padding-block: var(--space-40);
+    }
+
+    .cases_copy-stage {
+      display: grid;
+      width: 100%;
+      max-width: 32rem;
+    }
+
+    .cases_copy {
+      grid-area: 1 / 1;
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-36);
+      align-self: start;
+      visibility: hidden;
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .cases_copy.is-active {
+      visibility: visible;
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .cases_copy > .text {
+      color: var(--text-2);
+    }
+
+    .cases_indicator {
+      display: flex;
+      gap: var(--space-4);
+      width: 100%;
+    }
+
+    .cases_indicator-segment {
+      width: 2.25rem;
+      height: 0.0625rem;
+      background-color: var(--background-3);
+      transition: background-color var(--hover-duration) var(--hover-ease);
+    }
+
+    .cases_indicator-segment.is-active {
+      background-color: var(--text);
+    }
+
+    .cases_groups,
+    .cases_group {
+      display: flex;
+      flex-direction: column;
+      width: 100%;
+    }
+
+    .cases_groups {
+      gap: calc(var(--space-72) + var(--space-48));
+    }
+
+    .cases_group {
+      gap: var(--space-48);
+      opacity: 0.4;
+      transition: opacity 0.24s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    .cases_group.is-active {
+      opacity: 1;
+    }
+
+    @media (width >= 48.75rem) and (width < 64rem) {
+      .cases_layout {
+        --_column-count: 2;
+      }
+
+      .cases_layout > :first-child {
+        align-self: start;
+        position: sticky;
+        top: calc(var(--site-margin) + var(--nav-height));
+      }
+    }
+
+    @media (width < 48.75rem) {
+      .cases_wrap {
+        padding-block: 0;
+      }
+
+      .cases_layout {
+        gap: 0;
+      }
+
+      .cases_layout > :first-child {
+        position: sticky;
+        top: 0;
+        z-index: 2;
+        align-self: start;
+        min-height: 0;
+        background-color: var(--background);
+      }
+
+      .cases_panel {
+        min-height: 0;
+        width: 100%;
+        padding-top: calc(var(--nav-height) + var(--space-16));
+        padding-bottom: var(--space-36);
+      }
+
+      .cases_indicator {
+        display: none;
+      }
+
+      .cases_cards {
+        grid-template-columns: minmax(0, 1fr);
+      }
+
+      .cases_cards .card_wrap.case > .card_content {
+        padding-inline: 0;
+        padding-bottom: 0;
+      }
+    }
+  }
+</style>

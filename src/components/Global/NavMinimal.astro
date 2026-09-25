@@ -1,0 +1,68 @@
+---
+import logo from "@/assets/logo/logo-pixel.png";
+import { SITE_NAME } from "@/consts.ts";
+import type { HTMLAttributes } from "astro/types";
+
+interface Props extends HTMLAttributes<"div"> {
+  /** Set to `false` to skip rendering this component and its children. */
+  render?: boolean;
+}
+
+const { render = true, class: className, ...rest } = Astro.props;
+---
+
+{
+  render && (
+    <div class:list={["nav-minimal_wrap", className]} {...rest}>
+      <a class="nav-minimal_logo" href="/" aria-label={SITE_NAME}>
+        <img
+          src={logo.src}
+          width={logo.width}
+          height={logo.height}
+          alt=""
+          loading="eager"
+          decoding="sync"
+        />
+      </a>
+    </div>
+  )
+}
+
+<style is:global>
+  @layer components {
+    .nav-minimal_wrap {
+      position: fixed;
+      top: 0;
+      inset-inline: 0;
+      z-index: 2147483647;
+      isolation: isolate;
+      display: flex;
+      justify-content: center;
+      padding: clamp(0.75rem, calc(0.662rem + 0.376vw), 1rem) var(--site-margin);
+      background-color: transparent;
+    }
+
+    .nav-minimal_logo {
+      height: 2.5rem;
+      opacity: 0.85;
+      transition: opacity var(--hover-duration) var(--hover-ease);
+
+      &:focus-visible {
+        opacity: 1;
+      }
+
+      @media (hover: hover) {
+        &:hover {
+          opacity: 1;
+        }
+      }
+
+      & > img {
+        display: block;
+        width: auto;
+        height: 100%;
+        object-fit: contain;
+      }
+    }
+  }
+</style>

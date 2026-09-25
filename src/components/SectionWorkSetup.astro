@@ -1,0 +1,24 @@
+---
+import Section from "@/components/Wrapper/Section.astro";
+import ContentWorkSetup from "@/components/ContentWorkSetup.astro";
+---
+
+<Section
+  theme="light"
+  paddingTop="none"
+  paddingBottom="large"
+  gap="0"
+  class="work-setup-section_wrap"
+  aria-labelledby="work-setup-title"
+>
+  <ContentWorkSetup />
+</Section>
+
+<style is:global>
+  @layer components {
+    .work-setup-section_wrap {
+      --background: color-mix(in srgb, var(--light-100) 97%, var(--dark-900));
+      border: 0;
+    }
+  }
+</style>

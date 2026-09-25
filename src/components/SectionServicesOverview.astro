@@ -1,0 +1,45 @@
+---
+import type { ComponentProps } from "astro/types";
+import Section from "@/components/Wrapper/Section.astro";
+import ContentServicesOverview from "@/components/ContentServicesOverview.astro";
+
+type Props = Pick<
+  ComponentProps<typeof Section>,
+  "render" | "paddingTop" | "paddingBottom"
+>;
+
+const {
+  render = true,
+  paddingTop = "large",
+  paddingBottom = "medium",
+} = Astro.props;
+---
+
+{
+  render && (
+    <Section
+      theme="light"
+      paddingTop={paddingTop}
+      paddingBottom={paddingBottom}
+      gap="0"
+      class="services-overview-section_wrap"
+      aria-labelledby="services-overview-title"
+    >
+      <ContentServicesOverview />
+    </Section>
+  )
+}
+
+<style is:global>
+  @layer components {
+    .services-overview-section_wrap {
+      --background: color-mix(in srgb, var(--light-100) 97%, var(--dark-900));
+      position: relative;
+      z-index: 100;
+      min-height: 100svh;
+      margin-top: -100svh;
+      background-color: var(--background);
+      border: 0;
+    }
+  }
+</style>

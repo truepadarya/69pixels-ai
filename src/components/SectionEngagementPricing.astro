@@ -1,0 +1,98 @@
+---
+import Section from "@/components/Wrapper/Section.astro";
+import Heading from "@/components/Typography/Heading.astro";
+import CardPricing from "@/components/Item/CardPricing.astro";
+
+const plans = [
+  {
+    label: "Fixed project",
+    title: "Quoted by scope",
+    description:
+      "Deliverables, milestones, revisions and price are agreed before the work begins.",
+    subject: "Fixed project enquiry",
+  },
+  {
+    label: "Core subscription",
+    title: "€6,900",
+    suffix: "/ month",
+    isPrice: true,
+    description:
+      "One dedicated designer, with art direction and project management included.",
+    subject: "Design subscription enquiry",
+  },
+  {
+    label: "Custom partnership",
+    title: "Tailored pricing",
+    description:
+      "Additional specialists, more capacity or parallel workstreams, shaped around your priorities.",
+    subject: "Custom partnership enquiry",
+  },
+];
+---
+
+<Section
+  theme="dark"
+  paddingTop="large"
+  paddingBottom="large"
+  gap="88"
+  class="engagement-pricing_wrap"
+  aria-label="Engagement pricing"
+>
+  <Heading tag="h2" variant="h3" class="engagement-pricing_heading">
+    How we work together.
+  </Heading>
+
+  <div class="engagement-pricing_grid">
+    {
+      plans.map((plan) => (
+        <CardPricing
+          label={plan.label}
+          heading={plan.title}
+          suffix={plan.suffix}
+          price={plan.isPrice}
+          text={plan.description}
+          href={`mailto:hello@69pixels.com?subject=${encodeURIComponent(plan.subject)}`}
+          aria-label={`${plan.label}: ${plan.title}`}
+          data-cursor-theme="light"
+        />
+      ))
+    }
+  </div>
+</Section>
+
+<style is:global>
+  @layer components {
+    .engagement-pricing_wrap {
+      --background: var(--dark-900);
+    }
+
+    .engagement-pricing_heading {
+      width: min(100%, 14ch);
+      color: var(--light-100);
+    }
+
+    .engagement-pricing_grid {
+      width: 100%;
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      align-items: start;
+      gap: var(--space-16);
+    }
+
+    @media (width < 64rem) {
+      .engagement-pricing_grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .engagement-pricing_grid > :last-child:nth-child(odd) {
+        grid-column: 1 / -1;
+      }
+    }
+
+    @media (width < 48rem) {
+      .engagement-pricing_grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  }
+</style>

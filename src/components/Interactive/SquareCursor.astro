@@ -1,0 +1,147 @@
+<div class="square-cursor_layer" data-square-cursor-layer aria-hidden="true">
+  <span class="square-cursor_pointer" data-square-cursor-pointer>
+    <span class="square-cursor_shape"></span>
+  </span>
+</div>
+
+<script>
+  const initSquareCursor = () => {
+    const root = document.documentElement;
+    const layer = document.querySelector<HTMLElement>(
+      "[data-square-cursor-layer]",
+    );
+    const pointer = layer?.querySelector<HTMLElement>(
+      "[data-square-cursor-pointer]",
+    );
+    const canUseEffect = window.matchMedia(
+      "(hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference)",
+    ).matches;
+
+    if (!layer || !pointer || !canUseEffect) return;
+
+    root.classList.add("has-square-cursor");
+
+    const interactiveSelector = [
+      "a[href]",
+      "button:not(:disabled)",
+      "input:not(:disabled)",
+      "select:not(:disabled)",
+      "textarea:not(:disabled)",
+      "summary",
+      '[role="button"]',
+      '[role="link"]',
+      '[tabindex]:not([tabindex="-1"])',
+    ].join(",");
+
+    const setTheme = (target: EventTarget | null) => {
+      if (!(target instanceof Element)) return;
+
+      const cursorTheme = target.closest<HTMLElement>("[data-cursor-theme]")
+        ?.dataset.cursorTheme;
+
+      if (cursorTheme) {
+        pointer.classList.toggle("on-dark", cursorTheme === "dark");
+        return;
+      }
+
+      const theme = target.closest<HTMLElement>(
+        ".theme-dark, .theme-light, .theme-invert",
+      );
+      let darkBackground = theme?.classList.contains("theme-dark") ?? false;
+
+      if (theme?.classList.contains("theme-invert")) {
+        const parentTheme = theme.parentElement?.closest<HTMLElement>(
+          ".theme-dark, .theme-light",
+        );
+        darkBackground = parentTheme?.classList.contains("theme-light") ?? true;
+      }
+
+      pointer.classList.toggle("on-dark", darkBackground);
+    };
+
+    const handleMove = (event: PointerEvent) => {
+      pointer.style.transform = `translate3d(${event.clientX}px, ${event.clientY}px, 0)`;
+      setTheme(event.target);
+      pointer.classList.toggle(
+        "is-interactive",
+        event.target instanceof Element &&
+          Boolean(event.target.closest(interactiveSelector)),
+      );
+      pointer.classList.add("is-visible");
+    };
+
+    const handleWindowExit = (event: MouseEvent) => {
+      if (event.relatedTarget) return;
+      pointer.classList.remove("is-visible");
+    };
+
+    document.addEventListener("pointermove", handleMove, { passive: true });
+    window.addEventListener("mouseout", handleWindowExit);
+    window.addEventListener("blur", () =>
+      pointer.classList.remove("is-visible"),
+    );
+  };
+
+  initSquareCursor();
+</script>
+
+<style is:global>
+  @layer components {
+    .square-cursor_layer {
+      position: fixed;
+      z-index: 2147483646;
+      inset: 0;
+      overflow: hidden;
+      pointer-events: none;
+    }
+
+    .square-cursor_pointer {
+      position: absolute;
+      top: 0;
+      left: 0;
+      display: block;
+      width: var(--space-16);
+      height: var(--space-16);
+      opacity: 0;
+      color: var(--dark-900);
+      transition: opacity 120ms cubic-bezier(0.16, 1, 0.3, 1);
+      will-change: transform, opacity;
+    }
+
+    .square-cursor_pointer.on-dark {
+      color: var(--light-100);
+    }
+
+    .square-cursor_shape {
+      width: 100%;
+      height: 100%;
+      display: block;
+      background-color: currentcolor;
+      transform: scale(1);
+      transform-origin: top left;
+      transition: transform 180ms cubic-bezier(0.22, 1, 0.36, 1);
+      will-change: transform;
+    }
+
+    .square-cursor_pointer.is-visible {
+      opacity: 1;
+    }
+
+    .square-cursor_pointer.is-interactive .square-cursor_shape {
+      transform: scale(0.72);
+    }
+
+    @media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
+      .has-square-cursor,
+      .has-square-cursor * {
+        cursor: none;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .square-cursor_layer {
+        display: none;
+      }
+    }
+  }
+</style>

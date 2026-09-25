@@ -1,0 +1,267 @@
+---
+import Heading from "@/components/Typography/Heading.astro";
+import Paragraph from "@/components/Typography/Paragraph.astro";
+import Marquee from "@/components/Interactive/Marquee.astro";
+import Icon from "@/components/Media/Icon.astro";
+import Forbes from "@/assets/logo/forbes.svg";
+import ProductHunt from "@/assets/logo/producthunt.svg";
+import TechCrunch from "@/assets/logo/tc.svg";
+import Clutch from "@/assets/logo/clutch.svg";
+import arrowFull from "@/assets/icons/arrow-full.svg";
+import type { HTMLAttributes } from "astro/types";
+
+interface Props extends HTMLAttributes<"section"> {
+  /** Set to `false` to skip rendering this component and its children. */
+  render?: boolean;
+}
+
+const { render = true, class: className, ...rest } = Astro.props;
+---
+
+{
+  render && (
+    <section class:list={["hero_wrap", className]} {...rest}>
+      <div class="hero_layout">
+        <div class="hero_main">
+          <div class="hero_main_layout">
+            <div class="hero_primary">
+              <div class="hero_heading">
+                <Heading tag="h1" variant="display">
+                  Great taste.
+                  <br />
+                  Less wait.
+                </Heading>
+              </div>
+            </div>
+            <div class="hero_secondary">
+              <div class="hero_content">
+                <Paragraph variant="large">
+                  Brands, websites, digital products and creative production.
+                  Built by senior talent with AI in the workflow and craft in
+                  every detail.
+                </Paragraph>
+                <a class="hero_action" href="#capabilities">
+                  <Paragraph tag="span" variant="small">
+                    Less talk. More work.
+                  </Paragraph>
+                  <Icon
+                    src={arrowFull}
+                    variant="small"
+                    class="hero_action_icon"
+                  />
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="hero_bottom">
+          <Marquee class="hero_marquee" label="Awards" showToggle={false}>
+            <div class="hero_logo">
+              <Forbes aria-label="Forbes" />
+            </div>
+            <div class="hero_logo">
+              <ProductHunt aria-label="Product Hunt" />
+            </div>
+            <div class="hero_logo">
+              <TechCrunch aria-label="TechCrunch" />
+            </div>
+            <div class="hero_logo">
+              <Clutch aria-label="Clutch" />
+            </div>
+            <div class="hero_label">
+              <Paragraph>Top Digital Design 2023</Paragraph>
+              <Paragraph>11th Global</Paragraph>
+            </div>
+            <div class="hero_label">
+              <Paragraph>Top B2B 2019</Paragraph>
+              <Paragraph>Eastern Europe</Paragraph>
+            </div>
+            <div class="hero_label">
+              <Paragraph>Top Product Design 2023</Paragraph>
+              <Paragraph>Global</Paragraph>
+            </div>
+            <div class="hero_label">
+              <Paragraph>Top Digital Design 2023</Paragraph>
+              <Paragraph>Gaming</Paragraph>
+            </div>
+          </Marquee>
+        </div>
+      </div>
+    </section>
+  )
+}
+
+<style is:global>
+  @layer components {
+    .hero_wrap {
+      height: 100svh;
+    }
+
+    .hero_layout {
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-12);
+      padding: var(--site-margin);
+    }
+
+    .hero_marquee {
+      --_gap-size: var(--space-80);
+      --_speed: 6s;
+
+      & .marquee_panel {
+        justify-content: flex-start;
+      }
+
+      & .marquee_viewport {
+        mask-image: linear-gradient(
+          to right,
+          transparent,
+          var(--dark-900) 8%,
+          var(--dark-900) 92%,
+          transparent
+        );
+      }
+    }
+
+    .hero_label {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: var(--space-4);
+      text-align: center;
+      opacity: 0.4;
+
+      & > .text {
+        width: 100%;
+        text-align: center;
+      }
+    }
+
+    .hero_logo {
+      height: var(--size-48);
+      width: auto;
+      opacity: 0.4;
+
+      & > svg {
+        display: block;
+        width: auto;
+        height: 100%;
+      }
+    }
+
+    .hero_main {
+      min-height: 0;
+      flex: 1;
+      display: flex;
+      align-items: center;
+    }
+
+    .hero_main_layout {
+      width: 100%;
+      display: flex;
+      align-items: stretch;
+      gap: var(--space-12);
+    }
+
+    .hero_primary,
+    .hero_secondary {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .hero_primary {
+      display: flex;
+    }
+
+    .hero_heading {
+      align-self: center;
+    }
+
+    .hero_secondary {
+      display: flex;
+      justify-content: flex-end;
+    }
+
+    .hero_content {
+      width: 100%;
+      max-width: 24rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+
+      & > .text {
+        opacity: 0.35;
+      }
+    }
+
+    .hero_action {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding-top: var(--space-32);
+      border-top: var(--border-width) solid
+        color-mix(in srgb, currentcolor 10%, transparent);
+      opacity: 0.8;
+      transition: opacity 180ms cubic-bezier(0.22, 1, 0.36, 1);
+
+      & .text {
+        text-transform: uppercase;
+      }
+
+      &:is(:hover, :focus-visible) {
+        opacity: 1;
+
+        & .hero_action_icon {
+          translate: 0 0.25em;
+        }
+      }
+    }
+
+    .hero_action_icon {
+      rotate: 90deg;
+      transition: translate 180ms cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    @media (width < 64rem) {
+      .hero_wrap,
+      .hero_layout {
+        height: auto;
+        min-height: 100svh;
+      }
+
+      .hero_main {
+        padding-block: var(--space-64);
+      }
+
+      .hero_main_layout {
+        flex-direction: column;
+        gap: var(--space-64);
+      }
+
+      .hero_primary,
+      .hero_secondary {
+        width: 100%;
+        flex: none;
+      }
+
+      .hero_secondary {
+        justify-content: flex-start;
+      }
+
+      .hero_content {
+        width: 94%;
+        max-width: 31.25rem;
+        gap: var(--space-80);
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .hero_action,
+      .hero_action_icon {
+        transition-duration: 0.01ms;
+      }
+    }
+  }
+</style>
