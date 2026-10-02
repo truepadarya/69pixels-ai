@@ -39,8 +39,8 @@
       const portrait = mobile.matches;
       const response = await fetch(
         portrait
-          ? "/pointillist/relight-mobile.bin"
-          : "/pointillist/relight.bin",
+          ? "/69pixels-ai/69pixels-ai/pointillist/relight-mobile.bin"
+          : "/69pixels-ai/69pixels-ai/pointillist/relight.bin",
       );
       if (!response.ok) throw new Error("Lighting data unavailable");
       const buffer = await response.arrayBuffer();
