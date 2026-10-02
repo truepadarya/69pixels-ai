@@ -39,8 +39,8 @@
       const portrait = mobile.matches;
       const response = await fetch(
         portrait
-          ? "/69pixels-ai/69pixels-ai/pointillist/relight-mobile.bin"
-          : "/69pixels-ai/69pixels-ai/pointillist/relight.bin",
+          ? "/69pixels-ai/pointillist/relight-mobile.bin"
+          : "/69pixels-ai/pointillist/relight.bin",
       );
       if (!response.ok) throw new Error("Lighting data unavailable");
       const buffer = await response.arrayBuffer();
@@ -111,18 +111,21 @@
       raf = requestAnimationFrame(tick);
     else raf = 0;
   }
+
   function animate() {
     if (!raf) {
       lastTime = performance.now();
       raf = requestAnimationFrame(tick);
     }
   }
+
   function stopAuto() {
     if (autoRaf) cancelAnimationFrame(autoRaf);
     autoRaf = 0;
     autoLastTime = 0;
     autoLastDraw = 0;
   }
+
   function autoTick(time) {
     if (autoLastTime) autoElapsed += Math.min(time - autoLastTime, 100);
     autoLastTime = time;
@@ -134,6 +137,7 @@
     }
     autoRaf = requestAnimationFrame(autoTick);
   }
+
   function syncAuto() {
     const uncovered =
       !coveringSection || coveringSection.getBoundingClientRect().top > 0;
@@ -146,6 +150,7 @@
     if (active && !autoRaf) autoRaf = requestAnimationFrame(autoTick);
     else if (!active) stopAuto();
   }
+
   function onPointerMove(event) {
     if (
       touchLayout.matches ||
@@ -170,6 +175,7 @@
       : 0.5;
     animate();
   }
+
   function onScroll() {
     if (mobile.matches) {
       syncAuto();
@@ -183,6 +189,7 @@
     targetY = 0.5;
     animate();
   }
+
   function onModeChange() {
     stopAuto();
     if (raf) cancelAnimationFrame(raf);
@@ -196,6 +203,7 @@
     if (mobile.matches) syncAuto();
     else if (touchLayout.matches && !reduced.matches) onScroll();
   }
+
   function onBlur() {
     if (mobile.matches) {
       stopAuto();
@@ -205,6 +213,7 @@
     targetY = 0.5;
     animate();
   }
+
   function onMobileChange() {
     loadLighting();
     onModeChange();
