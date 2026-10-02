@@ -4,7 +4,7 @@ import Eyebrow from "@/components/Typography/Eyebrow.astro";
 import Heading from "@/components/Typography/Heading.astro";
 import Paragraph from "@/components/Typography/Paragraph.astro";
 
-interface Props extends HTMLAttributes<"a"> {
+type Base = HTMLAttributes<"a"> & {
   /** Set to `false` to skip rendering this component. */
   render?: boolean;
   /** Small line of text above the pricing details. Inline markup is rendered. */
@@ -17,9 +17,20 @@ interface Props extends HTMLAttributes<"a"> {
   price?: boolean;
   /** Body copy under the heading. Inline markup is rendered. */
   text: string;
-  /** Where the card leads. */
-  href: string;
-}
+};
+
+type Props = Base & (
+  | {
+      /** How the card is composed: linked pricing or an informational work setup. */
+      variant?: "pricing";
+      /** Where the card leads. */
+      href: string;
+    }
+  | {
+      variant: "setup";
+      href?: never;
+    }
+);
 
 const {
   render = true,
@@ -28,18 +39,20 @@ const {
   suffix,
   price = false,
   text,
+  variant = "pricing",
   href,
   class: className,
   ...rest
 } = Astro.props;
 
-const hasContent = !!(label && heading && text && href);
+const Tag = variant === "setup" ? "div" : "a";
+const hasContent = !!(label && heading && text && (variant === "setup" || href));
 ---
 
 {
   render && hasContent && (
-    <a
-      class:list={["pricing-card_wrap", price && "price", className]}
+    <Tag
+      class:list={["pricing-card_wrap", variant === "setup" && "setup", price && "price", className]}
       href={href}
       {...rest}
     >
@@ -61,11 +74,11 @@ const hasContent = !!(label && heading && text && href);
             </Paragraph>
           )}
         </div>
-        <Paragraph variant="main-xl" maxWidth={38} class="pricing-card_text">
+        <Paragraph variant="main-xl" class="pricing-card_text">
           <Fragment set:html={text} />
         </Paragraph>
       </div>
-    </a>
+    </Tag>
   )
 }
 
@@ -76,7 +89,7 @@ const hasContent = !!(label && heading && text && href);
       --_cutout-size: var(--space-24);
       width: 100%;
       height: auto;
-      aspect-ratio: 4 / 5;
+      aspect-ratio: 6 / 7;
       align-self: start;
       padding: var(--space-28);
       padding-bottom: var(--space-32);
@@ -91,7 +104,7 @@ const hasContent = !!(label && heading && text && href);
         background-color var(--hover-duration) var(--hover-ease),
         color var(--hover-duration) var(--hover-ease);
 
-      &:is(:hover, :focus-visible) {
+      &:not(.setup):is(:hover, :focus-visible) {
         --text: var(--dark-900);
         --text-2: color-mix(in srgb, var(--dark-900) 70%, transparent);
         background-color: color-mix(
@@ -125,8 +138,8 @@ const hasContent = !!(label && heading && text && href);
         right: calc(var(--_cutout-size) / -2);
       }
 
-      &:is(:hover, :focus-visible)::before,
-      &:is(:hover, :focus-visible)::after {
+      &:not(.setup):is(:hover, :focus-visible)::before,
+      &:not(.setup):is(:hover, :focus-visible)::after {
         scale: 1;
       }
     }
@@ -153,7 +166,7 @@ const hasContent = !!(label && heading && text && href);
       }
     }
 
-    .pricing-card_wrap:is(:hover, :focus-visible) .pricing-card_label::after {
+    .pricing-card_wrap:not(.setup):is(:hover, :focus-visible) .pricing-card_label::after {
       opacity: 1;
       scale: 1;
     }
@@ -163,6 +176,34 @@ const hasContent = !!(label && heading && text && href);
       display: flex;
       flex-direction: column;
       gap: var(--space-24);
+    }
+
+    .pricing-card_wrap.setup {
+      background-color: color-mix(in srgb, var(--dark-900) 3%, transparent);
+      transition: none;
+
+      &::before,
+      &::after,
+      .pricing-card_label::after {
+        display: none;
+      }
+
+      .pricing-card_label {
+        --text-small-font-weight: var(--primary-medium);
+        color: var(--text);
+        letter-spacing: var(--letter-spacing-small);
+        text-transform: none;
+      }
+
+      .pricing-card_heading {
+        font-size: clamp(1.5rem, 10cqw, var(--h4));
+      }
+
+      .pricing-card_text {
+        font-size: clamp(1rem, 4.6cqw, var(--text-main-xl));
+        color: color-mix(in srgb, var(--text) 60%, transparent);
+        transition: none;
+      }
     }
 
     .pricing-card_wrap.price .pricing-card_content {

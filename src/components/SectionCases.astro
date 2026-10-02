@@ -8,6 +8,14 @@ import ContentWrapper from "@/components/Wrapper/ContentWrapper.astro";
 import Grid from "@/components/Wrapper/Grid.astro";
 import Section from "@/components/Wrapper/Section.astro";
 import TagWrapper from "@/components/Wrapper/TagWrapper.astro";
+import healthcareVideo1 from "@/assets/graphics/cases/healthcare-1.mp4";
+import healthcareVideo2 from "@/assets/graphics/cases/healthcare-2.mp4";
+import healthcareVideo3 from "@/assets/graphics/cases/healthcare-3.mp4";
+import androidUiKitImage from "@/assets/graphics/cases/android-ui-kit.webp";
+import androidUiKitVideo from "@/assets/graphics/cases/android-ui-kit.mp4";
+import discoveryScenariosVideo from "@/assets/graphics/cases/swapsquad-scenarios.mp4";
+import discoveryPersonasVideo from "@/assets/graphics/cases/swapsquad-personas.mp4";
+import marketplaceCardToolImage from "@/assets/graphics/cases/marketplace-card-tool.png";
 import mediaPlaceholder from "@/assets/graphics/media-placeholder.svg";
 
 interface Props extends HTMLAttributes<"section"> {
@@ -22,11 +30,11 @@ type CaseStudy = {
   cards: Array<{
     heading: string;
     text: string;
+    image?: ImageMetadata;
+    imageAlt?: string;
+    video?: string;
   }>;
 };
-
-const cardText =
-  "A mobile workflow assistant that helps teams manage tasks, monitor progress, and administer information more safely.";
 
 const cases: CaseStudy[] = [
   {
@@ -35,31 +43,72 @@ const cases: CaseStudy[] = [
       "Figma Make turned four ideas for INI Hannover into fully clickable prototypes. Teams can explore each flow, gather feedback and see what needs work before full development.",
     tags: ["7 days", "Apps"],
     cards: [
-      { heading: "From hospital workflows to care at home", text: "Research into staff workload, hospital stays, recovery and cognitive health shaped four app concepts. They show where INI could improve daily work and extend its expertise beyond the clinic." },
-      { heading: "NurseCopilot on a staff tablet", text: "NurseCopilot was designed for staff tablets from the start. The prototype shows how alerts, patient details, tasks and handover would look during a shift." },
-      { heading: "The app and the code behind it", text: "69pixels worked out the app architecture, user flows and screen logic, then refined what the tool produced. Figma Make generated the code." },
+      {
+        heading: "From hospital workflows to care at home",
+        text: "Research into staff workload, hospital stays, recovery and cognitive health shaped four app concepts. They show where INI could improve daily work and extend its expertise beyond the clinic.",
+        video: healthcareVideo1,
+      },
+      {
+        heading: "NurseCopilot on a staff tablet",
+        text: "NurseCopilot was designed for staff tablets from the start. The prototype shows how alerts, patient details, tasks and handover would look during a shift.",
+        video: healthcareVideo2,
+      },
+      {
+        heading: "The app and the code behind it",
+        text: "69pixels worked out the app architecture, user flows and screen logic, then refined what the tool produced. Figma Make generated the code.",
+        video: healthcareVideo3,
+      },
     ],
   },
   {
-    title: "Product sequence",
+    title: "A cross-platform planner designed with AI",
     description:
-      "A product story built around the moments people actually move through: entry, decision, action and result. Clear enough to use, distinct enough to remember.",
-    tags: ["7 days", "Apps"],
+      "AI helped automate the UI kit for an existing work planning app. Its reusable components then gave the Android version a starting point, leaving designers to focus on the layouts and interactions that needed to change.",
+    tags: ["Few hours for android", "Apps"],
     cards: [
-      { heading: "NurseCopilot", text: cardText },
-      { heading: "NurseCopilot", text: cardText },
-      { heading: "NurseCopilot", text: cardText },
+      {
+        heading: "Android version in hours",
+        text: "Using the existing design and UI kit, the app was adapted for Android in a few hours. Designers worked through the platform’s layout and interaction changes as the screens came together.",
+        image: androidUiKitImage,
+      },
+      {
+        heading: "Less rebuilding as the app grows",
+        text: "As the task planner grew, designers expanded its UI kit with help from AI. New screens could reuse existing components, which also helped the team adapt the app for Android in hours.",
+        video: androidUiKitVideo,
+      },
     ],
   },
   {
-    title: "Content system",
+    title: "A custom tool for better marketplace visuals",
     description:
-      "A repeatable way to turn one visual direction into campaign assets, formats and social cuts without flattening the original idea.",
-    tags: ["7 days", "Apps"],
+      "We built a custom tool to help a company refresh its existing marketplace product cards. It turns the team's design direction into ready-to-use AI prompts, making it easier to update visuals while keeping the product and key details intact.",
+    tags: ["Custom tools", "E-commerce"],
     cards: [
-      { heading: "NurseCopilot", text: cardText },
-      { heading: "NurseCopilot", text: cardText },
-      { heading: "NurseCopilot", text: cardText },
+      {
+        heading: "From an old card to a new visual direction",
+        text: "Upload an existing card, choose a target style and specify what to keep or change. The tool brings those choices into one prompt, giving the team a repeatable way to create cleaner, more consistent product visuals.",
+        image: marketplaceCardToolImage,
+        imageAlt:
+          "Product Card Prompt Generator with an uploaded power bank card, design settings and a ready-to-use prompt.",
+      },
+    ],
+  },
+  {
+    title: "Faster research. A clearer product direction.",
+    description:
+      "For SwapSquad, we brought personas and user scenarios together in one discovery workspace. A fast, focused research process gave the team a shared view of who the product is for, how people would use it and what to explore next.",
+    tags: ["Rapid discovery", "Research"],
+    cards: [
+      {
+        heading: "The full picture before the first screen",
+        text: "From joining a league and creating a team to managing a matchup, we mapped the steps, decisions and potential friction in each journey. The wider discovery board gives the team context for turning those scenarios into screens.",
+        video: discoveryScenariosVideo,
+      },
+      {
+        heading: "Personas that give design a focus",
+        text: "Playing habits, motivations and barriers show how different people would use SwapSquad. These personas give the team a practical reference for discussing features, shaping flows and choosing what to validate next.",
+        video: discoveryPersonasVideo,
+      },
     ],
   },
 ];
@@ -72,7 +121,7 @@ const { render = true, class: className, ...rest } = Astro.props;
     <Section
       id="cases"
       theme="dark"
-      paddingTop="small"
+      paddingTop="none"
       paddingBottom="small"
       gap="0"
       class:list={["cases_wrap", className]}
@@ -122,10 +171,24 @@ const { render = true, class: className, ...rest } = Astro.props;
               class:list={["cases_group", caseIndex === 0 && "is-active"]}
               data-case-group={caseIndex}
             >
+              <ContentWrapper class="cases_header">
+                <Heading tag="h2" variant="h4">
+                  {caseStudy.title}
+                </Heading>
+                <Paragraph variant="main">{caseStudy.description}</Paragraph>
+                <TagWrapper marginTop="0">
+                  {caseStudy.tags.map((tag) => (
+                    <Eyebrow tag="span" variant="tag">
+                      {tag}
+                    </Eyebrow>
+                  ))}
+                </TagWrapper>
+              </ContentWrapper>
               <Grid
-                class="cases_cards gap-72"
+                class="cases_cards"
                 role="group"
                 aria-label={`${caseStudy.title} cards`}
+                tabindex={caseStudy.cards.length > 1 ? "0" : undefined}
               >
                 {caseStudy.cards.map((card) => (
                   <Card
@@ -133,8 +196,9 @@ const { render = true, class: className, ...rest } = Astro.props;
                     heading={card.heading}
                     headingTag="h3"
                     text={card.text}
-                    image={mediaPlaceholder}
-                    imageAlt=""
+                    video={card.video}
+                    image={card.image ?? mediaPlaceholder}
+                    imageAlt={card.imageAlt ?? ""}
                   />
                 ))}
               </Grid>
@@ -149,6 +213,10 @@ const { render = true, class: className, ...rest } = Astro.props;
 <script>
   import { gsap } from "gsap";
   import { ScrollTrigger } from "gsap/ScrollTrigger";
+  import {
+    mountScrollScene,
+    refreshScrollLayout,
+  } from "@/utils/motion/scrollScene";
 
   gsap.registerPlugin(ScrollTrigger);
 
@@ -159,57 +227,123 @@ const { render = true, class: className, ...rest } = Astro.props;
       root,
     );
     const groups = gsap.utils.toArray<HTMLElement>("[data-case-group]", root);
-    const reduceMotion = window.matchMedia(
-      "(prefers-reduced-motion: reduce)",
-    ).matches;
-    if (copies.length !== groups.length || indicators.length !== groups.length)
+    const stickyColumn = root.querySelector<HTMLElement>(
+      ".cases_layout > :first-child",
+    );
+    const activeHeading = copies[0]?.querySelector<HTMLElement>(".heading");
+    const lastCard = groups
+      .at(-1)
+      ?.querySelector<HTMLElement>(".card_wrap.case:last-child");
+    if (
+      copies.length !== groups.length ||
+      indicators.length !== groups.length ||
+      !stickyColumn ||
+      !activeHeading ||
+      !lastCard
+    )
       return;
+
+    const setEndSpace = () => {
+      const headingOffset =
+        activeHeading.getBoundingClientRect().top -
+        stickyColumn.getBoundingClientRect().top;
+      const endSpace =
+        stickyColumn.getBoundingClientRect().height -
+        headingOffset -
+        lastCard.getBoundingClientRect().height;
+
+      root.style.setProperty("--cases-end-space", `${Math.max(0, endSpace)}px`);
+    };
 
     const media = gsap.matchMedia();
 
-    const addCaseTriggers = (
-      query: string,
-      start: string,
-      updateGroups: boolean,
-    ) => {
+    media.add("(prefers-reduced-motion: no-preference)", () => {
+      const reveal = (trigger: HTMLElement, items: HTMLElement[]) => {
+        gsap.fromTo(
+          items,
+          { autoAlpha: 0, y: "var(--reveal-distance-main)" },
+          {
+            autoAlpha: 1,
+            y: 0,
+            ease: "none",
+            stagger: 0.15,
+            scrollTrigger: {
+              trigger,
+              start: "top 90%",
+              end: "top 45%",
+              scrub: true,
+              invalidateOnRefresh: true,
+            },
+          },
+        );
+      };
+
+      const stage = root.querySelector<HTMLElement>(".cases_copy-stage");
+      if (stage) reveal(root, [stage, ...indicators]);
+      groups.forEach((group) => {
+        const header = group.querySelector<HTMLElement>(".cases_header");
+        if (header)
+          reveal(
+            group,
+            Array.from(
+              header.querySelectorAll<HTMLElement>(
+                ".heading, .text, .tag-wrapper",
+              ),
+            ),
+          );
+        group
+          .querySelectorAll<HTMLElement>(".card_wrap.case")
+          .forEach((card) => {
+            reveal(
+              card,
+              Array.from(
+                card.querySelectorAll<HTMLElement>(
+                  ".card_visual, .card_title, .card_description",
+                ),
+              ),
+            );
+          });
+      });
+    });
+
+    const addCaseTriggers = (query: string, viewportPoint: number) => {
       media.add(query, () => {
+        let measureFrame = 0;
+        const resizeObserver = new ResizeObserver(() => {
+          cancelAnimationFrame(measureFrame);
+          measureFrame = requestAnimationFrame(() => {
+            setEndSpace();
+            refreshScrollLayout();
+          });
+        });
+        resizeObserver.observe(lastCard);
+        setEndSpace();
         let activeIndex = -1;
 
-        const setActive = (nextIndex: number, animate = true) => {
+        const reducedMotion = window.matchMedia(
+          "(prefers-reduced-motion: reduce)",
+        ).matches;
+
+        const setActive = (nextIndex: number) => {
           if (nextIndex === activeIndex) return;
 
           const previousCopy = copies[activeIndex];
           const nextCopy = copies[nextIndex];
-          const duration = reduceMotion || !animate ? 0 : 0.24;
 
           previousCopy?.classList.remove("is-active");
           previousCopy?.setAttribute("aria-hidden", "true");
           indicators[activeIndex]?.classList.remove("is-active");
-          if (updateGroups) groups[activeIndex]?.classList.remove("is-active");
+          groups[activeIndex]?.classList.remove("is-active");
 
           nextCopy?.classList.add("is-active");
           nextCopy?.setAttribute("aria-hidden", "false");
           indicators[nextIndex]?.classList.add("is-active");
-          if (updateGroups) groups[nextIndex]?.classList.add("is-active");
+          groups[nextIndex]?.classList.add("is-active");
 
-          if (previousCopy) {
-            gsap.to(previousCopy, {
-              autoAlpha: 0,
-              duration,
-              ease: "power1.out",
-              overwrite: true,
-            });
+          if (reducedMotion) {
+            gsap.set(copies, { autoAlpha: 0 });
+            gsap.set(nextCopy, { autoAlpha: 1 });
           }
-          gsap.fromTo(
-            nextCopy,
-            { autoAlpha: 0 },
-            {
-              autoAlpha: 1,
-              duration,
-              ease: "power1.out",
-              overwrite: true,
-            },
-          );
 
           activeIndex = nextIndex;
         };
@@ -221,37 +355,96 @@ const { render = true, class: className, ...rest } = Astro.props;
         indicators.forEach((indicator, index) =>
           indicator.classList.toggle("is-active", index === 0),
         );
-        if (updateGroups) {
-          groups.forEach((group, index) =>
-            group.classList.toggle("is-active", index === 0),
-          );
-        }
-        gsap.set(copies, { autoAlpha: 0 });
-        setActive(0, false);
-
-        const triggers = groups.map((group, index) =>
-          ScrollTrigger.create({
-            trigger: group,
-            start,
-            end: `bottom ${start.split(" ")[1]}`,
-            onEnter: () => setActive(index),
-            onEnterBack: () => setActive(index),
-            onRefresh: (trigger) => trigger.isActive && setActive(index, false),
-          }),
+        groups.forEach((group, index) =>
+          group.classList.toggle("is-active", index === 0),
         );
+        gsap.set(copies, { autoAlpha: 0 });
+        gsap.set(copies[0], { autoAlpha: 1 });
+        setActive(0);
+
+        const syncActive = () => {
+          let index = 0;
+          const progress = groups.map((group, groupIndex) =>
+            groupIndex === 0
+              ? 1
+              : gsap.utils.clamp(
+                  0,
+                  1,
+                  (window.innerHeight * 0.65 -
+                    group.getBoundingClientRect().top) /
+                    (window.innerHeight * 0.3),
+                ),
+          );
+          groups.forEach((group, groupIndex) => {
+            if (
+              group.getBoundingClientRect().top <=
+              window.innerHeight * viewportPoint
+            )
+              index = groupIndex;
+          });
+          setActive(index);
+          groups.forEach((group, groupIndex) => {
+            const weight = reducedMotion
+              ? Number(groupIndex === index)
+              : progress[groupIndex] * (1 - (progress[groupIndex + 1] ?? 0));
+            gsap.set(group, { opacity: 0.4 + 0.6 * weight });
+            if (!reducedMotion) {
+              gsap.set(copies[groupIndex], { autoAlpha: weight });
+              Array.from(copies[groupIndex].children).forEach(
+                (item, itemIndex) => {
+                  const entry = gsap.utils.clamp(
+                    0,
+                    1,
+                    (progress[groupIndex] - itemIndex * 0.1) /
+                      (1 - itemIndex * 0.1),
+                  );
+                  gsap.set(item, {
+                    autoAlpha: entry,
+                    y: `${(1 - entry) * 1.5}rem`,
+                  });
+                },
+              );
+            }
+          });
+        };
+        const trigger = ScrollTrigger.create({
+          trigger: root,
+          start: "top bottom",
+          end: "bottom top",
+          onUpdate: () => syncActive(),
+          onRefresh: syncActive,
+        });
+        syncActive();
 
         return () => {
-          triggers.forEach((trigger) => trigger.kill());
-          gsap.set(copies, { clearProps: "opacity,visibility" });
+          cancelAnimationFrame(measureFrame);
+          resizeObserver.disconnect();
+          root.style.removeProperty("--cases-end-space");
+          trigger.kill();
+          gsap.set(copies, { clearProps: "opacity,visibility,transform" });
+          gsap.set(
+            copies.flatMap((copy) => Array.from(copy.children)),
+            { clearProps: "opacity,visibility,transform" },
+          );
+          gsap.set(groups, { clearProps: "opacity" });
         };
       });
     };
 
-    addCaseTriggers("(width >= 48.75rem)", "top center", true);
-    addCaseTriggers("(width < 48.75rem)", "top 70%", true);
+    addCaseTriggers(
+      "(width >= 64rem) and (prefers-reduced-motion: no-preference)",
+      0.5,
+    );
+    addCaseTriggers(
+      "(width >= 64rem) and (prefers-reduced-motion: reduce)",
+      0.5,
+    );
+    return () => {
+      media.revert();
+    };
   };
 
-  document.querySelectorAll<HTMLElement>("[data-cases]").forEach(initCases);
+  mountScrollScene("[data-cases]", initCases);
 </script>
 
 <style is:global>
@@ -297,6 +490,18 @@ const { render = true, class: className, ...rest } = Astro.props;
       color: var(--text-2);
     }
 
+    .cases_header {
+      display: none;
+    }
+
+    .cases_header .text {
+      color: var(--text-2);
+    }
+
+    .cases_cards {
+      --_gap-size: var(--space-72);
+    }
+
     .cases_indicator {
       display: flex;
       gap: var(--space-4);
@@ -323,66 +528,99 @@ const { render = true, class: className, ...rest } = Astro.props;
 
     .cases_groups {
       gap: calc(var(--space-72) + var(--space-48));
+      padding-bottom: var(--cases-end-space, 0);
     }
 
     .cases_group {
       gap: var(--space-48);
       opacity: 0.4;
-      transition: opacity 0.24s cubic-bezier(0.22, 1, 0.36, 1);
     }
 
     .cases_group.is-active {
       opacity: 1;
     }
 
-    @media (width >= 48.75rem) and (width < 64rem) {
-      .cases_layout {
-        --_column-count: 2;
-      }
-
-      .cases_layout > :first-child {
-        align-self: start;
-        position: sticky;
-        top: calc(var(--site-margin) + var(--nav-height));
+    @media (prefers-reduced-motion: reduce) {
+      .cases_group {
+        transition: none;
       }
     }
 
-    @media (width < 48.75rem) {
-      .cases_wrap {
-        padding-block: 0;
+    .cases_wrap {
+      @media (width < 64rem) {
+        & .cases_layout {
+          gap: 0;
+        }
+
+        & .cases_layout > :first-child {
+          display: none;
+        }
+
+        & .cases_groups {
+          gap: calc(var(--space-72) + var(--space-48));
+          padding-top: var(--space-48);
+          padding-bottom: 0;
+        }
+
+        & .cases_group {
+          gap: var(--space-40);
+          opacity: 1;
+          transition: none;
+        }
+
+        & .cases_header {
+          display: flex;
+          max-width: 40rem;
+        }
+
+        & .cases_header > :first-child {
+          gap: var(--space-24);
+          align-self: start;
+        }
+
+        & .cases_cards {
+          gap: var(--space-24);
+          grid-template-columns: none;
+          grid-auto-flow: column;
+          grid-auto-columns: 65%;
+          align-items: start;
+          overflow-x: auto;
+          overscroll-behavior-x: contain;
+          scroll-snap-type: x proximity;
+          scrollbar-width: thin;
+          scrollbar-color: var(--background-3) transparent;
+          padding-bottom: var(--space-16);
+        }
+
+        & .cases_cards:focus-visible {
+          outline: 0.125rem solid var(--text);
+          outline-offset: 0.25rem;
+        }
+
+        & .cases_cards > .card_wrap {
+          min-width: 0;
+          scroll-snap-align: start;
+        }
+
+        & .cases_cards:has(> :only-child) {
+          grid-auto-columns: 100%;
+          overflow-x: clip;
+          padding-bottom: 0;
+        }
+
+        & .cases_cards .card_wrap.case > .card_content {
+          padding: var(--space-24) 0 0;
+        }
       }
 
-      .cases_layout {
-        gap: 0;
-      }
+      @media (width < 48rem) {
+        & .cases_group {
+          gap: var(--space-32);
+        }
 
-      .cases_layout > :first-child {
-        position: sticky;
-        top: 0;
-        z-index: 2;
-        align-self: start;
-        min-height: 0;
-        background-color: var(--background);
-      }
-
-      .cases_panel {
-        min-height: 0;
-        width: 100%;
-        padding-top: calc(var(--nav-height) + var(--space-16));
-        padding-bottom: var(--space-36);
-      }
-
-      .cases_indicator {
-        display: none;
-      }
-
-      .cases_cards {
-        grid-template-columns: minmax(0, 1fr);
-      }
-
-      .cases_cards .card_wrap.case > .card_content {
-        padding-inline: 0;
-        padding-bottom: 0;
+        & .cases_cards {
+          grid-auto-columns: calc(100% - var(--space-48));
+        }
       }
     }
   }

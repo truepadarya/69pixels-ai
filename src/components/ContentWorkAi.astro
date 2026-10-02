@@ -7,7 +7,6 @@ import Paragraph from "@/components/Typography/Paragraph.astro";
 import ContentWrapper from "@/components/Wrapper/ContentWrapper.astro";
 import Grid from "@/components/Wrapper/Grid.astro";
 import workAi1 from "@/assets/graphics/work-ai_1.png";
-import workAi2 from "@/assets/graphics/work-ai_2.png";
 import experienceIlya from "@/assets/graphics/work-ai-experience/experience-ilya.png";
 import experienceVadim from "@/assets/graphics/work-ai-experience/experience-vadim.png";
 import experienceIlona from "@/assets/graphics/work-ai-experience/experience-ilona.png";
@@ -26,48 +25,92 @@ interface Props extends HTMLAttributes<"div"> {
 
 const { render = true, class: className, ...rest } = Astro.props;
 
-const cardText =
-  "Senior talent, custom tools and new workflows that give ambitious ideas more room to happen.";
-
 const cards = [
-  { heading: "Months become days", image: workAi2 },
-  { heading: "Experience sparks action", visual: "experience" },
-  { heading: "Build the tools", image: workAi1 },
+  {
+    heading: "Months become days",
+    text: "AI-powered workflows turn weeks into days, with human expertise leading the way.",
+    visual: "months",
+  },
+  {
+    heading: "Experience sparks action",
+    text: "Senior designers use AI as a creative partner to explore, refine and deliver better solutions.",
+    visual: "experience",
+  },
+  {
+    heading: "Build the tools",
+    text: "Custom AI tools remove repetitive work and help teams move from ideas to execution faster.",
+    image: workAi1,
+  },
 ];
 ---
 
 {
   render && (
     <div class:list={["work-ai_wrap", className]} {...rest}>
-      <ContentWrapper variant="auto-width" class="work-ai_intro">
-        <Heading id="work-ai-title" tag="h2" variant="h1">
-          Rebuilding
-          <br />
-          work around AI
-        </Heading>
-        <Heading slot="column2" tag="h3" variant="h5" maxWidth={24}>
-          Same creative fire.
-          <br />
-          Entirely new firepower.
-        </Heading>
-        <Paragraph
-          slot="column2"
-          variant="main"
-          maxWidth={36}
-          class="work-ai_intro-text"
+      <div class="work-ai_intro">
+        <Heading
+          id="work-ai-title"
+          tag="h2"
+          variant="h2"
+          class="work-ai_title section-heading-primary"
         >
-          {cardText}
-        </Paragraph>
-      </ContentWrapper>
+          Rebuilding work around AI
+        </Heading>
+      </div>
 
-      <Grid medium={2} large={3} class="gap-16">
+      <Grid
+        medium={2}
+        large={3}
+        class="gap-16"
+        data-reveal-group
+        data-reveal-stagger="main"
+      >
         {cards.map((card) => (
-          <div class="work-ai_card">
-            <div class="work-ai_card-zone">
-              {card.visual === "experience" ? (
+          <div class="work-ai_card" data-reveal>
+            <div
+              class:list={[
+                "work-ai_card-zone",
+                { months: card.visual === "months" },
+              ]}
+            >
+              {card.visual === "months" ? (
+                <div class="work-ai-months_wrap" aria-hidden="true">
+                  <div class="work-ai-months_layout">
+                    <div class="work-ai-months_days">
+                      days
+                      <span class="work-ai-months_handle top-left" />
+                      <span class="work-ai-months_handle top-right" />
+                      <span class="work-ai-months_handle bottom-left" />
+                      <span class="work-ai-months_handle bottom-right" />
+                      <svg
+                        class="work-ai-months_cursor"
+                        viewBox="0 0 18 24"
+                        fill="none"
+                      >
+                        <path
+                          d="M1 1L16 15L9 15L12 22L8 23L5 16L1 20V1Z"
+                          fill="black"
+                          stroke="white"
+                          stroke-width="1.2"
+                          stroke-linejoin="round"
+                        />
+                      </svg>
+                    </div>
+                    <div class="work-ai-months_months">months</div>
+                  </div>
+                </div>
+              ) : card.visual === "experience" ? (
                 <div class="experience-artboard" aria-hidden="true">
-                  <img class="experience-glow experience-glow-left" src={experienceGlowLeft.src} alt="" />
-                  <img class="experience-glow experience-glow-right" src={experienceGlowRight.src} alt="" />
+                  <img
+                    class="experience-glow experience-glow-left"
+                    src={experienceGlowLeft.src}
+                    alt=""
+                  />
+                  <img
+                    class="experience-glow experience-glow-right"
+                    src={experienceGlowRight.src}
+                    alt=""
+                  />
 
                   <div class="experience-tile experience-openai">
                     <img src={experienceOpenAi.src} alt="" />
@@ -108,7 +151,7 @@ const cards = [
               <Heading tag="h3" variant="h5">
                 {card.heading}
               </Heading>
-              <Paragraph variant="main">{cardText}</Paragraph>
+              <Paragraph variant="main">{card.text}</Paragraph>
             </div>
           </div>
         ))}
@@ -117,6 +160,7 @@ const cards = [
       <ContentWrapper
         centered
         class="work-ai_cta padding-top-64"
+        data-reveal
         column1Class="gap-16"
       >
         <Heading tag="h3" variant="h5" maxWidth={18}>
@@ -142,7 +186,20 @@ const cards = [
       width: 100%;
       display: flex;
       flex-direction: column;
-      gap: var(--space-80);
+    }
+
+    .work-ai_intro {
+      display: flex;
+      justify-content: center;
+      margin-bottom: var(--space-96);
+    }
+
+    .work-ai_title {
+      flex: none;
+    }
+
+    .work-ai_cta {
+      margin-top: var(--space-80);
     }
 
     .work-ai_card {
@@ -156,16 +213,12 @@ const cards = [
     .work-ai_card-content {
       display: flex;
       flex-direction: column;
-      gap: 1.25rem;
-      padding: 2.5rem;
+      gap: var(--space-20);
+      padding: var(--space-40);
 
       & > .text {
         color: var(--text-2);
       }
-    }
-
-    .work-ai_intro-text {
-      color: var(--text-2);
     }
 
     .work-ai_card-zone {
@@ -179,6 +232,91 @@ const cards = [
         height: 100%;
         object-fit: cover;
       }
+    }
+
+    .work-ai_card-zone.months {
+      background-color: var(--light-100);
+    }
+
+    .work-ai-months_wrap {
+      position: absolute;
+      inset: 0;
+      container-type: inline-size;
+      aspect-ratio: 17 / 11;
+    }
+
+    .work-ai-months_layout {
+      position: absolute;
+      top: 54%;
+      left: 50%;
+      translate: -50% -50%;
+      display: flex;
+      align-items: stretch;
+      width: 76cqw;
+      height: 13.2cqw;
+      font-size: 11.3cqw;
+      font-weight: 600;
+      line-height: 1;
+      letter-spacing: -0.06em;
+    }
+
+    .work-ai-months_days,
+    .work-ai-months_months {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding-bottom: 0.6cqw;
+    }
+
+    .work-ai-months_days {
+      position: relative;
+      z-index: 1;
+      width: 30cqw;
+      flex: none;
+      border: 0.4cqw solid #0066ff;
+      color: #000;
+    }
+
+    .work-ai-months_months {
+      flex: 1;
+      border: 0.4cqw dashed #c9cbd1;
+      border-left: 0;
+      color: #c9cbd1;
+    }
+
+    .work-ai-months_handle {
+      position: absolute;
+      width: 1.7cqw;
+      height: 1.7cqw;
+      background: var(--light-100);
+      border: 0.35cqw solid #0066ff;
+      translate: -50% -50%;
+
+      &.top-left {
+        top: 0;
+        left: 0;
+      }
+      &.top-right {
+        top: 0;
+        left: 100%;
+      }
+      &.bottom-left {
+        top: 100%;
+        left: 0;
+      }
+      &.bottom-right {
+        top: 100%;
+        left: 100%;
+      }
+    }
+
+    .work-ai-months_cursor {
+      position: absolute;
+      top: 100%;
+      left: 100%;
+      width: 3.65cqw;
+      height: 4.85cqw;
+      translate: 0.2cqw 0.2cqw;
     }
 
     .experience-artboard {
@@ -346,13 +484,6 @@ const cards = [
 
     .work-ai_cta .button_mark {
       rotate: 90deg;
-    }
-
-    @media (width < 64rem) {
-      .work-ai_wrap > .work-ai_intro {
-        row-gap: var(--space-96);
-        margin-bottom: var(--space-32);
-      }
     }
   }
 </style>

@@ -110,6 +110,7 @@ const photos = [
 <script>
   import { gsap } from "gsap";
   import { ScrollTrigger } from "gsap/ScrollTrigger";
+  import { mountScrollScene } from "@/utils/motion/scrollScene";
 
   gsap.registerPlugin(ScrollTrigger);
 
@@ -561,9 +562,7 @@ const photos = [
     return () => media.revert();
   };
 
-  document
-    .querySelectorAll<HTMLElement>("[data-creators-direction]")
-    .forEach(initCreatorsDirection);
+  mountScrollScene("[data-creators-direction]", initCreatorsDirection);
 </script>
 
 <style is:global>
@@ -619,12 +618,12 @@ const photos = [
       top: 0;
       left: 0;
       display: block;
-      width: 100cqw;
-      font-family: var(--h1-font-family);
-      font-size: 5.05cqw;
-      font-weight: var(--h1-font-weight);
-      line-height: 0.91;
-      letter-spacing: -0.045em;
+      width: min(88vw, 70rem);
+      font-family: var(--h2-font-family);
+      font-size: clamp(3rem, 5.1vw, 5rem);
+      font-weight: var(--h2-font-weight);
+      line-height: var(--h2-line-height);
+      letter-spacing: var(--h2-letter-spacing);
       text-align: center;
       text-wrap: nowrap;
       transform: translate(50cqw, 27cqw) translate(-50%, -50%);
@@ -714,7 +713,7 @@ const photos = [
 
       .creators-direction_phrase {
         width: calc(100cqw - var(--site-margin) * 2);
-        font-size: var(--h2);
+        font-size: clamp(2.75rem, 8.5vw, 4.75rem);
         line-height: var(--h2-line-height);
         letter-spacing: var(--h2-letter-spacing);
         text-wrap: balance;
@@ -783,6 +782,7 @@ const photos = [
       .creators-direction_phrase-creators {
         left: 50%;
         top: 27.7cqw;
+        opacity: 1;
         transform: translate(-50%, -50%);
       }
 

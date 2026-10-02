@@ -1,0 +1,76 @@
+[data-reveal][data-motion-ready] {
+  --_reveal-duration: var(--motion-duration-main);
+  --_reveal-delay: 0ms;
+  --_reveal-x: 0;
+  --_reveal-y: var(--reveal-distance-main);
+  --_reveal-scale: 1;
+  --_reveal-blur: 0.25rem;
+
+  opacity: 0;
+  translate: var(--_reveal-x) var(--_reveal-y);
+  scale: var(--_reveal-scale);
+  filter: blur(var(--_reveal-blur));
+}
+
+[data-reveal][data-motion-ready].is-revealed {
+  animation: reveal-in var(--_reveal-duration) var(--motion-ease-out) var(--_reveal-delay) both;
+}
+
+[data-reveal-variant="fade"] {
+  --_reveal-y: 0;
+  --_reveal-blur: 0;
+}
+
+[data-reveal-variant="fade-down"] {
+  --_reveal-y: calc(var(--reveal-distance-main) * -1);
+}
+
+[data-reveal-variant="scale"] {
+  --_reveal-y: 0;
+  --_reveal-scale: 0.96;
+}
+
+[data-reveal-variant="clip"] {
+  --_reveal-y: 0;
+  --_reveal-blur: 0;
+  clip-path: inset(0 0 100% 0);
+}
+
+[data-reveal-variant="clip"].is-revealed {
+  animation-name: reveal-clip-in;
+}
+
+[data-reveal-speed="fast"] {
+  --_reveal-duration: var(--motion-duration-fast);
+}
+
+[data-reveal-speed="slow"] {
+  --_reveal-duration: var(--motion-duration-slow);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-reveal][data-motion-ready] {
+    opacity: 1;
+    translate: none;
+    scale: 1;
+    filter: none;
+    clip-path: none;
+    animation: none;
+  }
+}
+
+@keyframes reveal-in {
+  to {
+    opacity: 1;
+    translate: 0 0;
+    scale: 1;
+    filter: blur(0);
+  }
+}
+
+@keyframes reveal-clip-in {
+  to {
+    opacity: 1;
+    clip-path: inset(0);
+  }
+}

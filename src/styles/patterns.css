@@ -7,6 +7,20 @@
   color: var(--brand-text);
 }
 
+.section-heading-primary {
+  width: min(88vw, 70rem);
+  max-width: none;
+  font-size: clamp(3rem, 5.1vw, 5rem);
+  text-align: center;
+}
+
+@media (width < 64rem) {
+  .section-heading-primary {
+    width: 100%;
+    font-size: clamp(2.75rem, 8.5vw, 4.75rem);
+  }
+}
+
 .section {
   padding-top: var(--section-space-medium);
   padding-bottom: var(--section-space-medium);

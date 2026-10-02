@@ -1,0 +1,76 @@
+---
+import Hero from "@/components/Hero.astro";
+import SectionCapabilities from "@/components/SectionCapabilities.astro";
+
+interface Props {
+  /** Set to `false` to skip rendering this component and its children. */
+  render?: boolean;
+}
+
+const { render = true } = Astro.props;
+---
+
+{
+  render && (
+    <div class="hero-capabilities_wrap">
+      <Hero />
+      <SectionCapabilities id="capabilities" />
+    </div>
+  )
+}
+
+<script>
+  import { gsap } from "gsap";
+  import { ScrollTrigger } from "gsap/ScrollTrigger";
+
+  gsap.registerPlugin(ScrollTrigger);
+
+  const roots = gsap.utils.toArray<HTMLElement>(".hero-capabilities_wrap");
+  const triggers = roots.flatMap((root) => {
+    const shade = root.querySelector<HTMLElement>(".hero_shade");
+    const capabilities = root.querySelector<HTMLElement>(".capabilities_wrap");
+    if (!shade || !capabilities) return [];
+
+    const setOpacity = gsap.quickSetter(shade, "opacity");
+    const trigger = ScrollTrigger.create({
+      trigger: capabilities,
+      start: "top bottom",
+      end: "top top",
+      invalidateOnRefresh: true,
+      onUpdate: ({ progress }) => setOpacity(progress),
+      onRefresh: ({ progress }) => setOpacity(progress),
+    });
+    setOpacity(trigger.progress);
+    return [trigger];
+  });
+
+  document.addEventListener(
+    "astro:before-swap",
+    () => triggers.forEach((trigger) => trigger.kill()),
+    { once: true },
+  );
+</script>
+
+<style is:global>
+  @layer components {
+    .hero-capabilities_wrap {
+      position: relative;
+      isolation: isolate;
+
+      & > .hero_wrap {
+        position: sticky;
+        top: 0;
+      }
+
+      & > .capabilities_wrap {
+        z-index: 1;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .hero-capabilities_wrap > .hero_wrap {
+        position: relative;
+      }
+    }
+  }
+</style>

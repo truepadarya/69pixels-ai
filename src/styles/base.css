@@ -1,13 +1,12 @@
 /* 1. Design tokens */
 :root {
-
   scroll-behavior: smooth;
 
   /* Swatches */
   --light-100: #ffffff;
   --dark-800: #121212;
   --dark-850: #0e0e0e;
-  --dark-900: #0c0c0c;
+  --dark-900: #080808;
   --brand-500: #fc3202;
 
   /* Global color roles */
@@ -34,7 +33,7 @@
 
   /* Line height */
   --line-height-small: 0.84;
-  --line-height-compact: 1;
+  --line-height-compact: 0.95;
   --line-height-medium: 1.15;
   --line-height-large: 1.4;
   --line-height-huge: 1.6;
@@ -45,13 +44,24 @@
   --focus-offset: 0.1827rem;
   --focus-offset-inner: calc(var(--focus-width) * -1);
 
+  /* Motion */
+  --motion-duration-fast: 180ms;
+  --motion-duration-main: 300ms;
+  --motion-duration-slow: 500ms;
+  --motion-ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --motion-ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+  --motion-stagger-fast: 60ms;
+  --motion-stagger-main: 120ms;
+  --reveal-distance-small: 0.5rem;
+  --reveal-distance-main: 1.5rem;
+
   /* Hover motion */
-  --hover-duration: 200ms;
-  --hover-ease: cubic-bezier(0.22, 1, 0.36, 1);
+  --hover-duration: var(--motion-duration-fast);
+  --hover-ease: var(--motion-ease-out);
 
   /* Opening motion */
-  --open-duration: var(--hover-duration);
-  --open-ease: var(--hover-ease);
+  --open-duration: var(--motion-duration-main);
+  --open-ease: var(--motion-ease-out);
 
   /* Radius */
   --radius-small: 0;
@@ -72,7 +82,7 @@
 
   /* Typography styles */
   --display: clamp(var(--display-min) / 16 * 1rem, ((var(--display-min) - ((var(--display-max) - var(--display-min)) / (var(--viewport-max) - var(--viewport-min)) * var(--viewport-min))) / 16 * 1rem + ((var(--display-max) - var(--display-min)) / (var(--viewport-max) - var(--viewport-min))) * 100vw), var(--display-max) / 16 * 1rem);
-  --display-min: 68;
+  --display-min: 66;
   --display-max: 120;
   --display-line-height: var(--line-height-small);
   --display-letter-spacing: var(--letter-spacing-tight);
@@ -128,7 +138,7 @@
   --h3-text-wrap: balance;
 
   --h4: clamp(var(--h4-min) / 16 * 1rem, ((var(--h4-min) - ((var(--h4-max) - var(--h4-min)) / (var(--viewport-max) - var(--viewport-min)) * var(--viewport-min))) / 16 * 1rem + ((var(--h4-max) - var(--h4-min)) / (var(--viewport-max) - var(--viewport-min))) * 100vw), var(--h4-max) / 16 * 1rem);
-  --h4-min: 28;
+  --h4-min: 26;
   --h4-max: 40;
   --h4-line-height: var(--line-height-medium);
   --h4-letter-spacing: var(--letter-spacing-small);

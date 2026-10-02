@@ -1,6 +1,7 @@
 ---
 import Heading from "@/components/Typography/Heading.astro";
 import Paragraph from "@/components/Typography/Paragraph.astro";
+import PointillistHero from "@/components/PointillistHero.astro";
 import Marquee from "@/components/Interactive/Marquee.astro";
 import Icon from "@/components/Media/Icon.astro";
 import Forbes from "@/assets/logo/forbes.svg";
@@ -21,11 +22,17 @@ const { render = true, class: className, ...rest } = Astro.props;
 {
   render && (
     <section class:list={["hero_wrap", className]} {...rest}>
-      <div class="hero_layout">
+      <PointillistHero />
+      <div
+        class="hero_layout"
+        data-reveal-group
+        data-reveal-stagger="main"
+        data-reveal-trigger="page-ready"
+      >
         <div class="hero_main">
           <div class="hero_main_layout">
             <div class="hero_primary">
-              <div class="hero_heading">
+              <div class="hero_heading" data-reveal>
                 <Heading tag="h1" variant="display">
                   Great taste.
                   <br />
@@ -35,26 +42,30 @@ const { render = true, class: className, ...rest } = Astro.props;
             </div>
             <div class="hero_secondary">
               <div class="hero_content">
-                <Paragraph variant="large">
-                  Brands, websites, digital products and creative production.
-                  Built by senior talent with AI in the workflow and craft in
-                  every detail.
-                </Paragraph>
-                <a class="hero_action" href="#capabilities">
-                  <Paragraph tag="span" variant="small">
-                    Less talk. More work.
+                <div class="hero_description" data-reveal>
+                  <Paragraph variant="large">
+                    Brands, websites, digital products and creative production.
+                    Built by senior talent with AI in the workflow and craft in
+                    every detail.
                   </Paragraph>
-                  <Icon
-                    src={arrowFull}
-                    variant="small"
-                    class="hero_action_icon"
-                  />
-                </a>
+                </div>
+                <div class="hero_action_wrap" data-reveal>
+                  <a class="hero_action" href="#capabilities">
+                    <Paragraph tag="span" variant="small">
+                      Less talk. More work.
+                    </Paragraph>
+                    <Icon
+                      src={arrowFull}
+                      variant="small"
+                      class="hero_action_icon"
+                    />
+                  </a>
+                </div>
               </div>
             </div>
           </div>
         </div>
-        <div class="hero_bottom">
+        <div class="hero_bottom" data-reveal>
           <Marquee class="hero_marquee" label="Awards" showToggle={false}>
             <div class="hero_logo">
               <Forbes aria-label="Forbes" />
@@ -87,6 +98,7 @@ const { render = true, class: className, ...rest } = Astro.props;
           </Marquee>
         </div>
       </div>
+      <div class="hero_shade" aria-hidden="true" />
     </section>
   )
 }
@@ -95,14 +107,34 @@ const { render = true, class: className, ...rest } = Astro.props;
   @layer components {
     .hero_wrap {
       height: 100svh;
+      position: relative;
+      isolation: isolate;
+      overflow: hidden;
     }
 
     .hero_layout {
+      position: relative;
+      z-index: 2;
       height: 100%;
       display: flex;
       flex-direction: column;
       gap: var(--space-12);
       padding: var(--site-margin);
+    }
+
+    .hero_layout [data-reveal][data-motion-ready] {
+      --_reveal-duration: calc(var(--motion-duration-slow) * 1.4);
+      --_reveal-y: var(--reveal-distance-small);
+      --_reveal-blur: 0.125rem;
+    }
+
+    .hero_shade {
+      position: absolute;
+      inset: 0;
+      z-index: 3;
+      background: #000;
+      opacity: 0;
+      pointer-events: none;
     }
 
     .hero_marquee {
@@ -162,7 +194,7 @@ const { render = true, class: className, ...rest } = Astro.props;
       width: 100%;
       display: flex;
       align-items: stretch;
-      gap: var(--space-12);
+      gap: var(--space-24);
     }
 
     .hero_primary,
@@ -176,6 +208,8 @@ const { render = true, class: className, ...rest } = Astro.props;
     }
 
     .hero_heading {
+      width: 100%;
+      min-width: 0;
       align-self: center;
     }
 
@@ -190,10 +224,10 @@ const { render = true, class: className, ...rest } = Astro.props;
       display: flex;
       flex-direction: column;
       justify-content: space-between;
+    }
 
-      & > .text {
-        opacity: 0.35;
-      }
+    .hero_description > .text {
+      opacity: 0.35;
     }
 
     .hero_action {
@@ -204,7 +238,7 @@ const { render = true, class: className, ...rest } = Astro.props;
       border-top: var(--border-width) solid
         color-mix(in srgb, currentcolor 10%, transparent);
       opacity: 0.8;
-      transition: opacity 180ms cubic-bezier(0.22, 1, 0.36, 1);
+      transition: opacity var(--hover-duration) var(--hover-ease);
 
       & .text {
         text-transform: uppercase;
@@ -221,7 +255,7 @@ const { render = true, class: className, ...rest } = Astro.props;
 
     .hero_action_icon {
       rotate: 90deg;
-      transition: translate 180ms cubic-bezier(0.22, 1, 0.36, 1);
+      transition: translate var(--hover-duration) var(--hover-ease);
     }
 
     @media (width < 64rem) {
@@ -251,9 +285,24 @@ const { render = true, class: className, ...rest } = Astro.props;
       }
 
       .hero_content {
-        width: 94%;
-        max-width: 31.25rem;
+        width: 100%;
+        max-width: 32rem;
         gap: var(--space-80);
+      }
+    }
+
+    @media (width < 48rem) {
+      .hero_wrap {
+        --hero-main-offset: 1rem;
+        --hero-marquee-bottom-space: 1.5rem;
+      }
+
+      .hero_main_layout {
+        translate: 0 var(--hero-main-offset);
+      }
+
+      .hero_bottom {
+        margin-bottom: var(--hero-marquee-bottom-space);
       }
     }
 

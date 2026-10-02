@@ -2,11 +2,11 @@
 import { clickToSource } from "astro-click-to-source";
 import { defineConfig, fontProviders } from "astro/config";
 import sitemap from "@astrojs/sitemap";
+import { SITE_URL } from "./src/consts.ts";
 import { isNoindexRoute } from "./src/utils/seo.ts";
 
 export default defineConfig({
-  site: "https://truepadarya.github.io",
-  base: "/69pixels-ai",
+  site: SITE_URL,
   integrations: [
     sitemap({
       filter: (page) => !isNoindexRoute(new URL(page).pathname),
@@ -43,6 +43,6 @@ export default defineConfig({
   ],
   vite: {
     build: { cssTarget: "safari15.4" },
-    server: { watch: { ignored: ["**/screen-instructions/**"] } },
+    server: { watch: { ignored: ["**/screen-instructions/**", "**/.tmp-*/**"] } },
   },
 });

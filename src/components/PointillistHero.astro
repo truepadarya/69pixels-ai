@@ -1,0 +1,70 @@
+<div class="pointillist-composition" aria-hidden="true">
+  <img
+    class="pointillist-background"
+    src="/pointillist/background.png"
+    alt=""
+    width="2048"
+    height="1231"
+  />
+  <picture>
+    <source
+      media="(max-width: 767px)"
+      srcset="/pointillist/silhouette-mobile.svg"
+    />
+    <img
+      class="pointillist-original"
+      src="/pointillist/silhouette.svg"
+      alt=""
+      width="2048"
+      height="1231"
+    />
+  </picture>
+</div>
+<script is:inline src="/pointillist/turn.js" defer></script>
+
+<style is:global>
+  .pointillist-composition {
+    position: absolute;
+    inset: 0;
+    isolation: isolate;
+    overflow: hidden;
+    background: #292929;
+  }
+  .pointillist-composition::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    background: rgb(0 0 0 / 10%);
+    pointer-events: none;
+  }
+  .pointillist-composition img,
+  .pointillist-composition canvas {
+    position: absolute;
+    inset: 0;
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center top;
+    user-select: none;
+    pointer-events: none;
+  }
+  .pointillist-original,
+  .pointillist-composition .composition__light {
+    z-index: 1;
+    image-rendering: pixelated;
+  }
+  @media (max-width: 767px) {
+    .pointillist-composition {
+      --hero-face-scale: 1.15;
+      --hero-face-y: -10%;
+    }
+
+    .pointillist-original,
+    .pointillist-composition .composition__light {
+      transform: translateY(var(--hero-face-y)) scale(var(--hero-face-scale));
+      transform-origin: center top;
+    }
+  }
+</style>

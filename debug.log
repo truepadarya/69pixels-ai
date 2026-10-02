@@ -9,3 +9,6 @@
 [0925/153756.918:ERROR:third_party\crashpad\crashpad\util\win\registration_protocol_win.cc:108] CreateFile: Odmowa dostępu. (0x5)
 [0925/153757.817:ERROR:third_party\crashpad\crashpad\util\win\registration_protocol_win.cc:108] CreateFile: Odmowa dostępu. (0x5)
 [0925/153758.053:ERROR:third_party\crashpad\crashpad\util\win\registration_protocol_win.cc:108] CreateFile: Odmowa dostępu. (0x5)
+[1002/122830.347:ERROR:third_party\crashpad\crashpad\util\win\registration_protocol_win.cc:108] CreateFile: Odmowa dostępu. (0x5)
+[1002/122831.853:ERROR:third_party\crashpad\crashpad\util\win\registration_protocol_win.cc:108] CreateFile: Odmowa dostępu. (0x5)
+[1002/143418.154:ERROR:third_party\crashpad\crashpad\util\win\registration_protocol_win.cc:108] CreateFile: Odmowa dostępu. (0x5)

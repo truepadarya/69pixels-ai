@@ -1,6 +1,6 @@
 ---
 import type { HTMLAttributes } from "astro/types";
-import Card from "@/components/Item/Card.astro";
+import CardPricing from "@/components/Item/CardPricing.astro";
 import Heading from "@/components/Typography/Heading.astro";
 import Grid from "@/components/Wrapper/Grid.astro";
 
@@ -13,46 +13,86 @@ const { render = true, class: className, ...rest } = Astro.props;
 
 const cards = [
   {
-    heading: "Fixed project",
+    label: "Fixed project",
+    heading: "For launches, redesigns and projects with a clear finish line.",
     text: "A defined scope, an agreed timeline and a fixed fee. We take ownership of delivery from kickoff to handoff.",
-    footer: "For launches, redesigns and projects with a clear finish line.",
   },
   {
-    heading: "Dedicated subscription",
+    label: "Dedicated subscription",
+    heading: "For ongoing work. Scale the team as your needs grow.",
     text: "An embedded team with design, art direction and project management. We learn your product and move through priorities together.",
-    footer: "For ongoing work. Scale the team as your needs grow.",
   },
   {
-    heading: "Custom partnership",
-    text: "A setup shaped around your business: multiple workstreams, specialist expertise or a blend of project work and support.",
-    footer: "Team, responsibilities and commercial terms agreed together.",
+    label: "Custom partnership",
+    heading: "We agree on the team, responsibilities and commercial terms together.",
+    text: "A setup shaped around your business. Multiple workstreams, specialist expertise or a blend of project work and ongoing support.",
   },
 ];
 ---
 
 {
   render && (
-    <div class:list={["work-setup_wrap", className]} {...rest}>
-      <Heading id="work-setup-title" tag="h2" variant="h3" maxWidth={18}>
+    <div
+      class:list={["work-setup_wrap", className]}
+      data-work-setup
+      {...rest}
+    >
+      <Heading
+        id="work-setup-title"
+        tag="h2"
+        variant="h2"
+        class="section-heading-primary work-setup_heading"
+      >
         Your ambition.
         <br />
         The right setup.
       </Heading>
 
-      <Grid medium={2} large={3} class="gap-16">
+      <Grid class="work-setup_layout">
         {cards.map((card) => (
-          <Card
+          <CardPricing
             class="work-setup_card"
-            variant="service"
+            variant="setup"
+            label={card.label}
             heading={card.heading}
             text={card.text}
-            footer={card.footer}
           />
         ))}
       </Grid>
     </div>
   )
 }
+
+<script>
+  import { gsap } from "gsap";
+  import { ScrollTrigger } from "gsap/ScrollTrigger";
+  import { mountScrollScene } from "@/utils/motion/scrollScene";
+
+  gsap.registerPlugin(ScrollTrigger);
+
+  mountScrollScene("[data-work-setup]", (root) => {
+    const media = gsap.matchMedia();
+    media.add("(prefers-reduced-motion: no-preference)", () => {
+      const items = root.querySelectorAll<HTMLElement>(
+        ".work-setup_heading, .work-setup_card",
+      );
+      const timeline = gsap.timeline({
+        defaults: { ease: "none" },
+        scrollTrigger: {
+          trigger: root,
+          start: "top 80%",
+          end: "bottom 85%",
+          scrub: true,
+          invalidateOnRefresh: true,
+        },
+      });
+
+      gsap.set(items, { autoAlpha: 0, y: "var(--reveal-distance-main)" });
+      timeline.to(items, { autoAlpha: 1, y: 0, duration: 1, stagger: 1 });
+    });
+    return () => media.revert();
+  });
+</script>
 
 <style is:global>
   @layer components {
@@ -64,14 +104,26 @@ const cards = [
       gap: var(--space-88);
     }
 
-    .work-setup_card.card_wrap.service {
-      min-height: 22rem;
+    .work-setup_layout.grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      align-items: start;
+      gap: var(--space-16);
+
+      @media (width < 64rem) {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+
+        > :last-child:nth-child(odd) {
+          grid-column: 1 / -1;
+        }
+      }
+
+      @media (width < 48rem) {
+        grid-template-columns: 1fr;
+      }
     }
 
-    .work-setup_card .card_footer .paragraph {
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
+    .work-setup_heading {
+      align-self: center;
     }
 
   }

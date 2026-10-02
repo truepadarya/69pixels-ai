@@ -36,11 +36,23 @@ const services = [
 
 {
   render && (
-    <div class:list={["services-overview_wrap", className]} {...rest}>
-      <Heading id="services-overview-title" tag="h2" variant="h3" maxWidth={18}>
-        Big-picture thinking.
-        <br />
-        Full-scale execution.
+    <div
+      class:list={["services-overview_wrap", className]}
+      data-services-overview
+      {...rest}
+    >
+      <Heading
+        id="services-overview-title"
+        tag="h2"
+        variant="h2"
+        class="section-heading-primary services-overview_heading"
+      >
+        <span class="services-overview_heading-line">
+          Big-picture thinking.
+        </span>
+        <span class="services-overview_heading-line">
+          Full-scale execution.
+        </span>
       </Heading>
 
       <div class="services-overview_list">
@@ -59,6 +71,37 @@ const services = [
   )
 }
 
+<script>
+  import { gsap } from "gsap";
+  import { ScrollTrigger } from "gsap/ScrollTrigger";
+  import { mountScrollScene } from "@/utils/motion/scrollScene";
+
+  gsap.registerPlugin(ScrollTrigger);
+
+  mountScrollScene("[data-services-overview]", (root) => {
+    const media = gsap.matchMedia();
+    media.add("(prefers-reduced-motion: no-preference)", () => {
+      const items = root.querySelectorAll<HTMLElement>(
+        ".services-overview_heading, .services-overview_item",
+      );
+      const timeline = gsap.timeline({
+        defaults: { ease: "none" },
+        scrollTrigger: {
+          trigger: root,
+          start: "top 80%",
+          end: "bottom 85%",
+          scrub: true,
+          invalidateOnRefresh: true,
+        },
+      });
+
+      gsap.set(items, { autoAlpha: 0, y: "var(--reveal-distance-main)" });
+      timeline.to(items, { autoAlpha: 1, y: 0, duration: 1, stagger: 1 });
+    });
+    return () => media.revert();
+  });
+</script>
+
 <style is:global>
   @layer components {
     .services-overview_wrap {
@@ -70,6 +113,14 @@ const services = [
 
     .services-overview_list {
       width: 100%;
+    }
+
+    .services-overview_heading {
+      align-self: center;
+    }
+
+    .services-overview_heading-line {
+      display: block;
     }
 
     .services-overview_item {

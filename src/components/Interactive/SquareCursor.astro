@@ -1,4 +1,13 @@
-<div class="square-cursor_layer" data-square-cursor-layer aria-hidden="true">
+<div
+  class="square-cursor_layer square-cursor_layer--default"
+  data-square-cursor-layer
+  aria-hidden="true"
+>
+  <span class="square-cursor_pointer" data-square-cursor-pointer>
+    <span class="square-cursor_shape"></span>
+  </span>
+</div>
+<div class="square-cursor_layer square-cursor_layer--brand" aria-hidden="true">
   <span class="square-cursor_pointer" data-square-cursor-pointer>
     <span class="square-cursor_shape"></span>
   </span>
@@ -10,14 +19,14 @@
     const layer = document.querySelector<HTMLElement>(
       "[data-square-cursor-layer]",
     );
-    const pointer = layer?.querySelector<HTMLElement>(
+    const pointers = document.querySelectorAll<HTMLElement>(
       "[data-square-cursor-pointer]",
     );
     const canUseEffect = window.matchMedia(
       "(hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference)",
     ).matches;
 
-    if (!layer || !pointer || !canUseEffect) return;
+    if (!layer || !pointers.length || !canUseEffect) return;
 
     root.classList.add("has-square-cursor");
 
@@ -30,56 +39,30 @@
       "summary",
       '[role="button"]',
       '[role="link"]',
-      '[tabindex]:not([tabindex="-1"])',
     ].join(",");
 
-    const setTheme = (target: EventTarget | null) => {
-      if (!(target instanceof Element)) return;
-
-      const cursorTheme = target.closest<HTMLElement>("[data-cursor-theme]")
-        ?.dataset.cursorTheme;
-
-      if (cursorTheme) {
-        pointer.classList.toggle("on-dark", cursorTheme === "dark");
-        return;
-      }
-
-      const theme = target.closest<HTMLElement>(
-        ".theme-dark, .theme-light, .theme-invert",
-      );
-      let darkBackground = theme?.classList.contains("theme-dark") ?? false;
-
-      if (theme?.classList.contains("theme-invert")) {
-        const parentTheme = theme.parentElement?.closest<HTMLElement>(
-          ".theme-dark, .theme-light",
-        );
-        darkBackground = parentTheme?.classList.contains("theme-light") ?? true;
-      }
-
-      pointer.classList.toggle("on-dark", darkBackground);
-    };
-
     const handleMove = (event: PointerEvent) => {
-      pointer.style.transform = `translate3d(${event.clientX}px, ${event.clientY}px, 0)`;
-      setTheme(event.target);
-      pointer.classList.toggle(
-        "is-interactive",
+      const isInteractive =
         event.target instanceof Element &&
-          Boolean(event.target.closest(interactiveSelector)),
-      );
-      pointer.classList.add("is-visible");
+        Boolean(event.target.closest(interactiveSelector));
+
+      pointers.forEach((pointer) => {
+        pointer.style.transform = `translate3d(${event.clientX}px, ${event.clientY}px, 0)`;
+        pointer.classList.toggle("is-interactive", isInteractive);
+        pointer.classList.add("is-visible");
+      });
     };
 
     const handleWindowExit = (event: MouseEvent) => {
       if (event.relatedTarget) return;
-      pointer.classList.remove("is-visible");
+      pointers.forEach((pointer) => pointer.classList.remove("is-visible"));
     };
 
     document.addEventListener("pointermove", handleMove, { passive: true });
     window.addEventListener("mouseout", handleWindowExit);
-    window.addEventListener("blur", () =>
-      pointer.classList.remove("is-visible"),
-    );
+    window.addEventListener("blur", () => {
+      pointers.forEach((pointer) => pointer.classList.remove("is-visible"));
+    });
   };
 
   initSquareCursor();
@@ -89,10 +72,14 @@
   @layer components {
     .square-cursor_layer {
       position: fixed;
-      z-index: 2147483646;
+      z-index: 2147483647;
       inset: 0;
       overflow: hidden;
       pointer-events: none;
+    }
+
+    .square-cursor_layer--default {
+      mix-blend-mode: difference;
     }
 
     .square-cursor_pointer {
@@ -103,27 +90,44 @@
       width: var(--space-16);
       height: var(--space-16);
       opacity: 0;
-      color: var(--dark-900);
       transition: opacity 120ms cubic-bezier(0.16, 1, 0.3, 1);
       will-change: transform, opacity;
     }
 
-    .square-cursor_pointer.on-dark {
-      color: var(--light-100);
-    }
-
     .square-cursor_shape {
+      position: absolute;
+      inset: 0;
       width: 100%;
       height: 100%;
       display: block;
-      background-color: currentcolor;
+      opacity: 1;
       transform: scale(1);
       transform-origin: top left;
-      transition: transform 180ms cubic-bezier(0.22, 1, 0.36, 1);
-      will-change: transform;
+      transition:
+        transform 180ms cubic-bezier(0.22, 1, 0.36, 1),
+        opacity 140ms cubic-bezier(0.22, 1, 0.36, 1);
+      will-change: transform, opacity;
     }
 
-    .square-cursor_pointer.is-visible {
+    .square-cursor_layer--default .square-cursor_shape {
+      background-color: var(--light-100);
+    }
+
+    .square-cursor_layer--brand .square-cursor_shape {
+      background-color: var(--brand-500);
+    }
+
+    .square-cursor_layer--default .square-cursor_pointer.is-visible {
+      opacity: 1;
+    }
+
+    .square-cursor_layer--default
+      .square-cursor_pointer.is-visible.is-interactive {
+      opacity: 0;
+    }
+
+    .square-cursor_layer--brand
+      .square-cursor_pointer.is-visible.is-interactive {
       opacity: 1;
     }
 
