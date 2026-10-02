@@ -1,7 +1,11 @@
+---
+const pointillistPath = `${import.meta.env.BASE_URL.replace(/\/$/, "")}/pointillist`;
+---
+
 <div class="pointillist-composition" aria-hidden="true">
   <img
     class="pointillist-background"
-    src="/pointillist/background.png"
+    src={`${pointillistPath}/background.png`}
     alt=""
     width="2048"
     height="1231"
@@ -9,18 +13,18 @@
   <picture>
     <source
       media="(max-width: 767px)"
-      srcset="/pointillist/silhouette-mobile.svg"
+      srcset={`${pointillistPath}/silhouette-mobile.svg`}
     />
     <img
       class="pointillist-original"
-      src="/pointillist/silhouette.svg"
+      src={`${pointillistPath}/silhouette.svg`}
       alt=""
       width="2048"
       height="1231"
     />
   </picture>
 </div>
-<script is:inline src="/pointillist/turn.js" defer></script>
+<script is:inline src={`${pointillistPath}/turn.js`} defer></script>
 
 <style is:global>
   .pointillist-composition {
@@ -30,6 +34,7 @@
     overflow: hidden;
     background: #292929;
   }
+
   .pointillist-composition::after {
     content: "";
     position: absolute;
@@ -38,6 +43,7 @@
     background: rgb(0 0 0 / 10%);
     pointer-events: none;
   }
+
   .pointillist-composition img,
   .pointillist-composition canvas {
     position: absolute;
@@ -50,11 +56,13 @@
     user-select: none;
     pointer-events: none;
   }
+
   .pointillist-original,
   .pointillist-composition .composition__light {
     z-index: 1;
     image-rendering: pixelated;
   }
+
   @media (max-width: 767px) {
     .pointillist-composition {
       --hero-face-scale: 1.15;
