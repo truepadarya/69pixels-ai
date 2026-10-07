@@ -56,9 +56,8 @@ const cards = [
           variant="large"
           class="section-heading-support work-setup_lead"
         >
-          Tell us where the project stands.
-          <br />
-          We'll agree on the scope, team and terms before work begins.
+          Tell us where the project stands. We'll agree on the scope, team and
+          terms before work begins.
         </Paragraph>
       </ContentWrapper>
 
@@ -151,6 +150,9 @@ const cards = [
     }
     .work-setup_intro.layout > :first-child {
       gap: var(--space-32);
+    }
+    .work-setup_lead {
+      max-width: 100%;
     }
     .work-setup_wrap {
       @media (width < 48rem) {
