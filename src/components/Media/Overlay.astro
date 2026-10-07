@@ -43,31 +43,33 @@ const {
 <style is:global>
   @layer components {
     .overlay {
+      --_background: color-mix(
+        in srgb,
+        var(--overlay-color) calc(var(--_strength, 50) / 100 * 80%),
+        transparent
+      );
+      --_gradient-background: color-mix(
+        in srgb,
+        var(--overlay-color) calc(var(--_strength, 50) / 100 * 60%),
+        transparent
+      );
+      --_gradient-end: color-mix(
+        in srgb,
+        var(--overlay-color) calc(var(--_strength, 50) / 100 * 62%),
+        transparent
+      );
       position: absolute;
       inset: 0;
       width: 100%;
       height: 100%;
-      background-color: color-mix(
-        in srgb,
-        black calc(var(--_strength, 50) / 100 * 80%),
-        transparent
-      );
+      background-color: var(--_background);
 
       &.gradient {
-        background-color: color-mix(
-          in srgb,
-          black calc(var(--_strength, 50) / 100 * 60%),
-          transparent
-        );
+        background-color: var(--_gradient-background);
         background-image: linear-gradient(
           to bottom,
           transparent,
-          color-mix(
-              in srgb,
-              black calc(var(--_strength, 50) / 100 * 62%),
-              transparent
-            )
-            84%
+          var(--_gradient-end) 84%
         );
       }
     }

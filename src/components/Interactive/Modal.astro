@@ -135,8 +135,8 @@ if (import.meta.env.DEV && render && content && !id) {
       --_leaving: calc(var(--open-duration) * 0.7);
       --_from: 0 2rem;
       --_body: 0 0;
-      --_backdrop: color-mix(in lab, black 60%, transparent);
-      --_close: calc(2.75em + var(--space-4) * 2);
+      --_backdrop: color-mix(in lab, var(--overlay-color) 60%, transparent);
+      --_close: calc(2.75em + var(--space-24) * 2);
       width: 100%;
       max-width: none;
       height: 100%;
@@ -249,8 +249,8 @@ if (import.meta.env.DEV && render && content && !id) {
 
     .modal_close {
       position: absolute;
-      top: var(--space-4);
-      inset-inline-end: var(--space-4);
+      top: var(--space-24);
+      inset-inline-end: var(--space-24);
       z-index: 1;
     }
 
@@ -266,7 +266,7 @@ if (import.meta.env.DEV && render && content && !id) {
     }
 
     .modal_body {
-      padding: var(--_close) var(--space-6) var(--space-7);
+      padding: var(--_close) var(--space-40) var(--space-48);
       translate: var(--_body);
       transition: translate var(--_leaving) var(--open-ease);
 

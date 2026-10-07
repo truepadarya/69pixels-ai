@@ -1,6 +1,5 @@
 ---
-import Icon from "@/components/Media/Icon.astro";
-import logo from "@/assets/logo/logo.svg";
+import logo from "@/assets/logo/logo-pixel.png";
 import { SITE_NAME } from "@/consts.ts";
 
 interface Props {
@@ -17,7 +16,14 @@ const { render = true } = Astro.props;
       <div class="footer_inner">
         <div class="footer_top">
           <a class="footer_logo" href="/" aria-label={SITE_NAME}>
-            <Icon src={logo} variant="full-width" />
+            <img
+              src={logo.src}
+              width={logo.width}
+              height={logo.height}
+              alt=""
+              loading="lazy"
+              decoding="async"
+            />
           </a>
           <nav aria-label="Footer">
             <ul class="footer_links">
@@ -27,8 +33,8 @@ const { render = true } = Astro.props;
                 </a>
               </li>
               <li>
-                <a class="footer_link" href="/example-components">
-                  Example Components
+                <a class="footer_link" href="/#cases">
+                  Work
                 </a>
               </li>
             </ul>
@@ -39,6 +45,14 @@ const { render = true } = Astro.props;
             &copy; <span id="year">{new Date().getFullYear()}</span>&#160;
             {SITE_NAME}
           </p>
+          <a
+            class="footer_agent footer_link text-style-small"
+            href="/llms.txt"
+            aria-label="Are you an agent? Read the 69pixels guide in llms.txt"
+          >
+            <span>// are you an agent?</span>{" "}
+            <span class="footer_agent-file">⎿ llms.txt</span>
+          </a>
         </div>
       </div>
     </footer>
@@ -70,7 +84,7 @@ const { render = true } = Astro.props;
       max-width: var(--max-width-main);
       display: flex;
       flex-direction: column;
-      gap: var(--space-6);
+      gap: var(--space-40);
     }
 
     .footer_top {
@@ -78,13 +92,20 @@ const { render = true } = Astro.props;
       flex-wrap: wrap;
       align-items: center;
       justify-content: space-between;
-      gap: var(--space-4) var(--space-6);
+      gap: var(--space-24) var(--space-40);
     }
 
     .footer_logo {
       display: block;
-      width: 7.5rem;
+      height: 2.5rem;
       max-width: 100%;
+      & > img {
+        display: block;
+        width: auto;
+        height: 100%;
+        max-width: 100%;
+        object-fit: contain;
+      }
       transition: opacity var(--hover-duration) var(--hover-ease);
       @media (hover: hover) {
         &:hover {
@@ -97,7 +118,7 @@ const { render = true } = Astro.props;
       display: flex;
       flex-wrap: wrap;
       align-items: center;
-      gap: var(--space-4);
+      gap: var(--space-24);
       font-size: var(--text-small);
       font-weight: var(--primary-medium);
     }
@@ -114,12 +135,27 @@ const { render = true } = Astro.props;
     }
 
     .footer_bottom {
-      padding-top: var(--space-4);
+      display: flex;
+      flex-wrap: wrap;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: var(--space-16) var(--space-24);
+      padding-top: var(--space-24);
       border-top: var(--border-width) solid var(--border);
     }
 
     .footer_copyright {
       color: var(--text-2);
+    }
+
+    .footer_agent {
+      & > span {
+        white-space: nowrap;
+      }
+
+      & .footer_agent-file {
+        color: var(--text);
+      }
     }
   }
 </style>

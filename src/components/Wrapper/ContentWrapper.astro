@@ -174,7 +174,7 @@ const column2 = await slotContent(Astro.slots, "column2");
       display: flex;
       flex-direction: column;
       column-gap: var(--site-gutter);
-      row-gap: var(--space-8);
+      row-gap: var(--space-64);
       align-items: stretch;
       grid-template-columns: repeat(var(--_column-count), minmax(0, 1fr));
 
@@ -182,6 +182,7 @@ const column2 = await slotContent(Astro.slots, "column2");
       & > * {
         display: flex;
         flex-direction: column;
+        gap: var(--space-24);
         align-items: var(--_alignment, start);
         text-align: var(--_alignment, start);
         width: 100%;
@@ -214,7 +215,7 @@ const column2 = await slotContent(Astro.slots, "column2");
         flex-wrap: wrap;
         justify-content: space-between;
         align-items: end;
-        row-gap: var(--space-6);
+        row-gap: var(--space-40);
         & > * {
           width: auto;
           align-self: unset;
@@ -309,7 +310,7 @@ const column2 = await slotContent(Astro.slots, "column2");
         position: relative;
         overflow: clip;
         & > :first-child {
-          padding: var(--space-6);
+          padding: var(--space-40);
         }
         & > :last-child {
           border-radius: 0;
@@ -330,11 +331,11 @@ const column2 = await slotContent(Astro.slots, "column2");
         min-height: 26rem;
         justify-content: center;
         & > :first-child {
-          padding: var(--space-6);
+          padding: var(--space-40);
         }
         & > :first-child {
           padding-block: var(--section-space-medium);
-          padding-inline: var(--space-5);
+          padding-inline: var(--space-32);
           position: relative;
           z-index: 1;
           --_alignment: center;

@@ -303,7 +303,7 @@ const slides = await slotContent(Astro.slots);
       --_visible-md: var(--_visible-sm);
       --_visible-lg: var(--_visible-md);
       display: grid;
-      gap: var(--space-6);
+      gap: var(--space-40);
       width: 100%;
 
       @media (width >= 30rem) {
@@ -375,7 +375,7 @@ const slides = await slotContent(Astro.slots);
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: var(--space-4);
+      gap: var(--space-24);
 
       .slider_wrap:not(.is-ready) &,
       &.is-empty {
@@ -386,7 +386,7 @@ const slides = await slotContent(Astro.slots);
     .slider_markers {
       display: flex;
       align-items: center;
-      gap: var(--space-2);
+      gap: var(--space-12);
     }
 
     .slider_marker {
@@ -410,7 +410,7 @@ const slides = await slotContent(Astro.slots);
 
     .slider_steps {
       display: flex;
-      gap: var(--space-2);
+      gap: var(--space-12);
     }
   }
 </style>

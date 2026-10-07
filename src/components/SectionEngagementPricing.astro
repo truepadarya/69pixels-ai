@@ -1,0 +1,427 @@
+---
+import Heading from "@/components/Typography/Heading.astro";
+import CardPricing from "@/components/Item/CardPricing.astro";
+
+interface Props {
+  /** Set to `false` to skip rendering this component and its children. */
+  render?: boolean;
+}
+
+const { render = true } = Astro.props;
+
+const plans = [
+  {
+    label: "Fixed project",
+    title: "Quoted by scope",
+    description:
+      "Deliverables, milestones, revisions and price are agreed before the work begins.",
+    subject: "Fixed project enquiry",
+  },
+  {
+    label: "Core subscription",
+    title: "€6,900",
+    suffix: "/ month",
+    isPrice: true,
+    description:
+      "One dedicated designer, with art direction and project management included.",
+    subject: "Design subscription enquiry",
+  },
+  {
+    label: "Custom partnership",
+    title: "Tailored pricing",
+    description:
+      "Additional specialists, more capacity or parallel workstreams, shaped around your priorities.",
+    subject: "Custom partnership enquiry",
+  },
+];
+---
+
+{
+  render && (
+    <div class="engagement-pricing-transition_wrap" data-engagement-pricing>
+      <div class="engagement-pricing-stage_wrap" data-engagement-pricing-stage>
+        <div class="engagement-pricing_stage">
+          <span
+            class="engagement-pricing_square"
+            aria-hidden="true"
+            data-engagement-pricing-square
+          />
+        </div>
+      </div>
+
+      <section
+        class="engagement-pricing_wrap theme-dark"
+        aria-label="Engagement pricing"
+      >
+        <div class="container engagement-pricing_content gap-88">
+          <Heading
+            tag="h2"
+            variant="h2"
+            class="engagement-pricing_heading section-heading-primary"
+          >
+            How we work together.
+          </Heading>
+
+          <div class="engagement-pricing_grid">
+            {plans.map((plan) => (
+              <CardPricing
+                label={plan.label}
+                heading={plan.title}
+                suffix={plan.suffix}
+                price={plan.isPrice}
+                text={plan.description}
+                href={`mailto:hello@69pixels.com?subject=${encodeURIComponent(plan.subject)}`}
+                aria-label={`${plan.label}: ${plan.title}`}
+              />
+            ))}
+          </div>
+        </div>
+      </section>
+    </div>
+  )
+}
+
+<script>
+  import { gsap } from "gsap";
+  import { ScrollTrigger } from "gsap/ScrollTrigger";
+  import { mountScrollScene } from "@/utils/motion/scrollScene";
+
+  gsap.registerPlugin(ScrollTrigger);
+
+  const initEngagementPricing = (root: HTMLElement) => {
+    const stage = root.querySelector<HTMLElement>(
+      "[data-engagement-pricing-stage]",
+    );
+    const square = root.querySelector<HTMLElement>(
+      "[data-engagement-pricing-square]",
+    );
+    const content = root.querySelector<HTMLElement>(
+      ".engagement-pricing_content",
+    );
+    const heading = root.querySelector<HTMLElement>(
+      ".engagement-pricing_heading",
+    );
+    const cards = gsap.utils.toArray<HTMLElement>(".pricing-card_wrap", root);
+
+    if (!stage || !square || !content || !heading || cards.length !== 3) return;
+
+    const media = gsap.matchMedia();
+
+    media.add(
+      "(prefers-reduced-motion: no-preference) and (width >= 64rem)",
+      () => {
+        gsap.set(square, {
+          scaleX: 1,
+          scaleY: 1,
+          transformOrigin: "center",
+        });
+        gsap.set([heading, ...cards], {
+          autoAlpha: 0,
+          y: "2rem",
+          filter: "blur(0.5rem)",
+        });
+
+        const coverScaleX = () => {
+          const size = square.offsetWidth;
+          return (window.innerWidth / size) * 1.04;
+        };
+
+        const coverScaleY = () => {
+          const size = square.offsetHeight;
+          return (window.innerHeight / size) * 1.04;
+        };
+
+        const timeline = gsap.timeline({
+          defaults: { ease: "none" },
+          scrollTrigger: {
+            trigger: stage,
+            start: "top top",
+            end: "bottom bottom",
+            scrub: 1,
+            invalidateOnRefresh: true,
+          },
+        });
+
+        timeline
+          .to({}, { duration: 1.45 })
+          .to(square, {
+            scaleX: coverScaleX,
+            scaleY: coverScaleY,
+            duration: 1.8,
+            ease: "sine.inOut",
+          })
+          .to(
+            heading,
+            {
+              autoAlpha: 1,
+              y: 0,
+              filter: "blur(0rem)",
+              duration: 0.32,
+              ease: "power2.out",
+            },
+            2.92,
+          )
+          .to(
+            cards,
+            {
+              autoAlpha: 1,
+              y: 0,
+              filter: "blur(0rem)",
+              duration: 0.38,
+              stagger: 0.2,
+              ease: "power2.out",
+            },
+            3.08,
+          )
+          .to({}, { duration: 0.65 });
+
+        return () => {
+          timeline.kill();
+          gsap.set([square, heading, ...cards], { clearProps: "all" });
+        };
+      },
+    );
+
+    media.add(
+      "(prefers-reduced-motion: no-preference) and (width < 64rem)",
+      () => {
+        gsap.set(square, {
+          scaleX: 1,
+          scaleY: 1,
+          transformOrigin: "center",
+        });
+        gsap.set([heading, ...cards], {
+          autoAlpha: 0,
+          y: "1.5rem",
+          filter: "blur(0.375rem)",
+        });
+
+        const coverScaleX = () => {
+          const size = square.offsetWidth;
+          return (window.innerWidth / size) * 1.04;
+        };
+        const coverScaleY = () => {
+          const size = square.offsetHeight;
+          return (window.innerHeight / size) * 1.04;
+        };
+
+        const squareTimeline = gsap.timeline({
+          scrollTrigger: {
+            trigger: stage,
+            start: "top top",
+            end: "bottom bottom",
+            scrub: 0.8,
+            invalidateOnRefresh: true,
+          },
+        });
+
+        squareTimeline
+          .to({}, { duration: 1 })
+          .to(square, {
+            scaleX: coverScaleX,
+            scaleY: coverScaleY,
+            duration: 1.35,
+            ease: "sine.inOut",
+          })
+          .to({}, { duration: 0.35 });
+
+        const contentTimeline = gsap.timeline({
+          scrollTrigger: {
+            trigger: content,
+            start: "top 82%",
+            toggleActions: "play none none reverse",
+          },
+        });
+
+        contentTimeline
+          .to(heading, {
+            autoAlpha: 1,
+            y: 0,
+            filter: "blur(0rem)",
+            duration: 0.4,
+            ease: "power2.out",
+          })
+          .to(
+            cards,
+            {
+              autoAlpha: 1,
+              y: 0,
+              filter: "blur(0rem)",
+              duration: 0.45,
+              stagger: 0.14,
+              ease: "power2.out",
+            },
+            "-=0.16",
+          );
+
+        return () => {
+          squareTimeline.kill();
+          contentTimeline.kill();
+          gsap.set([square, heading, ...cards], { clearProps: "all" });
+        };
+      },
+    );
+
+    return () => media.revert();
+  };
+
+  mountScrollScene("[data-engagement-pricing]", initEngagementPricing);
+</script>
+
+<style is:global>
+  @layer components {
+    .engagement-pricing-transition_wrap {
+      position: relative;
+      z-index: 1;
+      margin-top: -100svh;
+      background-color: var(--dark-900);
+    }
+
+    .engagement-pricing-stage_wrap {
+      position: relative;
+      height: 300svh;
+      background-color: var(--dark-900);
+    }
+
+    .engagement-pricing_stage {
+      position: sticky;
+      top: 0;
+      height: 100svh;
+      overflow: hidden;
+      background-color: var(--light-100);
+    }
+
+    .engagement-pricing_wrap {
+      position: relative;
+      padding-top: var(--section-space-large);
+      padding-bottom: var(--section-space-large);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      background-color: var(--dark-900);
+      color: var(--text);
+    }
+
+    .engagement-pricing_square {
+      position: absolute;
+      z-index: 0;
+      top: 50%;
+      left: 50%;
+      width: clamp(3rem, 3.94vw, 4rem);
+      aspect-ratio: 1;
+      translate: -50% -50%;
+      background-color: var(--dark-900);
+    }
+
+    .engagement-pricing_content {
+      z-index: 1;
+    }
+
+    .engagement-pricing_heading {
+      margin-inline: auto;
+      color: var(--light-100);
+    }
+
+    .engagement-pricing_grid {
+      width: 100%;
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      align-items: start;
+      gap: var(--space-16);
+    }
+
+    .engagement-pricing-transition_wrap {
+      @media (width < 64rem) {
+        :where(&) .engagement-pricing_wrap {
+          margin-top: -100svh;
+          background-color: transparent;
+        }
+
+        :where(&) .engagement-pricing_grid {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+
+        :where(&) .engagement-pricing_grid > :last-child:nth-child(odd) {
+          grid-column: 1 / -1;
+        }
+      }
+    }
+
+    .engagement-pricing-transition_wrap {
+      @media (width >= 64rem) {
+        & {
+          height: 420svh;
+        }
+
+        :where(&) .engagement-pricing-stage_wrap {
+          position: absolute;
+          inset: 0;
+          height: 420svh;
+        }
+
+        :where(&) .engagement-pricing_wrap {
+          position: sticky;
+          top: 0;
+          height: 100svh;
+          overflow: hidden;
+          background-color: transparent;
+        }
+
+        :where(&) .engagement-pricing_content {
+          will-change: auto;
+        }
+
+        :where(&) .engagement-pricing_heading,
+        :where(&) .engagement-pricing_grid > .pricing-card_wrap {
+          will-change: transform, opacity, filter;
+        }
+      }
+    }
+
+    .engagement-pricing-transition_wrap {
+      @media (width < 48rem) {
+        :where(&) .engagement-pricing_grid {
+          grid-template-columns: 1fr;
+        }
+      }
+    }
+
+    .engagement-pricing-transition_wrap {
+      @media (prefers-reduced-motion: reduce) {
+        &,
+        :where(&) .engagement-pricing_wrap {
+          height: auto;
+        }
+
+        & {
+          margin-top: 0;
+        }
+
+        :where(&) .engagement-pricing-stage_wrap {
+          display: none;
+        }
+
+        :where(&) .engagement-pricing_wrap {
+          position: relative;
+          margin-top: 0;
+          min-height: 100svh;
+          overflow: visible;
+          background-color: var(--dark-900);
+        }
+
+        :where(&) .engagement-pricing_square {
+          display: none;
+        }
+
+        :where(&) .engagement-pricing_content {
+          will-change: auto;
+        }
+
+        :where(&) .engagement-pricing_heading,
+        :where(&) .engagement-pricing_grid > .pricing-card_wrap {
+          will-change: auto;
+        }
+      }
+    }
+  }
+</style>

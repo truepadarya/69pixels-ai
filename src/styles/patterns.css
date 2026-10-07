@@ -1,15 +1,24 @@
-.heading:has(+ .text) {
-  margin-bottom: var(--_margin-bottom);
-}
-
-.heading,
 .text {
-  margin-top: var(--_margin-top);
   max-width: var(--_mw, none);
 }
 
-.heading + .text {
-  margin-top: 0;
+.heading {
+  max-width: var(--_mw, none);
+  color: var(--brand-text);
+}
+
+.section-heading-primary {
+  width: min(88vw, 70rem);
+  max-width: none;
+  font-size: clamp(3rem, 5.1vw, 5rem);
+  text-align: center;
+}
+
+@media (width < 64rem) {
+  .section-heading-primary {
+    width: 100%;
+    font-size: clamp(2.75rem, 8.5vw, 4.75rem);
+  }
 }
 
 .section {
@@ -31,7 +40,7 @@
   flex-direction: column;
   justify-content: center;
   align-items: var(--_alignment, start);
-  gap: var(--space-8);
+  gap: var(--space-64);
   position: relative;
   margin-inline: auto;
   & > [class] {
@@ -41,13 +50,13 @@
 }
 
 .button-wrapper {
-  margin-top: var(--space-6);
+  margin-top: var(--space-40);
   display: flex;
   flex-flow: wrap;
   align-items: center;
   justify-content: var(--_alignment, start);
-  grid-column-gap: var(--space-2);
-  grid-row-gap: var(--space-2);
+  grid-column-gap: var(--space-16);
+  grid-row-gap: var(--space-12);
 }
 
 .image {
@@ -162,7 +171,7 @@
 }
 
 .heading-accent strong {
-  color: var(--heading-accent);
+  color: var(--text-accent);
   font-weight: inherit;
 }
 
@@ -176,7 +185,7 @@
 .field {
   display: flex;
   flex-direction: column;
-  gap: var(--space-2);
+  gap: var(--space-12);
   width: 100%;
 }
 

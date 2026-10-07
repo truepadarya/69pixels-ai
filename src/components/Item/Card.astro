@@ -6,71 +6,148 @@ import Paragraph from "@/components/Typography/Paragraph.astro";
 import Button from "@/components/Button.astro";
 import ButtonWrapper from "@/components/Wrapper/ButtonWrapper.astro";
 import Img from "@/components/Media/Img.astro";
+import Video from "@/components/Media/Video.astro";
 import Overlay from "@/components/Media/Overlay.astro";
 
-type CardVariant = "default" | "cover" | "stacked";
-type CardTheme = "inherit" | "light" | "dark" | "brand" | "invert";
+type CardVariant =
+  "default" | "cover" | "stacked" | "media" | "service" | "case";
+type CardTheme = "inherit" | "light" | "dark" | "invert";
 type HeadingTag = "h1" | "h2" | "h3" | "h4" | "h5" | "h6";
 type ImageSource = ImageMetadata | string;
 
 type Base = HTMLAttributes<"div"> & {
   /** Set to `false` to skip rendering this component and its children. */
   render?: boolean;
-  /** Small line of text above the heading. Inline markup is rendered. */
-  eyebrow?: string;
   /** The card's title. Inline markup is rendered. */
   heading?: string;
   /** Heading level, for the page outline. Every card heading is the same size. */
   headingTag?: HeadingTag;
   /**
-   * Body copy under the heading. Inline markup is rendered, so it can carry a
-   * link — one inside a clickable card stays clickable on its own.
-   */
-  text?: string;
-  /** Label of the closing button. Nothing renders without one. */
-  buttonLabel?: string;
-  /** Where the button leads. Left out, it renders as a plain button. */
-  buttonHref?: string;
-  /**
-   * Where the image sits.
+   * How the card is composed.
    *
    * - `default` — no image, text only (default)
    * - `cover` — image fills the card, text over it
    * - `stacked` — image above the text, bleeding to the edges
+   * - `media` — heading, image, then description
+   * - `service` — heading and description above a closing note
+   * - `case` — only for case sections with vertical cards: media above text,
+   *   never a side-by-side layout
    */
   variant?: CardVariant;
-  /** Colors the card carries with it, whatever section it sits in. */
-  theme?: CardTheme;
 };
 
 type Props = Base &
   (
     | {
         variant?: "default";
+        /** Small line of text above the heading. Inline markup is rendered. */
+        eyebrow?: string;
+        /** Body copy under the heading. Inline markup is rendered. */
+        text?: string;
+        /** Label of the closing button. Nothing renders without one. */
+        buttonLabel?: string;
+        /** Where the button leads. Left out, it renders as a plain button. */
+        buttonHref?: string;
+        /** Colors the card carries with it, whatever section it sits in. */
+        theme?: CardTheme;
         image?: never;
         imageAlt?: never;
+        video?: never;
+        videoPoster?: never;
+        footer?: never;
       }
     | {
         variant: "cover";
+        /** Small line of text above the heading. Inline markup is rendered. */
+        eyebrow?: string;
+        /** Body copy under the heading. Inline markup is rendered. */
+        text?: string;
+        /** Label of the closing button. Nothing renders without one. */
+        buttonLabel?: string;
+        /** Where the button leads. Left out, it renders as a plain button. */
+        buttonHref?: string;
+        /** Colors the card carries with it, whatever section it sits in. */
+        theme?: CardTheme;
         /** An imported asset, a remote `http(s)` URL, or a path to a file in `public/`. */
         image?: ImageSource;
         /** Leave unset on decorative images — renders `alt=""`. */
         imageAlt?: string;
+        /** Video file URL. Used instead of `image` when both are provided. */
+        video?: string;
+        /** Still frame shown before the video starts. */
+        videoPoster?: string;
+        footer?: never;
       }
     | {
         variant: "stacked";
+        /** Small line of text above the heading. Inline markup is rendered. */
+        eyebrow?: string;
+        /** Body copy under the heading. Inline markup is rendered. */
+        text?: string;
+        /** Label of the closing button. Nothing renders without one. */
+        buttonLabel?: string;
+        /** Where the button leads. Left out, it renders as a plain button. */
+        buttonHref?: string;
         /** A stacked card has no surface of its own, so it keeps the theme around it. */
         theme?: never;
         /** An imported asset, a remote `http(s)` URL, or a path to a file in `public/`. */
         image?: ImageSource;
         /** Leave unset on decorative images — renders `alt=""`. */
         imageAlt?: string;
+        /** Video file URL. Used instead of `image` when both are provided. */
+        video?: string;
+        /** Still frame shown before the video starts. */
+        videoPoster?: string;
+        footer?: never;
+      }
+    | {
+        variant: "media" | "case";
+        heading: string;
+        /** Body copy under the heading. Inline markup is rendered. */
+        text: string;
+        /** An imported asset, a remote `http(s)` URL, or a path to a file in `public/`. */
+        image?: ImageSource;
+        /** Describe informative images; pass an empty string when the image is decorative. */
+        imageAlt?: string;
+        /** Video file URL. Used instead of `image` when both are provided. */
+        video?: string;
+        /** Still frame shown before the video starts. */
+        videoPoster?: string;
+        eyebrow?: never;
+        buttonLabel?: never;
+        buttonHref?: never;
+        theme?: never;
+        footer?: never;
+      }
+    | {
+        variant: "service";
+        heading: string;
+        /** Body copy under the heading. Inline markup is rendered. */
+        text: string;
+        /** Small closing note in the dark footer. Inline markup is rendered. */
+        footer: string;
+        eyebrow?: never;
+        buttonLabel?: never;
+        buttonHref?: never;
+        theme?: never;
+        image?: never;
+        imageAlt?: never;
+        video?: never;
+        videoPoster?: never;
       }
   );
 
 type AllProps = Base & {
+  eyebrow?: string;
+  text?: string;
+  buttonLabel?: string;
+  buttonHref?: string;
+  theme?: CardTheme;
   image?: ImageSource;
   imageAlt?: string;
+  video?: string;
+  videoPoster?: string;
+  footer?: string;
 };
 
 const {
@@ -85,13 +162,27 @@ const {
   theme = "inherit",
   image,
   imageAlt,
+  video,
+  videoPoster,
+  footer,
   class: className,
   ...rest
 } = Astro.props as AllProps;
 
-const hasImage = variant !== "default" && !!image;
+const isNewVariant =
+  variant === "media" || variant === "service" || variant === "case";
+const hasMedia =
+  variant !== "default" && variant !== "service" && !!(image || video);
 const hasContent = !!(eyebrow || heading || text || buttonLabel);
-const hasTheme = variant !== "stacked" && theme !== "inherit";
+const hasTheme = !isNewVariant && variant !== "stacked" && theme !== "inherit";
+const hasRequiredContent =
+  variant === "media"
+    ? !!(heading && text && (video || (image && imageAlt !== undefined)))
+    : variant === "case"
+      ? !!(heading && (video || (image && imageAlt !== undefined)))
+      : variant === "service"
+        ? !!(heading && text && footer)
+        : hasContent || hasMedia;
 
 /* The button each variant closes with, so a set of cards reads as one system.
    A link carries no emphasis of its own, so the two are picked together. */
@@ -106,57 +197,135 @@ if (import.meta.env.DEV && render) {
       '[lumos] <Card variant="stacked"> has no surface to color, so `theme` was dropped. It keeps the theme around it.',
     );
   }
-  if (variant === "default" && image) {
+  if (variant === "default" && (image || video)) {
     console.warn(
       '[lumos] <Card variant="default"> holds no image, so `image` was dropped. Use the cover or stacked variant to show it.',
     );
   }
-  if (variant !== "default" && !image) {
+  if ((variant === "cover" || variant === "stacked") && !hasMedia) {
     console.warn(
-      `[lumos] <Card variant="${variant}"> has no \`image\`, so it renders as a plain card.`,
+      `[lumos] <Card variant="${variant}"> has no \`image\` or \`video\`, so it renders as a plain card.`,
+    );
+  }
+  if (variant === "media" && !hasRequiredContent) {
+    console.warn(
+      `[lumos] <Card variant="${variant}"> needs \`heading\`, \`text\`, and either \`video\` or \`image\` with an explicit \`imageAlt\`; nothing was rendered.`,
+    );
+  }
+  if (variant === "case" && !hasRequiredContent) {
+    console.warn(
+      '[lumos] <Card variant="case"> needs `heading` and either `video` or `image` with an explicit `imageAlt`; nothing was rendered.',
+    );
+  }
+  if (variant === "service" && !hasRequiredContent) {
+    console.warn(
+      `[lumos] <Card variant="${variant}"> needs \`heading\`, \`text\`, and \`footer\`; nothing was rendered.`,
     );
   }
 }
 ---
 
 {
-  render && (hasContent || hasImage) && (
+  render && hasRequiredContent && (
     <div
       class:list={[
         "card_wrap",
         variant !== "default" && variant,
         hasTheme && `theme-${theme}`,
+        variant === "service" && "theme-light",
         className,
       ]}
       {...rest}
     >
-      {hasImage && (
-        <div class="card_visual">
-          <Img src={image!} alt={imageAlt} />
-          {variant === "cover" && <Overlay variant="gradient" />}
-        </div>
-      )}
-      {hasContent && (
-        <div class="card_content margin-trim">
-          <Eyebrow>
-            <Fragment set:html={eyebrow} />
-          </Eyebrow>
-          <Heading tag={headingTag} variant="h5">
-            <Fragment set:html={heading} />
-          </Heading>
-          <Paragraph>
-            <Fragment set:html={text} />
-          </Paragraph>
-          <ButtonWrapper>
-            {buttonHref ? (
-              <Button element="link" href={buttonHref} {...buttonKind}>
-                {buttonLabel}
-              </Button>
+      {variant === "media" ? (
+        <>
+          <div class="card_header margin-trim">
+            <Heading tag={headingTag} variant="h5" class="card_title">
+              <Fragment set:html={heading} />
+            </Heading>
+          </div>
+          <div class="card_visual">
+            {video ? (
+              <Video src={video} poster={videoPoster} variant="auto" />
             ) : (
-              <Button {...buttonKind}>{buttonLabel}</Button>
+              <Img src={image!} alt={imageAlt} />
             )}
-          </ButtonWrapper>
-        </div>
+          </div>
+          <div class="card_body margin-trim">
+            <Paragraph variant="main" class="card_description">
+              <Fragment set:html={text} />
+            </Paragraph>
+          </div>
+        </>
+      ) : variant === "service" ? (
+        <>
+          <div class="card_content margin-trim">
+            <Heading tag={headingTag} variant="h5" class="card_title">
+              <Fragment set:html={heading} />
+            </Heading>
+            <Paragraph variant="main-xl" class="card_description">
+              <Fragment set:html={text} />
+            </Paragraph>
+          </div>
+          <div class="card_footer theme-dark margin-trim">
+            <Paragraph tag="div" variant="small">
+              <Fragment set:html={footer} />
+            </Paragraph>
+          </div>
+        </>
+      ) : variant === "case" ? (
+        <>
+          <div class="card_visual">
+            {video ? (
+              <Video src={video} poster={videoPoster} variant="auto" />
+            ) : (
+              <Img src={image!} alt={imageAlt} />
+            )}
+          </div>
+          <div class="card_content margin-trim">
+            <Heading tag={headingTag} variant="h6" class="card_title">
+              <Fragment set:html={heading} />
+            </Heading>
+            <Paragraph variant="main" class="card_description">
+              <Fragment set:html={text} />
+            </Paragraph>
+          </div>
+        </>
+      ) : (
+        <>
+          {hasMedia && (
+            <div class="card_visual">
+              {video ? (
+                <Video src={video} poster={videoPoster} variant="auto" />
+              ) : (
+                <Img src={image!} alt={imageAlt} />
+              )}
+              {variant === "cover" && <Overlay variant="gradient" />}
+            </div>
+          )}
+          {hasContent && (
+            <div class="card_content margin-trim">
+              <Eyebrow>
+                <Fragment set:html={eyebrow} />
+              </Eyebrow>
+              <Heading tag={headingTag} variant="h5">
+                <Fragment set:html={heading} />
+              </Heading>
+              <Paragraph>
+                <Fragment set:html={text} />
+              </Paragraph>
+              <ButtonWrapper>
+                {buttonHref ? (
+                  <Button element="link" href={buttonHref} {...buttonKind}>
+                    {buttonLabel}
+                  </Button>
+                ) : (
+                  <Button {...buttonKind}>{buttonLabel}</Button>
+                )}
+              </ButtonWrapper>
+            </div>
+          )}
+        </>
       )}
     </div>
   )
@@ -165,7 +334,7 @@ if (import.meta.env.DEV && render) {
 <style is:global>
   @layer components {
     .card_wrap {
-      --_padding: var(--space-6);
+      --_padding: var(--space-40);
       --_min-height: 20rem;
       --_visual-ratio: 3 / 2;
       width: 100%;
@@ -184,6 +353,43 @@ if (import.meta.env.DEV && render) {
         background-color: transparent;
         overflow: visible;
       }
+      &:is(.media, .service, .case) {
+        gap: 0;
+      }
+      &.service {
+        --_service-padding: clamp(
+          var(--_service-padding-min) / 16 * 1rem,
+          calc(
+            (
+                var(--_service-padding-min) -
+                  (
+                    (
+                        var(--_service-padding-max) -
+                          var(--_service-padding-min)
+                      ) /
+                      (var(--viewport-max) - var(--viewport-min)) *
+                      var(--viewport-min)
+                  )
+              ) /
+              16 * 1rem +
+              (
+                (var(--_service-padding-max) - var(--_service-padding-min)) /
+                  (var(--viewport-max) - var(--viewport-min))
+              ) *
+              100vw
+          ),
+          var(--_service-padding-max) / 16 * 1rem
+        );
+        --_service-padding-min: 14;
+        --_service-padding-max: 16;
+        min-height: 18rem;
+        background-color: var(--background-2-solid);
+      }
+
+      &.case {
+        align-self: start;
+        background-color: transparent;
+      }
     }
 
     .card_visual {
@@ -197,6 +403,10 @@ if (import.meta.env.DEV && render) {
         aspect-ratio: var(--_visual-ratio);
       }
 
+      .media > & {
+        aspect-ratio: 13 / 8;
+      }
+
       .cover > & {
         position: absolute;
         inset: 0;
@@ -207,6 +417,11 @@ if (import.meta.env.DEV && render) {
       > :is(.image, .video) {
         width: 100%;
         height: 100%;
+      }
+
+      .case > & > :is(.image, .video) {
+        height: auto;
+        object-position: center top;
       }
     }
 
@@ -222,12 +437,13 @@ if (import.meta.env.DEV && render) {
        grows. This outranks the margin `.button-wrapper` sets for itself. */
     .card_content > .button-wrapper:last-child {
       margin-top: auto;
-      padding-top: var(--space-6);
+      padding-top: var(--space-40);
     }
 
     .card_content {
       display: flex;
       flex-direction: column;
+      gap: var(--space-24);
       align-items: var(--_alignment, start);
       text-align: var(--_alignment, start);
       flex-grow: 1;
@@ -243,9 +459,69 @@ if (import.meta.env.DEV && render) {
         padding-inline: 0;
         padding-top: 0;
       }
+
+      .service > & {
+        min-height: 16rem;
+        padding: var(--_service-padding);
+        padding-block: var(--space-20);
+      }
+
+      .case > & {
+        flex-grow: 0;
+        padding: var(--space-32);
+      }
+    }
+
+    .card_header,
+    .card_body,
+    .card_footer {
+      width: 100%;
+    }
+
+    .media .card_header {
+      padding: var(--space-40) var(--space-32) var(--space-24) var(--space-32);
+    }
+
+    .media .card_body {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: var(--space-24) var(--space-32) var(--space-32) var(--space-32);
+    }
+
+    .card_body {
+      flex-grow: 1;
+    }
+
+    .card_title {
+      color: var(--text);
+      font-weight: var(--primary-semibold);
+    }
+
+    .card_description {
+      color: var(--text-2);
+    }
+
+    .service .card_description {
+      margin-top: auto;
+      padding-top: var(--space-48);
+    }
+
+    .card_footer {
+      padding: 0.9rem var(--_service-padding);
+      background-color: var(--background);
+      color: var(--text);
+    }
+
+    .section.theme-dark .service .card_footer {
+      background-color: var(--background-3-solid);
     }
 
     .card_wrap:has(.button_wrap) {
+      &:not(.cover, .stacked) {
+        transition: background-color var(--hover-duration) var(--hover-ease);
+      }
+
       .button_wrap::after {
         content: "";
         position: absolute;
@@ -262,6 +538,10 @@ if (import.meta.env.DEV && render) {
       }
 
       @media (hover: hover) {
+        &:not(.cover, .stacked):hover {
+          background-color: var(--background-3);
+        }
+
         &:hover .image {
           scale: 1.04;
         }

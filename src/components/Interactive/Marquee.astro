@@ -10,12 +10,15 @@ type Props = HTMLAttributes<"div"> & {
   label?: string;
   /** Which way the items travel. Defaults to `forwards`, which runs them leftwards. */
   direction?: "forwards" | "backwards";
+  /** Whether to show the play/pause control. Defaults to `true`. */
+  showToggle?: boolean;
 };
 
 const {
   render = true,
   label = "Marquee",
   direction = "forwards",
+  showToggle = true,
   class: className,
   ...rest
 } = Astro.props;
@@ -95,13 +98,15 @@ const locals = `--_count: ${count}`;
         </div>
       </div>
 
-      <Button
-        variant="play"
-        emphasis="secondary"
-        pressed={true}
-        class="marquee_toggle"
-        data-marquee-toggle
-      />
+      {showToggle && (
+        <Button
+          variant="play"
+          emphasis="secondary"
+          pressed={true}
+          class="marquee_toggle"
+          data-marquee-toggle
+        />
+      )}
     </div>
   )
 }
@@ -136,7 +141,7 @@ const locals = `--_count: ${count}`;
 <style is:global>
   @layer components {
     .marquee_wrap {
-      --_gap-size: var(--space-6);
+      --_gap-size: var(--space-40);
       --_item-height: 3rem;
       /* Seconds spent on each item, so a strip keeps its pace however many it
          holds — the count comes in on the element. */
@@ -145,7 +150,7 @@ const locals = `--_count: ${count}`;
       --_duration: calc(var(--_count) * var(--_speed));
       display: flex;
       align-items: center;
-      gap: var(--space-4);
+      gap: var(--space-24);
       width: 100%;
     }
 
@@ -160,8 +165,8 @@ const locals = `--_count: ${count}`;
       mask-image: linear-gradient(
         to right,
         transparent,
-        black 3%,
-        black 97%,
+        var(--mask-color) 3%,
+        var(--mask-color) 97%,
         transparent
       );
     }

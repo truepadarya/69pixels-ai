@@ -6,6 +6,7 @@ import Eyebrow from "@/components/Typography/Eyebrow.astro";
 import Heading from "@/components/Typography/Heading.astro";
 import Paragraph from "@/components/Typography/Paragraph.astro";
 import ButtonWrapper from "@/components/Wrapper/ButtonWrapper.astro";
+import TagWrapper from "@/components/Wrapper/TagWrapper.astro";
 import Button from "@/components/Button.astro";
 import Img from "@/components/Media/Img.astro";
 import lumos_background from "@/assets/graphics/lumos-background.svg";
@@ -35,6 +36,8 @@ import arrow from "@/assets/icons/arrow.svg";
 import play from "@/assets/icons/play.svg";
 import close from "@/assets/icons/close.svg";
 import check from "@/assets/icons/check.svg";
+import videoTest from "@/assets/graphics/video-test.mp4";
+import NavMinimal from "@/components/Global/NavMinimal.astro";
 
 const heading = "We build things that help people work smarter";
 const text =
@@ -48,11 +51,181 @@ const lorem =
   description="Every layout variant, side by side."
   theme="dark"
 >
+  <NavMinimal />
+  <!-- cards · media · light -->
+  <Section theme="light" paddingTop="small" paddingBottom="small" gap="32">
+    <ContentWrapper>
+      <Eyebrow>card · media · light</Eyebrow>
+      <Heading tag="h1" variant="h4">Media cards</Heading>
+    </ContentWrapper>
+    <Grid small={2} medium={3}>
+      <Card
+        variant="media"
+        heading="Build the tools"
+        text="Senior talent, custom tools and new workflows."
+        image={lumos_background}
+        imageAlt=""
+      />
+      <Card
+        variant="media"
+        heading="Months become days"
+        text="Senior talent, custom tools and new workflows that give ambitious ideas more room to happen."
+        image={lumos_background}
+        imageAlt=""
+      />
+      <Card
+        variant="media"
+        heading="Experience sparks action"
+        text="Senior talent, custom tools and carefully designed workflows that give ambitious ideas more room to happen without adding unnecessary complexity."
+        image={lumos_background}
+        imageAlt=""
+      />
+    </Grid>
+  </Section>
+
+  <!-- cards · media · dark -->
+  <Section theme="dark" paddingTop="small" paddingBottom="small" gap="32">
+    <ContentWrapper>
+      <Eyebrow>card · media · dark</Eyebrow>
+      <Heading tag="h2" variant="h4">Media cards</Heading>
+    </ContentWrapper>
+    <Grid small={2} medium={3}>
+      <Card
+        variant="media"
+        heading="Build the tools"
+        text="Senior talent, custom tools and new workflows."
+        image={lumos_background}
+        imageAlt=""
+      />
+      <Card
+        variant="media"
+        heading="Months become days"
+        text="Senior talent, custom tools and new workflows that give ambitious ideas more room to happen."
+        image={lumos_background}
+        imageAlt=""
+      />
+      <Card
+        variant="media"
+        heading="Experience sparks action"
+        text="Senior talent, custom tools and carefully designed workflows that give ambitious ideas more room to happen without adding unnecessary complexity."
+        image={lumos_background}
+        imageAlt=""
+      />
+    </Grid>
+  </Section>
+
+  <!-- cards · service · light -->
+  <Section theme="light" paddingTop="small" paddingBottom="small" gap="32">
+    <ContentWrapper>
+      <Eyebrow>card · service · light</Eyebrow>
+      <Heading tag="h2" variant="h4">Service cards</Heading>
+    </ContentWrapper>
+    <Grid small={2} medium={3}>
+      <Card
+        variant="service"
+        heading="Fixed project"
+        text="A defined scope, an agreed timeline and a fixed fee."
+        footer="For launches, redesigns and focused work."
+      />
+      <Card
+        variant="service"
+        heading="Dedicated subscription"
+        text="An embedded team with design, art direction and project management. We learn your product and move through priorities together."
+        footer="For ongoing work that needs a steady rhythm."
+      />
+      <Card
+        variant="service"
+        heading="Custom partnership"
+        text="A setup shaped around your business: multiple workstreams, specialist expertise or a blend of project work and support."
+        footer="Team, responsibilities and commercial terms agreed together."
+      />
+    </Grid>
+  </Section>
+
+  <!-- cards · service · dark -->
+  <Section theme="dark" paddingTop="small" paddingBottom="small" gap="32">
+    <ContentWrapper>
+      <Eyebrow>card · service · dark</Eyebrow>
+      <Heading tag="h2" variant="h4">Service cards</Heading>
+    </ContentWrapper>
+    <Grid small={2} medium={3}>
+      <Card
+        variant="service"
+        heading="Fixed project"
+        text="A defined scope, an agreed timeline and a fixed fee."
+        footer="For launches, redesigns and focused work."
+      />
+      <Card
+        variant="service"
+        heading="Dedicated subscription"
+        text="An embedded team with design, art direction and project management. We learn your product and move through priorities together."
+        footer="For ongoing work that needs a steady rhythm."
+      />
+      <Card
+        variant="service"
+        heading="Custom partnership"
+        text="A setup shaped around your business: multiple workstreams, specialist expertise or a blend of project work and support."
+        footer="Team, responsibilities and commercial terms agreed together."
+      />
+    </Grid>
+  </Section>
+
+  <!-- cards · case · light -->
+  <Section theme="light" paddingTop="small" paddingBottom="small" gap="32">
+    <ContentWrapper>
+      <Eyebrow>card · case · light</Eyebrow>
+      <Heading tag="h2" variant="h4">Case cards</Heading>
+    </ContentWrapper>
+    <Grid small={2} medium={2}>
+      <Card
+        variant="case"
+        heading="Product launch"
+        text="A focused identity and digital launch."
+        image={lumos_background}
+        imageAlt=""
+      />
+      <Card
+        variant="case"
+        heading="A flexible brand system"
+        text="A connected system spanning strategy, identity and product design for a growing international team."
+        image={lumos_background}
+        imageAlt=""
+      />
+    </Grid>
+  </Section>
+
+  <!-- cards · case · dark -->
+  <Section theme="dark" paddingTop="small" paddingBottom="small" gap="32">
+    <ContentWrapper>
+      <Eyebrow>card · case · dark</Eyebrow>
+      <Heading tag="h2" variant="h4">Case cards</Heading>
+    </ContentWrapper>
+    <Grid small={2} medium={2}>
+      <Card
+        variant="case"
+        heading="Product launch"
+        text="A focused identity and digital launch."
+        video={videoTest}
+        imageAlt=""
+      />
+      <Card
+        variant="case"
+        heading="A flexible brand system"
+        text="A connected system spanning strategy, identity and product design for a growing international team. A connected system spanning strategy, identity and product design"
+        image={lumos_background}
+        imageAlt=""
+      />
+
+    </Grid>
+  </Section>
+
   <!-- stack -->
   <Section paddingTop="small" paddingBottom="small">
-    <ContentWrapper>
+    <ContentWrapper class="heading-accent">
       <Eyebrow>stack</Eyebrow>
-      <Heading tag="h2" variant="h3" maxWidth={17}>{heading}</Heading>
+      <Heading tag="h2" variant="h3" maxWidth={17} class="heading-accent"
+        >{heading}</Heading
+      >
       <Paragraph maxWidth={36}>{text}</Paragraph>
       <ButtonWrapper>
         <Button element="link" href="/about">Button Text</Button>
@@ -82,7 +255,7 @@ const lorem =
       <Eyebrow>auto-width</Eyebrow>
       <Heading tag="h2" variant="h3" maxWidth={17}>{heading}</Heading>
       <Paragraph maxWidth={28} slot="column2">{text}</Paragraph>
-      <ButtonWrapper slot="column2" marginTop="4">
+      <ButtonWrapper slot="column2" marginTop="24">
         <Button element="link" href="/about">Button Text</Button>
       </ButtonWrapper>
     </ContentWrapper>
@@ -100,13 +273,23 @@ const lorem =
     </ContentWrapper>
   </Section>
   <!-- columns reverse -->
-  <Section paddingTop="small" paddingBottom="small">
+  <Section paddingTop="small" paddingBottom="small" class="theme-light">
     <ContentWrapper variant="columns" reverse>
       <Eyebrow>columns · reverse</Eyebrow>
       <Heading tag="h2" variant="h3" maxWidth={17}>{heading}</Heading>
       <Paragraph maxWidth={36}>{text}</Paragraph>
+      <TagWrapper>
+        <Eyebrow tag="span" variant="tag">Small team, global setup</Eyebrow>
+        <Eyebrow tag="span" variant="tag">7 days</Eyebrow>
+        <Eyebrow tag="span" variant="tag">Apps</Eyebrow>
+      </TagWrapper>
       <ButtonWrapper>
-        <Button element="link" href="/about">Button Text</Button>
+        <ButtonWrapper>
+          <Button element="link" href="/about">Button Text</Button>
+          <Button element="link" href="/about" emphasis="secondary"
+            >Button Text</Button
+          >
+        </ButtonWrapper>
       </ButtonWrapper>
       <Img slot="column2" src={lumos_background} width={1920} height={1080} />
     </ContentWrapper>
@@ -117,6 +300,11 @@ const lorem =
       <Eyebrow>breakout</Eyebrow>
       <Heading tag="h2" variant="h3" maxWidth={17}>{heading}</Heading>
       <Paragraph maxWidth={36}>{text}</Paragraph>
+      <TagWrapper>
+        <Eyebrow tag="span" variant="tag">Small team, global setup</Eyebrow>
+        <Eyebrow tag="span" variant="tag">7 days</Eyebrow>
+        <Eyebrow tag="span" variant="tag">Apps</Eyebrow>
+      </TagWrapper>
       <ButtonWrapper>
         <Button element="link" href="/about">Button Text</Button>
       </ButtonWrapper>
@@ -228,7 +416,7 @@ const lorem =
       <Eyebrow>auto-width</Eyebrow>
       <Heading tag="h2" variant="h3" maxWidth={17}>{heading}</Heading>
       <Paragraph maxWidth={28} slot="column2">{text}</Paragraph>
-      <ButtonWrapper slot="column2" marginTop="4">
+      <ButtonWrapper slot="column2" marginTop="24">
         <Button element="link" href="/about">Button Text</Button>
       </ButtonWrapper>
     </ContentWrapper>
@@ -318,7 +506,7 @@ const lorem =
         <Textarea label="Message" placeholder="Your message" required />
       </Fieldset>
 
-      <ButtonWrapper marginTop="4">
+      <ButtonWrapper marginTop="24">
         <Button type="submit">Submit</Button>
       </ButtonWrapper>
     </Form>

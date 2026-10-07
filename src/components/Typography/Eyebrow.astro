@@ -17,7 +17,7 @@ type Props = HTMLAttributes<"div"> & {
   /**
    * How the label is drawn.
    *
-   * - `default` — a marker beside the text (default)
+   * - `default` — muted label text (default)
    * - `tag` — no marker; the text sits in a filled pill
    */
   variant?: "default" | "tag";
@@ -42,9 +42,6 @@ const content = await slotContent(Astro.slots);
       class:list={["eyebrow_wrap", variant !== "default" && variant, className]}
       {...rest}
     >
-      {variant === "default" && (
-        <span class="eyebrow_marker" aria-hidden="true" />
-      )}
       <Tag class="eyebrow_text text-style-small">
         <Fragment set:html={content} />
       </Tag>
@@ -58,19 +55,14 @@ const content = await slotContent(Astro.slots);
       display: inline-flex;
       align-items: center;
       justify-content: var(--_alignment, start);
-      gap: var(--space-2);
+      color: var(--text-2);
 
       &.tag {
-        background-color: var(--text);
-        color: var(--background);
-        padding: var(--space-1) var(--space-2);
+        background-color: var(--tag-background);
+        color: var(--tag-text);
+        padding: var(--space-12) var(--space-16);
         border-radius: var(--radius-small);
-      }
-      .eyebrow_marker {
-        flex: none;
-        width: var(--border-width);
-        height: 0.75rem;
-        background-color: currentcolor;
+        font-weight: var(--tag-font-weight);
       }
     }
   }

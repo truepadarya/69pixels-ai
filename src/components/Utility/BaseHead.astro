@@ -1,49 +1,134 @@
 ---
 import { Font } from "astro:assets";
-import { SITE_NAME, SITE_DESCRIPTION } from "@/consts.ts";
+import {
+  SITE_NAME,
+  SITE_DESCRIPTION,
+  SITE_URL,
+  SITE_IS_PUBLIC,
+  SITE_LOCALE,
+  SITE_IMAGE,
+  SITE_IMAGE_ALT,
+} from "@/consts.ts";
 import { isNoindexRoute } from "@/utils/seo.ts";
 import type { SeoProps } from "@/types.ts";
 
-type Props = SeoProps;
+type Props = SeoProps & {
+  /** Set to `false` to skip rendering this component and its children. */
+  render?: boolean;
+};
 
 const {
+  render = true,
   title,
+  titleOverride,
   description = SITE_DESCRIPTION,
-  image = "/og-image.jpg",
+  image = SITE_IMAGE,
+  imageAlt = SITE_IMAGE_ALT,
+  imageWidth = image === SITE_IMAGE ? 1200 : undefined,
+  imageHeight = image === SITE_IMAGE ? 630 : undefined,
   type = "website",
   noindex,
 } = Astro.props;
 
-const isNoindex = noindex ?? isNoindexRoute(Astro.url.pathname);
+const isNoindex =
+  !SITE_IS_PUBLIC || isNoindexRoute(Astro.url.pathname) || noindex === true;
 
-const pageTitle = title ? `${title} | ${SITE_NAME}` : SITE_NAME;
-const canonical = new URL(Astro.url.pathname, Astro.site);
-const socialImage = new URL(image, Astro.site);
+const pageTitle =
+  titleOverride ?? (title ? `${title} | ${SITE_NAME}` : SITE_NAME);
+const canonical = new URL(
+  `${Astro.url.pathname.replace(/\/+$/, "")}/`,
+  SITE_URL,
+);
+const socialImage = new URL(image, SITE_URL);
+const origin = new URL("/", SITE_URL).href;
+const structuredData = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": `${origin}#organization`,
+      name: SITE_NAME,
+      url: origin,
+      logo: new URL("/brand-logo.png", SITE_URL).href,
+      description: SITE_DESCRIPTION,
+    },
+    {
+      "@type": "WebSite",
+      "@id": `${origin}#website`,
+      name: SITE_NAME,
+      url: origin,
+      inLanguage: SITE_LOCALE,
+      publisher: { "@id": `${origin}#organization` },
+    },
+    {
+      "@type": "WebPage",
+      "@id": `${canonical.href}#webpage`,
+      name: pageTitle,
+      description,
+      url: canonical.href,
+      inLanguage: SITE_LOCALE,
+      isPartOf: { "@id": `${origin}#website` },
+      about: { "@id": `${origin}#organization` },
+      primaryImageOfPage: { "@type": "ImageObject", url: socialImage.href },
+    },
+  ],
+};
 ---
 
-<meta charset="utf-8" />
-<style is:inline>
-  @layer base, patterns, components, utilities;
-</style>
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<Font cssVariable="--font-inter" preload />
-<title>{pageTitle}</title>
-<meta name="description" content={description} />
-<link rel="canonical" href={canonical} />
-{isNoindex && <meta name="robots" content="noindex, nofollow" />}
+{
+  render && (
+    <Fragment>
+      <meta charset="utf-8" />
+      <style is:inline>@layer base, patterns, components, utilities;</style>
+      <meta name="viewport" content="width=device-width, initial-scale=1" />
+      <Font
+        cssVariable="--font-suisse-intl"
+        preload={[{ weight: 400 }, { weight: 500 }]}
+      />
+      <title>{pageTitle}</title>
+      <meta name="description" content={description} />
+      {SITE_IS_PUBLIC && !isNoindex && (
+        <link rel="canonical" href={canonical} />
+      )}
+      {isNoindex && <meta name="robots" content="noindex, nofollow" />}
 
-<meta property="og:type" content={type} />
-<meta property="og:site_name" content={SITE_NAME} />
-<meta property="og:title" content={pageTitle} />
-<meta property="og:description" content={description} />
-<meta property="og:url" content={canonical} />
-<meta property="og:image" content={socialImage} />
+      <meta property="og:type" content={type} />
+      <meta property="og:site_name" content={SITE_NAME} />
+      <meta property="og:locale" content={SITE_LOCALE.replace("-", "_")} />
+      <meta property="og:title" content={pageTitle} />
+      <meta property="og:description" content={description} />
+      {SITE_IS_PUBLIC && <meta property="og:url" content={canonical} />}
+      <meta property="og:image" content={socialImage} />
+      <meta property="og:image:alt" content={imageAlt} />
+      {imageWidth && (
+        <meta property="og:image:width" content={String(imageWidth)} />
+      )}
+      {imageHeight && (
+        <meta property="og:image:height" content={String(imageHeight)} />
+      )}
 
-<meta name="twitter:card" content="summary_large_image" />
-<meta name="twitter:title" content={pageTitle} />
-<meta name="twitter:description" content={description} />
-<meta name="twitter:image" content={socialImage} />
+      <meta name="twitter:card" content="summary_large_image" />
+      <meta name="twitter:title" content={pageTitle} />
+      <meta name="twitter:description" content={description} />
+      <meta name="twitter:image" content={socialImage} />
+      <meta name="twitter:image:alt" content={imageAlt} />
 
-<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-<link rel="icon" href="/favicon.ico" />
-<meta name="generator" content={Astro.generator} />
+      {!isNoindex && (
+        <script
+          is:inline
+          type="application/ld+json"
+          set:html={JSON.stringify(structuredData).replace(/</g, "\\u003c")}
+        />
+      )}
+
+      <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+      <link
+        rel="describedby"
+        href="/llms.txt"
+        type="text/plain"
+        title="69pixels for AI agents"
+      />
+      <meta name="generator" content={Astro.generator} />
+    </Fragment>
+  )
+}

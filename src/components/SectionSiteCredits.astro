@@ -1,0 +1,201 @@
+---
+import Heading from "@/components/Typography/Heading.astro";
+
+interface Props {
+  /** Set to `false` to skip rendering this component and its children. */
+  render?: boolean;
+}
+
+const { render = true } = Astro.props;
+
+const lines = [
+  "Oh, one more thing.",
+  "This website?",
+  "Made with AI, too.",
+  "From idea to live. Fast.",
+  "Human taste. Every step.",
+  "Less waiting. More making.",
+  "Your idea could be next.",
+];
+---
+
+{
+  render && (
+    <section
+      class="site-credits_wrap theme-dark"
+      data-site-credits
+      aria-labelledby="site-credits-title"
+    >
+      <div class="site-credits_stage">
+        <div class="site-credits_window">
+          <div class="site-credits_roll">
+            {lines.map((line, index) =>
+              index === 0 ? (
+                <Heading
+                  tag="h2"
+                  variant="inherit"
+                  id="site-credits-title"
+                  class="site-credits_line"
+                  data-credit-line
+                >
+                  {line}
+                </Heading>
+              ) : (
+                <p class="site-credits_line" data-credit-line>
+                  {line}
+                </p>
+              ),
+            )}
+          </div>
+        </div>
+      </div>
+    </section>
+  )
+}
+
+<script>
+  import { gsap } from "gsap";
+  import { ScrollTrigger } from "gsap/ScrollTrigger";
+  import { mountScrollScene } from "@/utils/motion/scrollScene";
+
+  gsap.registerPlugin(ScrollTrigger);
+  mountScrollScene("[data-site-credits]", (root) => {
+    const media = gsap.matchMedia();
+    media.add(
+      "(width >= 64rem) and (prefers-reduced-motion: no-preference)",
+      () => {
+        const roll = root.querySelector<HTMLElement>(".site-credits_roll")!;
+        const lines = [
+          ...root.querySelectorAll<HTMLElement>("[data-credit-line]"),
+        ];
+        const creditsWindow = root.querySelector<HTMLElement>(
+          ".site-credits_window",
+        )!;
+        root.classList.add("is-rolling");
+        const render = (progress: number) => {
+          const first = lines[0].offsetTop + lines[0].offsetHeight / 2;
+          const last = lines.at(-1)!;
+          const end = last.offsetTop + last.offsetHeight / 2;
+          const center = first + (end - first) * Math.min(progress / 0.78, 1);
+          const content = root.querySelector<HTMLElement>(
+            ".cta-project_content",
+          );
+          const heading = content?.querySelector<HTMLElement>(
+            ".cta-project_heading",
+          );
+          const shift = Math.max(0, Math.min((progress - 0.78) / 0.1, 1));
+          const lift =
+            content && heading
+              ? (content.offsetHeight - heading.offsetHeight) / 2
+              : 0;
+          gsap.set(roll, {
+            y: -center - lift * shift * shift * (3 - 2 * shift),
+          });
+          lines.forEach((line) => {
+            const distance =
+              Math.abs(line.offsetTop + line.offsetHeight / 2 - center) /
+              line.offsetHeight;
+            const light = Math.exp(-Math.pow(distance / 0.72, 2));
+            line.style.opacity = String(0.14 + light * 0.86);
+          });
+        };
+        const scene = ScrollTrigger.create({
+          trigger: root,
+          start: "top -25%",
+          end: "bottom bottom",
+          onUpdate: (self) => render(self.progress),
+          onRefresh: (self) => render(self.progress),
+        });
+        render(scene.progress);
+        const entrance = gsap.fromTo(
+          creditsWindow,
+          { autoAlpha: 0 },
+          {
+            autoAlpha: 1,
+            ease: "none",
+            scrollTrigger: {
+              trigger: root,
+              start: "top top",
+              end: "top -25%",
+              scrub: 0.35,
+            },
+          },
+        );
+        return () => {
+          scene.kill();
+          entrance.scrollTrigger?.kill();
+          entrance.revert();
+          root.classList.remove("is-rolling");
+          gsap.set(roll, { clearProps: "transform" });
+          lines.forEach((line) => line.style.removeProperty("opacity"));
+        };
+      },
+    );
+    return () => media.revert();
+  });
+</script>
+
+<style is:global>
+  @layer components {
+    .site-credits_wrap {
+      display: none;
+      @media (width >= 64rem) {
+        display: block;
+        position: relative;
+        background: var(--dark-900);
+        color: var(--light-100);
+        &.is-rolling {
+          height: 360svh;
+          & .site-credits_stage {
+            position: sticky;
+            top: 0;
+            height: 100svh;
+          }
+          & .site-credits_window {
+            position: absolute;
+            inset: 13% 0;
+            overflow: hidden;
+            mask-image: linear-gradient(
+              to bottom,
+              transparent,
+              black 23%,
+              black 77%,
+              transparent
+            );
+          }
+          & .site-credits_roll {
+            position: absolute;
+            top: 50%;
+            width: 100%;
+            will-change: transform;
+            padding: 0;
+          }
+          & .site-credits_line {
+            opacity: 0.14;
+          }
+        }
+      }
+    }
+    .site-credits_stage {
+      position: relative;
+      padding: 7rem var(--site-margin);
+    }
+    .site-credits_roll {
+      padding-block: 3rem;
+    }
+    .site-credits_line {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: clamp(7rem, 17svh, 10rem);
+      margin: 0;
+      padding-inline: 2rem;
+      font-family: var(--primary-family);
+      font-size: clamp(2.75rem, 4.9vw, 5.5rem);
+      font-weight: var(--primary-medium);
+      line-height: 1.05;
+      letter-spacing: -0.05em;
+      text-align: center;
+    }
+  }
+</style>

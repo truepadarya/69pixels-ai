@@ -1,0 +1,165 @@
+---
+interface Props {
+  /** Set to `false` to skip rendering this component and its children. */
+  render?: boolean;
+}
+
+const { render = true } = Astro.props;
+---
+
+{
+  render && (
+    <Fragment>
+      <div
+        class="square-cursor_wrap default"
+        data-square-cursor-layer
+        aria-hidden="true"
+      >
+        <span class="square-cursor_pointer" data-square-cursor-pointer>
+          <span class="square-cursor_shape" />
+        </span>
+      </div>
+      <div class="square-cursor_wrap brand" aria-hidden="true">
+        <span class="square-cursor_pointer" data-square-cursor-pointer>
+          <span class="square-cursor_shape" />
+        </span>
+      </div>
+    </Fragment>
+  )
+}
+
+<script>
+  const initSquareCursor = () => {
+    const root = document.documentElement;
+    const layer = document.querySelector<HTMLElement>(
+      "[data-square-cursor-layer]",
+    );
+    const pointers = document.querySelectorAll<HTMLElement>(
+      "[data-square-cursor-pointer]",
+    );
+    const canUseEffect = window.matchMedia(
+      "(hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference)",
+    ).matches;
+
+    if (!layer || !pointers.length || !canUseEffect) return;
+
+    root.classList.add("has-square-cursor");
+
+    const interactiveSelector = [
+      "a[href]",
+      "button:not(:disabled)",
+      "input:not(:disabled)",
+      "select:not(:disabled)",
+      "textarea:not(:disabled)",
+      "summary",
+      '[role="button"]',
+      '[role="link"]',
+    ].join(",");
+
+    const handleMove = (event: PointerEvent) => {
+      const isInteractive =
+        event.target instanceof Element &&
+        Boolean(event.target.closest(interactiveSelector));
+
+      pointers.forEach((pointer) => {
+        pointer.style.transform = `translate3d(${event.clientX}px, ${event.clientY}px, 0)`;
+        pointer.classList.toggle("is-interactive", isInteractive);
+        pointer.classList.add("is-visible");
+      });
+    };
+
+    const handleWindowExit = (event: MouseEvent) => {
+      if (event.relatedTarget) return;
+      pointers.forEach((pointer) => pointer.classList.remove("is-visible"));
+    };
+
+    document.addEventListener("pointermove", handleMove, { passive: true });
+    window.addEventListener("mouseout", handleWindowExit);
+    window.addEventListener("blur", () => {
+      pointers.forEach((pointer) => pointer.classList.remove("is-visible"));
+    });
+  };
+
+  initSquareCursor();
+</script>
+
+<style is:global>
+  @layer components {
+    .square-cursor_wrap {
+      position: fixed;
+      z-index: 2147483647;
+      inset: 0;
+      overflow: hidden;
+      pointer-events: none;
+    }
+
+    .square-cursor_wrap.default {
+      mix-blend-mode: difference;
+    }
+
+    .square-cursor_pointer {
+      position: absolute;
+      top: 0;
+      left: 0;
+      display: block;
+      width: var(--space-16);
+      height: var(--space-16);
+      opacity: 0;
+      transition: opacity 120ms cubic-bezier(0.16, 1, 0.3, 1);
+      will-change: transform, opacity;
+    }
+
+    .square-cursor_shape {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      display: block;
+      opacity: 1;
+      transform: scale(1);
+      transform-origin: top left;
+      transition:
+        transform 180ms cubic-bezier(0.22, 1, 0.36, 1),
+        opacity 140ms cubic-bezier(0.22, 1, 0.36, 1);
+      will-change: transform, opacity;
+    }
+
+    .square-cursor_wrap.default .square-cursor_shape {
+      background-color: var(--light-100);
+    }
+
+    .square-cursor_wrap.brand .square-cursor_shape {
+      background-color: var(--brand-500);
+    }
+
+    .square-cursor_wrap.default .square-cursor_pointer.is-visible {
+      opacity: 1;
+    }
+
+    .square-cursor_wrap.default
+      .square-cursor_pointer.is-visible.is-interactive {
+      opacity: 0;
+    }
+
+    .square-cursor_wrap.brand .square-cursor_pointer.is-visible.is-interactive {
+      opacity: 1;
+    }
+
+    .square-cursor_pointer.is-interactive .square-cursor_shape {
+      transform: scale(0.72);
+    }
+
+    @media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
+      .has-square-cursor,
+      .has-square-cursor * {
+        cursor: none;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .square-cursor_wrap {
+        display: none;
+      }
+    }
+  }
+</style>

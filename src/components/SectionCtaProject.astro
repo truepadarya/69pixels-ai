@@ -1,0 +1,1031 @@
+---
+import Section from "@/components/Wrapper/Section.astro";
+import Paragraph from "@/components/Typography/Paragraph.astro";
+import Heading from "@/components/Typography/Heading.astro";
+import Button from "@/components/Button.astro";
+import Img from "@/components/Media/Img.astro";
+import plantCare from "@/assets/graphics/marquee/image-91f6772c-b056-4f4c-95ea-4f348a93ee76.webp";
+import fitnessApp from "@/assets/graphics/marquee/image-df9182d2-bc3f-411e-97d7-eab4e95a61a5.webp";
+import socialFitness from "@/assets/graphics/marquee/image-6e61674d-6c42-4635-a13a-7f98a4b951f4.webp";
+import medicalDashboard from "@/assets/graphics/marquee/image-13adcd0b-82e0-4db0-8765-9134857ca7e1.webp";
+import racingTablet from "@/assets/graphics/marquee/image-3a38e582-ff03-4575-ba70-216375b04067.webp";
+import cryptoWeb from "@/assets/graphics/marquee/image-804f731c-5df1-46fd-b70a-1e41d0daf85f.webp";
+import benefitsSite from "@/assets/graphics/marquee/image-0da52794-f90a-499e-b9c6-8ca28613f77f.webp";
+import racingSimulator from "@/assets/graphics/marquee/image-e55266c5-a871-4e19-b728-8a71d52586da.webp";
+
+interface Props {
+  /** Set to `false` to skip rendering this component and its children. */
+  render?: boolean;
+  /** Project ideas offered by the shuffle button. */
+  ideas?: string[];
+}
+
+const {
+  render = true,
+  ideas = [
+    "a brand for something that doesn't exist yet",
+    "an app that makes everyday life easier",
+    "a website for your next big idea",
+    "a new experience powered by AI",
+    "a fresh direction for an existing product",
+  ],
+} = Astro.props;
+const suggestions = ideas.map((idea) => idea.trim()).filter(Boolean);
+const initialIdea = suggestions[0] ?? "";
+const creditLines = [
+  "Oh, one more thing",
+  "This website?",
+  "Made with AI, too",
+  "Planned, generated, refined",
+  "From idea to live. Fast",
+  "Okay, enough about us",
+];
+
+const lanes = [
+  [
+    {
+      src: plantCare,
+      alt: "Plant care app notifications over indoor plants",
+    },
+    {
+      src: fitnessApp,
+      alt: "Fitness tracking app interface on a phone",
+    },
+    {
+      src: socialFitness,
+      alt: "Social fitness app notification over a photo",
+    },
+    {
+      src: medicalDashboard,
+      alt: "Medical administration dashboard screens",
+    },
+  ],
+  [
+    {
+      src: racingTablet,
+      alt: "Automotive website displayed on a tablet",
+    },
+    {
+      src: cryptoWeb,
+      alt: "Cryptocurrency platform page designs",
+    },
+    {
+      src: benefitsSite,
+      alt: "Employee benefits website displayed on a laptop",
+    },
+    {
+      src: racingSimulator,
+      alt: "Racing simulator setup in a studio",
+    },
+  ],
+];
+---
+
+{
+  render && (
+    <div
+      class="cta-project_wrap"
+      data-cta-project
+      data-ideas={JSON.stringify(suggestions)}
+    >
+      <div class="cta-project-transition_wrap">
+        <div class="cta-project-stage_wrap" data-cta-project-stage>
+          <div class="cta-project_stage">
+            <span
+              class="cta-project_square"
+              aria-hidden="true"
+              data-cta-project-square
+            />
+          </div>
+        </div>
+        <section
+          class="site-credits_wrap theme-dark"
+          data-site-credits
+          aria-label="End credits"
+        >
+          <div class="site-credits_stage">
+            <div class="site-credits_window">
+              <div class="site-credits_roll">
+                {creditLines.map((line) => (
+                  <p class="site-credits_line" data-credit-line>
+                    {line}
+                  </p>
+                ))}
+                <div
+                  class="site-credits_line site-credits_final"
+                  data-credit-line
+                />
+              </div>
+            </div>
+          </div>
+        </section>
+        <Section
+          theme="dark"
+          paddingTop="none"
+          paddingBottom="none"
+          gap="0"
+          align="center"
+          containerClass="cta-project_container"
+          class="cta-project-section_wrap"
+          id="contact"
+          aria-labelledby="cta-project-title"
+        >
+          <div class="cta-project_content">
+            <Heading
+              tag="h2"
+              variant="h2"
+              class="cta-project_heading"
+              id="cta-project-title"
+            >
+              Tell us what you're building
+            </Heading>
+            <Paragraph variant="main-xl" class="cta-project_lead" maxWidth={50}>
+              Share a brief or an early idea. We’ll reply with a clear next
+              step.
+            </Paragraph>
+            <div class="cta-project_field">
+              <input
+                class="cta-project_input"
+                type="text"
+                value={initialIdea}
+                aria-label="Tell us your idea"
+                placeholder="Tell us your idea"
+                autocomplete="off"
+                spellcheck="true"
+              />
+              <Button
+                class="cta-project_shuffle"
+                aria-label="Choose another project idea"
+                disabled={suggestions.length < 2}
+              >
+                <svg
+                  width="18"
+                  height="18"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  aria-hidden="true"
+                >
+                  <path
+                    d="M3 6h3c4 0 8 12 12 12h3m-4-4 4 4-4 4M3 18h3c1.8 0 3.5-2.4 5.2-5M14 8c1.4-1.3 2.6-2 4-2h3m-4-4 4 4-4 4"
+                    stroke="currentColor"
+                    stroke-width="1.7"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  />
+                </svg>
+              </Button>
+            </div>
+            <div class="cta-project_actions">
+              <Button
+                element="link"
+                href={`mailto:hello@69pixels.com?subject=Project%20enquiry&body=${encodeURIComponent(initialIdea)}`}
+                class="cta-project_button"
+                variant="compact"
+                data-project-email
+              >
+                Email us
+              </Button>
+              <Button
+                element="link"
+                href="https://calendar.app.google/Snnw3wcumNzSF9Qv6"
+                target="_blank"
+                rel="noopener noreferrer"
+                emphasis="secondary"
+                class="cta-project_button"
+                variant="compact"
+                data-project-booking
+              >
+                Schedule a call
+              </Button>
+            </div>
+            <p class="cta-project_status" role="status" aria-live="polite" />
+          </div>
+          <div
+            class="cta-project_gallery"
+            role="group"
+            aria-label="Selected work"
+          >
+            {lanes.map((items, laneIndex) => (
+              <div
+                class:list={["cta-project_lane", laneIndex === 1 && "reverse"]}
+              >
+                <div class="cta-project_track">
+                  {[false, true].map((duplicate) => (
+                    <div
+                      class="cta-project_panel"
+                      aria-hidden={duplicate ? "true" : undefined}
+                      inert={duplicate ? true : undefined}
+                    >
+                      {items.map((item) => (
+                        <figure
+                          class="cta-project_media"
+                          style={`--_project-image-ratio: ${item.src.width / item.src.height}; aspect-ratio: ${item.src.width} / ${item.src.height}`}
+                        >
+                          <Img
+                            src={item.src}
+                            alt={duplicate ? "" : item.alt}
+                            variant="constrained"
+                            sizes="(min-width: 64rem) 36rem, 24rem"
+                            quality="mid"
+                            class="cta-project_image"
+                          />
+                        </figure>
+                      ))}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            ))}
+          </div>
+        </Section>
+      </div>
+    </div>
+  )
+}
+
+<script>
+  import { gsap } from "gsap";
+  import { ScrollTrigger } from "gsap/ScrollTrigger";
+  import { mountScrollScene } from "@/utils/motion/scrollScene";
+
+  gsap.registerPlugin(ScrollTrigger);
+
+  mountScrollScene("[data-cta-project]", (root) => {
+    const media = gsap.matchMedia();
+    media.add(
+      {
+        desktop: "(width >= 64rem)",
+        motion: "(prefers-reduced-motion: no-preference)",
+      },
+      (context) => {
+        if (!context.conditions?.motion) return;
+        const content = root.querySelector<HTMLElement>(".cta-project_content");
+        const stage = root.querySelector<HTMLElement>(
+          "[data-cta-project-stage]",
+        );
+        const square = root.querySelector<HTMLElement>(
+          "[data-cta-project-square]",
+        );
+        const gallery = root.querySelector<HTMLElement>(".cta-project_gallery");
+        const section = root.querySelector<HTMLElement>(
+          ".cta-project-section_wrap",
+        );
+        const heading = root.querySelector<HTMLElement>(".cta-project_heading");
+        const lead = root.querySelector<HTMLElement>(".cta-project_lead");
+        const field = root.querySelector<HTMLElement>(".cta-project_field");
+        const buttons = root.querySelectorAll<HTMLElement>(
+          ".cta-project_button",
+        );
+        const lanes = root.querySelectorAll<HTMLElement>(".cta-project_lane");
+        if (
+          !content ||
+          !heading ||
+          !lead ||
+          !field ||
+          !stage ||
+          !square ||
+          !gallery ||
+          !section
+        )
+          return;
+
+        gsap.set(square, { scaleX: 1, scaleY: 1, transformOrigin: "center" });
+
+        gsap.set([heading, lead, field, ...buttons, ...lanes], {
+          autoAlpha: 0,
+          y: context.conditions.desktop ? "2rem" : "1.5rem",
+          filter: "blur(0.5rem)",
+        });
+
+        const reveal = {
+          autoAlpha: 1,
+          y: 0,
+          filter: "blur(0rem)",
+          ease: "power2.out",
+        };
+        if (context.conditions.desktop) {
+          const credits = root.querySelector<HTMLElement>(
+            "[data-site-credits]",
+          )!;
+          const creditsStage = credits.querySelector<HTMLElement>(
+            ".site-credits_stage",
+          )!;
+          const roll =
+            credits.querySelector<HTMLElement>(".site-credits_roll")!;
+          const creditsWindow = credits.querySelector<HTMLElement>(
+            ".site-credits_window",
+          )!;
+          const lines = [
+            ...credits.querySelectorAll<HTMLElement>("[data-credit-line]"),
+          ];
+          const finalLine = lines.at(-1)!;
+          const originalParent = content.parentElement!;
+          const originalNext = content.nextSibling;
+          const galleryParent = gallery.parentElement!;
+          const galleryNext = gallery.nextSibling;
+          finalLine.append(content);
+          creditsStage.append(gallery);
+          credits.classList.add("is-rolling");
+          section.removeAttribute("id");
+          const contactAnchor = document.createElement("span");
+          contactAnchor.id = "contact";
+          contactAnchor.className = "site-credits_contact";
+          credits.append(contactAnchor);
+          gsap.set(content, {
+            position: "absolute",
+            top: "50%",
+            left: 0,
+            y: -heading.offsetHeight / 2,
+            paddingTop: 0,
+          });
+          gsap.set([heading, lead, field, ...buttons], {
+            autoAlpha: 1,
+            y: 0,
+            filter: "none",
+          });
+          gsap.set([gallery, ...lanes], { y: 0, filter: "none" });
+          gsap.set(lanes, { autoAlpha: 1 });
+          const revealItems = [field, ...buttons, gallery];
+          const revealState = { opacity: 0 };
+          let revealTarget = 0;
+          gsap.set(revealItems, { autoAlpha: 0 });
+          const revealOpacity = gsap.quickTo(revealState, "opacity", {
+            duration: 0.8,
+            ease: "power1.out",
+            onUpdate: () =>
+              gsap.set(revealItems, { autoAlpha: revealState.opacity }),
+          });
+          const smooth = (value: number) => {
+            const p = Math.max(0, Math.min(value, 1));
+            return p * p * (3 - 2 * p);
+          };
+          const renderCredits = (raw: number, immediate = false) => {
+            const distance = credits.offsetHeight - window.innerHeight;
+            const intro = window.innerHeight * 0.25;
+            const progress = Math.max(
+              0,
+              Math.min((raw * distance - intro) / (distance - intro), 1),
+            );
+            const first = lines[0].offsetTop + lines[0].offsetHeight / 2;
+            const last = finalLine.offsetTop + finalLine.offsetHeight / 2;
+            const arrival = Math.max(0, Math.min((progress - 0.72) / 0.12, 1));
+            const travel =
+              progress < 0.72
+                ? progress / 0.84
+                : (0.72 + 0.12 * (arrival + arrival * arrival - arrival ** 3)) /
+                  0.84;
+            const center = first + (last - first) * travel;
+            const finalLift = (content.offsetHeight - heading.offsetHeight) / 2;
+            const lift = finalLift * smooth((progress - 0.82) / 0.16);
+            const revealOffset = Math.min(
+              window.innerHeight * 0.08,
+              finalLift * 0.55,
+            );
+            const handoff = smooth(
+              (lift - revealOffset) / Math.max(finalLift - revealOffset, 1),
+            );
+            gsap.set(content, { y: -heading.offsetHeight / 2 });
+            gsap.set(roll, { y: -center - lift });
+            gsap.set(creditsWindow, {
+              autoAlpha: smooth((raw * distance) / intro),
+            });
+            lines.forEach((line) => {
+              const gap =
+                Math.abs(line.offsetTop + line.offsetHeight / 2 - center) /
+                line.offsetHeight;
+              line.style.opacity = String(
+                (0.14 + 0.86 * Math.exp(-Math.pow(gap / 0.72, 2))) *
+                  (line === finalLine ? 1 : 1 - handoff),
+              );
+            });
+            const formLight = handoff;
+            if (immediate) {
+              revealOpacity.tween.pause();
+              revealState.opacity = formLight;
+              gsap.set(revealItems, { autoAlpha: formLight });
+            } else if (formLight !== revealTarget) {
+              revealOpacity(formLight);
+            }
+            revealTarget = formLight;
+            const actions = content.querySelector<HTMLElement>(
+              ".cta-project_actions",
+            )!;
+            const galleryTop =
+              window.innerHeight / 2 +
+              content.offsetHeight / 2 -
+              actions.offsetHeight -
+              parseFloat(getComputedStyle(actions).marginTop);
+            gsap.set(gallery, { top: galleryTop });
+            gsap.set(section, {
+              height:
+                Math.max(
+                  0,
+                  galleryTop + gallery.offsetHeight - window.innerHeight,
+                ) + 64,
+            });
+          };
+          gsap
+            .timeline({
+              scrollTrigger: {
+                trigger: stage,
+                start: "top -100%",
+                end: "bottom bottom",
+                scrub: true,
+                invalidateOnRefresh: true,
+              },
+            })
+            .to(square, {
+              scale: () =>
+                (Math.max(window.innerWidth, window.innerHeight) /
+                  square.offsetWidth) *
+                1.04,
+              duration: 1.8,
+              ease: "sine.inOut",
+            })
+            .to({}, { duration: 0.35 });
+          const playhead = { progress: 0 };
+          const creditsTween = gsap.to(playhead, {
+            progress: 1,
+            duration: 1,
+            ease: "none",
+            onUpdate: () => renderCredits(playhead.progress),
+            scrollTrigger: {
+              trigger: credits,
+              start: "top top",
+              end: "bottom bottom",
+              scrub: 0.5,
+              onRefresh: (self) => {
+                playhead.progress = self.progress;
+                renderCredits(self.progress, true);
+              },
+            },
+          });
+          renderCredits(creditsTween.scrollTrigger!.progress, true);
+          return () => {
+            creditsTween.scrollTrigger?.kill();
+            creditsTween.kill();
+            revealOpacity.tween.kill();
+            galleryParent.insertBefore(gallery, galleryNext);
+            originalParent.insertBefore(content, originalNext);
+            contactAnchor.remove();
+            credits.classList.remove("is-rolling");
+            lines.forEach((line) => line.style.removeProperty("opacity"));
+            section.id = "contact";
+          };
+        }
+        const timeline = gsap.timeline({
+          scrollTrigger: {
+            trigger: stage,
+            start: "top top",
+            end: () =>
+              `+=${Math.max(window.innerHeight, stage.offsetHeight - section.offsetHeight)}`,
+            scrub: context.conditions.desktop ? 1 : 0.8,
+            invalidateOnRefresh: true,
+          },
+        });
+
+        const revealStart = context.conditions.desktop ? 3.05 : 2.2;
+        timeline
+          .to({}, { duration: context.conditions.desktop ? 1.45 : 1 })
+          .to(square, {
+            scaleX: () => (window.innerWidth / square.offsetWidth) * 1.04,
+            scaleY: () => (window.innerHeight / square.offsetHeight) * 1.04,
+            duration: context.conditions.desktop ? 1.8 : 1.35,
+            ease: "sine.inOut",
+          })
+          .to(heading, { ...reveal, duration: 0.4 }, revealStart)
+          .to(lead, { ...reveal, duration: 0.4 }, revealStart + 0.12)
+          .to(field, { ...reveal, duration: 0.45 }, revealStart + 0.24)
+          .to(
+            buttons,
+            { ...reveal, duration: 0.38, stagger: 0.14 },
+            revealStart + 0.44,
+          )
+          .to(
+            lanes,
+            { ...reveal, duration: 0.45, stagger: 0.14 },
+            revealStart + 0.44,
+          )
+          .to({}, { duration: 0.65 });
+      },
+    );
+    return () => media.revert();
+  });
+
+  function initProjectCta() {
+    document
+      .querySelectorAll<HTMLElement>("[data-cta-project]")
+      .forEach((root) => {
+        if (root.dataset.ready) return;
+        root.dataset.ready = "true";
+        const input =
+          root.querySelector<HTMLInputElement>(".cta-project_input")!;
+        const email = root.querySelector<HTMLAnchorElement>(
+          "[data-project-email]",
+        )!;
+        const shuffle = root.querySelector<HTMLButtonElement>(
+          ".cta-project_shuffle",
+        )!;
+        const booking = root.querySelector<HTMLAnchorElement>(
+          "[data-project-booking]",
+        )!;
+        const status = root.querySelector<HTMLElement>(".cta-project_status")!;
+        const ideas: string[] = JSON.parse(root.dataset.ideas ?? "[]");
+        const update = () => {
+          email.href = `mailto:hello@69pixels.com?subject=Project%20enquiry&body=${encodeURIComponent(input.value)}`;
+        };
+        input.addEventListener("input", update);
+        booking.title = "Copy your idea and open the booking calendar";
+        booking.addEventListener("click", () => {
+          const idea = input.value;
+          if (!idea.trim()) return;
+          const copied = () => {
+            status.textContent = "Idea copied. Paste it into the booking form.";
+          };
+          const failed = () => {
+            status.textContent =
+              "Copy your idea above and paste it into the booking form.";
+          };
+          if (navigator.clipboard?.writeText) {
+            navigator.clipboard.writeText(idea).then(copied).catch(failed);
+          } else {
+            failed();
+          }
+        });
+        input.addEventListener("blur", () => {
+          input.scrollLeft = 0;
+        });
+        input.addEventListener("keydown", (event) => {
+          if (event.key === "Enter") input.blur();
+        });
+        shuffle.addEventListener("click", () => {
+          const alternatives = ideas.filter((idea) => idea !== input.value);
+          if (!alternatives.length) return;
+          input.value =
+            alternatives[Math.floor(Math.random() * alternatives.length)];
+          input.scrollLeft = 0;
+          update();
+        });
+        if (ideas.length)
+          input.value = ideas[Math.floor(Math.random() * ideas.length)];
+        update();
+      });
+  }
+  initProjectCta();
+  document.addEventListener("astro:page-load", initProjectCta);
+</script>
+
+<style is:global>
+  @layer components {
+    .site-credits_wrap {
+      display: none;
+      @media (width >= 64rem) {
+        display: block;
+        position: relative;
+        background: var(--dark-900);
+        color: var(--light-100);
+        &.is-rolling {
+          height: 360svh;
+          & .site-credits_stage {
+            position: sticky;
+            top: 0;
+            height: 100svh;
+          }
+          & .site-credits_window {
+            position: absolute;
+            z-index: 1;
+            inset: 13% 0;
+            overflow: hidden;
+            mask-image: linear-gradient(
+              to bottom,
+              transparent,
+              black 23%,
+              black 90%,
+              transparent
+            );
+          }
+          & .site-credits_roll {
+            position: absolute;
+            top: 50%;
+            width: 100%;
+            padding: 0;
+            will-change: transform;
+          }
+          & .site-credits_line {
+            opacity: 0.14;
+          }
+          & .site-credits_final {
+            display: flex;
+          }
+        }
+      }
+    }
+    .site-credits_stage {
+      position: relative;
+      padding: 7rem var(--site-margin);
+    }
+    .site-credits_roll {
+      padding-block: 3rem;
+    }
+    .site-credits_line {
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: clamp(7rem, 17svh, 10rem);
+      margin: 0;
+      padding-inline: 2rem;
+      font-family: var(--primary-family);
+      font-size: clamp(2.75rem, 4.9vw, 5.5rem);
+      font-weight: var(--primary-medium);
+      line-height: 1.05;
+      letter-spacing: -0.05em;
+      text-align: center;
+    }
+    .site-credits_final {
+      display: none;
+    }
+    .site-credits_contact {
+      position: absolute;
+      bottom: 100svh;
+      width: 0;
+      height: 0;
+    }
+    .cta-project-transition_wrap {
+      position: relative;
+      z-index: 1;
+      margin-top: -100svh;
+      height: 420svh;
+      background-color: var(--dark-900);
+
+      @media (width < 64rem) {
+        height: 300svh;
+      }
+      @media (width >= 64rem) {
+        height: auto;
+        & .cta-project-stage_wrap {
+          position: relative;
+          height: 320svh;
+        }
+        & .cta-project-section_wrap.section {
+          position: relative;
+          background-color: transparent;
+        }
+        & .cta-project_content {
+          padding-top: 3rem;
+        }
+        & .cta-project_heading {
+          font-size: clamp(2.75rem, 4.9vw, 5.5rem);
+          line-height: 1.05;
+          letter-spacing: -0.05em;
+        }
+        @media (prefers-reduced-motion: no-preference) {
+          & .site-credits_wrap {
+            margin-top: -100svh;
+            background: transparent;
+          }
+          & .cta-project_gallery {
+            margin-top: 0;
+          }
+          & .site-credits_stage .cta-project_content {
+            padding-inline: 1.25rem;
+            & .cta-project_field {
+              margin-top: 3rem;
+            }
+            & .cta-project_actions {
+              margin-top: 2rem;
+            }
+          }
+          & .site-credits_stage .cta-project_gallery {
+            position: absolute;
+            top: 70%;
+            left: 0;
+            z-index: 0;
+            pointer-events: none;
+            padding-bottom: 0;
+            mask-image:
+              linear-gradient(
+                to right,
+                transparent,
+                black 15%,
+                black 85%,
+                transparent
+              ),
+              linear-gradient(
+                to bottom,
+                transparent,
+                rgb(0 0 0 / 12%) 13%,
+                rgb(0 0 0 / 45%) 24%,
+                black 35%,
+                black
+              );
+            mask-composite: intersect;
+          }
+        }
+      }
+    }
+    .cta-project-stage_wrap {
+      position: absolute;
+      inset: 0;
+    }
+    .cta-project_stage {
+      position: sticky;
+      top: 0;
+      height: 100svh;
+      overflow: hidden;
+      background-color: var(--light-100);
+    }
+    .cta-project_square {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: clamp(3rem, 3.94vw, 4rem);
+      aspect-ratio: 1;
+      translate: -50% -50%;
+      background-color: var(--dark-900);
+    }
+    .cta-project-section_wrap.section {
+      position: sticky;
+      top: 0;
+      height: auto;
+      overflow: visible;
+      justify-content: flex-start;
+      background-color: transparent;
+    }
+    .cta-project_container.container {
+      width: 100%;
+      max-width: none;
+    }
+    .cta-project_wrap {
+      width: 100%;
+      overflow: clip;
+      background: var(--background);
+      color: var(--text);
+      --_project-gap: 1.25rem;
+      --_project-image-height: 24rem;
+      @media (width < 48rem) {
+        --_project-gap: 0.75rem;
+        --_project-image-height: 14rem;
+        & .cta-project_content {
+          padding: 5rem 1.25rem 0;
+        }
+        & .cta-project_heading {
+          font-size: clamp(2rem, min(11vw, 22svh), 5rem);
+        }
+        & .cta-project_actions {
+          margin-top: 2rem;
+          width: 100%;
+          max-width: 29.875rem;
+          flex-wrap: wrap;
+
+          & .cta-project_button {
+            flex: 1 0 auto;
+            padding-inline: var(--space-20);
+            white-space: nowrap;
+          }
+        }
+        & .cta-project_gallery {
+          margin-top: -6rem;
+          padding-bottom: 4rem;
+        }
+      }
+    }
+    .cta-project_content {
+      width: 100%;
+      position: relative;
+      z-index: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 10rem 1.25rem 0;
+    }
+    .cta-project_lead {
+      margin-top: var(--space-24);
+      font-size: clamp(1.125rem, 1.65vw, 1.5rem);
+      line-height: 1.5;
+      max-width: 42ch;
+      letter-spacing: var(--letter-spacing-normal);
+      text-wrap: balance;
+      text-align: center;
+      color: var(--text-2);
+    }
+    .cta-project_heading {
+      margin: 0;
+      font-size: clamp(2rem, min(10.15vw, 22svh), 9.8125rem);
+      font-weight: var(--primary-medium);
+      line-height: 0.9;
+      letter-spacing: -0.055em;
+      text-align: center;
+    }
+    .cta-project_field {
+      --_field-background: var(--dark-875);
+      --_field-padding-block: var(--space-28);
+      --_shuffle-size: 1.125rem;
+      --_shuffle-offset: var(--space-28);
+      --_shuffle-gap: var(--space-24);
+      position: relative;
+      width: 29.875rem;
+      max-width: 100%;
+      margin-top: var(--space-48);
+      border-radius: 5rem;
+      background: var(--_field-background);
+      &:focus-within {
+        --_field-background: var(--dark-790);
+
+        &::after {
+          display: none;
+        }
+      }
+
+      &:has(:focus-visible) {
+        outline: var(--focus-width) solid var(--text);
+        outline-offset: var(--focus-offset);
+      }
+      @media (hover: hover) {
+        &:hover {
+          --_field-background: var(--dark-790);
+        }
+      }
+      &::after {
+        content: "";
+        position: absolute;
+        inset-block: var(--_field-padding-block);
+        right: var(--_shuffle-offset);
+        z-index: 1;
+        width: calc(var(--_shuffle-size) + var(--_shuffle-gap));
+        pointer-events: none;
+        backdrop-filter: blur(0.15rem);
+        mask-image: linear-gradient(to right, transparent, black);
+      }
+    }
+    .cta-project_input {
+      display: block;
+      width: 100%;
+      min-width: 0;
+      border: 0;
+      outline: none;
+      background: transparent;
+      color: color-mix(in srgb, var(--light-100) 70%, transparent);
+      &:focus {
+        color: var(--light-100);
+        mask-image: none;
+        padding-inline-end: calc(
+          var(--_shuffle-offset) + var(--_shuffle-size) + var(--_shuffle-gap)
+        );
+      }
+      padding: var(--_field-padding-block) var(--_shuffle-offset)
+        var(--_field-padding-block) var(--space-32);
+      border-radius: inherit;
+      mask-image: linear-gradient(
+        to right,
+        black
+          calc(
+            100% - var(--_shuffle-offset) - var(--_shuffle-size) -
+              var(--_shuffle-gap)
+          ),
+        transparent calc(100% - var(--_shuffle-offset))
+      );
+      font: inherit;
+      font-size: 1rem;
+      font-weight: var(--primary-regular);
+      line-height: 1.4;
+      letter-spacing: 0.025em;
+      text-align: left;
+      &::placeholder {
+        color: color-mix(in srgb, var(--text) 45%, transparent);
+      }
+    }
+    .cta-project_shuffle.button_wrap.main {
+      position: absolute;
+      z-index: 2;
+      right: calc(
+        var(--_shuffle-offset) - (2.75rem - var(--_shuffle-size)) / 2
+      );
+      top: 50%;
+      transform: translateY(-50%);
+      width: 2.75rem;
+      height: 2.75rem;
+      padding: 0;
+      border: 0;
+      border-radius: 0;
+      --button-background: transparent;
+      --button-background-hover: transparent;
+      --button-text: color-mix(in srgb, var(--light-100) 70%, transparent);
+      --button-text-hover: var(--light-100);
+      & svg {
+        display: block;
+        width: 1.125rem;
+        height: 1.125rem;
+      }
+    }
+    .cta-project_actions {
+      display: flex;
+      justify-content: center;
+      gap: 0.5rem;
+      margin-top: 3.25rem;
+    }
+    .cta-project_status {
+      position: absolute;
+      top: 100%;
+      padding-top: 0.75rem;
+      font-size: 0.875rem;
+      text-align: center;
+      max-width: 28rem;
+    }
+    .cta-project_gallery {
+      width: 100%;
+      position: relative;
+      margin-top: -8.5rem;
+      padding-bottom: 10rem;
+      display: flex;
+      flex-direction: column;
+      gap: var(--_project-gap);
+      mask-image:
+        linear-gradient(
+          to right,
+          transparent,
+          black 15%,
+          black 85%,
+          transparent
+        ),
+        linear-gradient(
+          to bottom,
+          transparent,
+          rgb(0 0 0 / 12%) 13%,
+          rgb(0 0 0 / 45%) 24%,
+          black 35%,
+          black 85%,
+          transparent
+        );
+      mask-composite: intersect;
+    }
+    .cta-project_lane {
+      overflow: clip;
+    }
+    .cta-project_track {
+      width: max-content;
+      display: flex;
+      gap: var(--_project-gap);
+      animation: cta-project-travel 50s linear infinite;
+      will-change: transform;
+    }
+    .cta-project_lane.reverse .cta-project_track {
+      animation-direction: reverse;
+      animation-duration: 58s;
+    }
+    .cta-project_panel {
+      display: flex;
+      width: max-content;
+      gap: var(--_project-gap);
+    }
+    .cta-project_media {
+      flex: none;
+      height: var(--_project-image-height);
+      width: auto;
+      @media (width >= 64rem) {
+        width: calc(var(--_project-image-height) * var(--_project-image-ratio));
+      }
+      margin: 0;
+      overflow: hidden;
+    }
+    .cta-project_image.image {
+      display: block;
+      width: 100%;
+      height: 100%;
+      max-width: none;
+      object-fit: contain;
+    }
+    @keyframes cta-project-travel {
+      to {
+        transform: translate3d(calc(-50% - var(--_project-gap) / 2), 0, 0);
+      }
+    }
+    .cta-project_wrap {
+      @media (prefers-reduced-motion: reduce) {
+        :where(&) .cta-project-transition_wrap {
+          height: auto;
+          margin-top: 0;
+        }
+        :where(&) .cta-project-stage_wrap {
+          display: none;
+        }
+        :where(&) .cta-project-section_wrap.section {
+          position: relative;
+          height: auto;
+          overflow: visible;
+        }
+        :where(&) .cta-project_track {
+          animation: none;
+          will-change: auto;
+        }
+        :where(&) .cta-project_button,
+        :where(&) .cta-project_shuffle {
+          transition: none;
+        }
+        :where(&) .cta-project_lane {
+          overflow-x: auto;
+        }
+      }
+    }
+  }
+</style>

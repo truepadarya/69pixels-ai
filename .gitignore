@@ -25,3 +25,21 @@ pnpm-debug.log*
 
 # local agent settings
 .claude/settings.local.json
+
+# temporary verification artifacts and local cleanup archives
+.tmp-*
+debug.log
+cleanup-archive-*/
+
+# local environment overrides
+.env*
+!.env.example
+
+# source references and generated browser audit output
+Suisse Intl/
+screen-instructions/
+audit/**/*.png
+audit/**/*.jpg
+audit/**/*.webp
+audit/**/*.mp4
+audit/**/*.log

@@ -1,0 +1,647 @@
+---
+import type { HTMLAttributes } from "astro/types";
+import Card from "@/components/Item/Card.astro";
+import Eyebrow from "@/components/Typography/Eyebrow.astro";
+import Heading from "@/components/Typography/Heading.astro";
+import Paragraph from "@/components/Typography/Paragraph.astro";
+import ContentWrapper from "@/components/Wrapper/ContentWrapper.astro";
+import Grid from "@/components/Wrapper/Grid.astro";
+import Section from "@/components/Wrapper/Section.astro";
+import TagWrapper from "@/components/Wrapper/TagWrapper.astro";
+import healthcareVideo1 from "@/assets/graphics/cases/healthcare-1.mp4";
+import healthcareVideo2 from "@/assets/graphics/cases/healthcare-2.mp4";
+import healthcareVideo3 from "@/assets/graphics/cases/healthcare-3.mp4";
+import androidUiKitImage from "@/assets/graphics/cases/android-ui-kit.webp";
+import androidUiKitVideo from "@/assets/graphics/cases/android-ui-kit.mp4";
+import discoveryScenariosVideo from "@/assets/graphics/cases/swapsquad-scenarios.mp4";
+import discoveryPersonasVideo from "@/assets/graphics/cases/swapsquad-personas.mp4";
+import marketplaceCardToolImage from "@/assets/graphics/cases/marketplace-card-tool.png";
+import marketplaceCardExamplesImage from "@/assets/graphics/cases/marketplace-card-before-after.png";
+import mediaPlaceholder from "@/assets/graphics/media-placeholder.svg";
+
+interface Props extends HTMLAttributes<"section"> {
+  /** Set to `false` to skip rendering this component and its children. */
+  render?: boolean;
+}
+
+type CaseStudy = {
+  title: string;
+  description: string;
+  tags: string[];
+  cards: Array<{
+    heading: string;
+    text: string;
+    image?: ImageMetadata;
+    imageAlt?: string;
+    video?: string;
+  }>;
+};
+
+const cases: CaseStudy[] = [
+  {
+    title: "Four healthcare app prototypes tested in 7 days",
+    description:
+      "Across four clickable prototypes, our designers mapped around a dozen user journeys, from hospital workflows to care at home. Figma Make generated the code. INI Hannover tested the concepts and used the feedback to refine the flows before development.",
+    tags: [],
+    cards: [
+      {
+        heading: "From hospital workflows to care at home",
+        text: "",
+        video: healthcareVideo1,
+      },
+      {
+        heading: "NurseCopilot, ready to test",
+        text: "",
+        video: healthcareVideo2,
+      },
+      {
+        heading: "The app and the generated code",
+        text: "",
+        video: healthcareVideo3,
+      },
+    ],
+  },
+  {
+    title: "A handoff developers can work from",
+    description:
+      "Our designers documented screens, components and interactions in Figma with help from AI agents. Developers can inspect how each feature should work before implementation.",
+    tags: [],
+    cards: [
+      {
+        heading: "The planner’s Android UI kit",
+        text: "",
+        image: androidUiKitImage,
+      },
+      {
+        heading: "From design to handoff",
+        text: "",
+        video: androidUiKitVideo,
+      },
+    ],
+  },
+  {
+    title: "A 1,000-image brief became a custom tool",
+    description:
+      "The client asked for 1,000 images. We built a generative tool around its visual rules so designers could produce consistent card artwork.",
+    tags: [],
+    cards: [
+      {
+        heading: "Tool demonstration with sample product artwork",
+        text: "",
+        image: marketplaceCardToolImage,
+        imageAlt:
+          "Tool demonstration using a sample power bank card; not artwork from the client brief.",
+      },
+      {
+        heading: "Sample visuals demonstrating the workflow",
+        text: "",
+        image: marketplaceCardExamplesImage,
+        imageAlt:
+          "Sample marketplace visuals demonstrating the workflow; not deliverables from the client project.",
+      },
+    ],
+  },
+  {
+    title: "From a high-level brief to screen-level PRDs in weeks",
+    description:
+      "SwapSquad began with a high-level fantasy sports PRD. Our researchers used AI to map competitors, personas, features, edge cases and user journeys, then checked the findings. Those artifacts became focused PRDs detailing the content, functionality and mechanics of each section and screen.",
+    tags: [],
+    cards: [
+      {
+        heading: "Research that guides each screen",
+        text: "",
+        video: discoveryScenariosVideo,
+      },
+      {
+        heading: "Personas that inform the product",
+        text: "",
+        video: discoveryPersonasVideo,
+      },
+    ],
+  },
+];
+
+const { render = true, class: className, ...rest } = Astro.props;
+---
+
+{
+  render && (
+    <Section
+      id="cases"
+      theme="dark"
+      paddingTop="none"
+      paddingBottom="small"
+      gap="0"
+      class:list={["cases_wrap", className]}
+      data-cases
+      {...rest}
+    >
+      <ContentWrapper variant="sticky-content" class="cases_layout">
+        <div class="cases_panel">
+          <div class="cases_copy-stage">
+            {cases.map((caseStudy, index) => (
+              <div
+                class:list={["cases_copy", index === 0 && "is-active"]}
+                data-case-copy={index}
+                aria-hidden={index === 0 ? "false" : "true"}
+              >
+                <Heading tag="h2" variant="h4">
+                  {caseStudy.title}
+                </Heading>
+                <Paragraph variant="main">{caseStudy.description}</Paragraph>
+                <TagWrapper marginTop="0">
+                  {caseStudy.tags.map((tag) => (
+                    <Eyebrow tag="span" variant="tag">
+                      {tag}
+                    </Eyebrow>
+                  ))}
+                </TagWrapper>
+              </div>
+            ))}
+          </div>
+
+          <ol class="cases_indicator" aria-hidden="true">
+            {cases.map((_, index) => (
+              <li
+                class:list={[
+                  "cases_indicator-segment",
+                  index === 0 && "is-active",
+                ]}
+                data-case-indicator={index}
+              />
+            ))}
+          </ol>
+        </div>
+
+        <div slot="column2" class="cases_groups">
+          {cases.map((caseStudy, caseIndex) => (
+            <article
+              class:list={["cases_group", caseIndex === 0 && "is-active"]}
+              data-case-group={caseIndex}
+            >
+              <ContentWrapper class="cases_header">
+                <Heading tag="h2" variant="h4">
+                  {caseStudy.title}
+                </Heading>
+                <Paragraph variant="main">{caseStudy.description}</Paragraph>
+                <TagWrapper marginTop="0">
+                  {caseStudy.tags.map((tag) => (
+                    <Eyebrow tag="span" variant="tag">
+                      {tag}
+                    </Eyebrow>
+                  ))}
+                </TagWrapper>
+              </ContentWrapper>
+              <Grid
+                class="cases_cards"
+                role="group"
+                aria-label={`${caseStudy.title} cards`}
+                tabindex={caseStudy.cards.length > 1 ? "0" : undefined}
+              >
+                {caseStudy.cards.map((card) => (
+                  <Card
+                    variant="case"
+                    heading={card.heading}
+                    headingTag="h3"
+                    text={card.text}
+                    video={card.video}
+                    image={card.image ?? mediaPlaceholder}
+                    imageAlt={card.imageAlt ?? ""}
+                  />
+                ))}
+              </Grid>
+            </article>
+          ))}
+        </div>
+      </ContentWrapper>
+    </Section>
+  )
+}
+
+<script>
+  import { gsap } from "gsap";
+  import { ScrollTrigger } from "gsap/ScrollTrigger";
+  import {
+    mountScrollScene,
+    refreshScrollLayout,
+  } from "@/utils/motion/scrollScene";
+
+  gsap.registerPlugin(ScrollTrigger);
+
+  const initCases = (root: HTMLElement) => {
+    const copies = gsap.utils.toArray<HTMLElement>("[data-case-copy]", root);
+    const indicators = gsap.utils.toArray<HTMLElement>(
+      "[data-case-indicator]",
+      root,
+    );
+    const groups = gsap.utils.toArray<HTMLElement>("[data-case-group]", root);
+    const stickyColumn = root.querySelector<HTMLElement>(
+      ".cases_layout > :first-child",
+    );
+    const activeHeading = copies[0]?.querySelector<HTMLElement>(".heading");
+    const lastCard = groups
+      .at(-1)
+      ?.querySelector<HTMLElement>(".card_wrap.case:last-child");
+    if (
+      copies.length !== groups.length ||
+      indicators.length !== groups.length ||
+      !stickyColumn ||
+      !activeHeading ||
+      !lastCard
+    )
+      return;
+
+    const setEndSpace = () => {
+      const headingOffset =
+        activeHeading.getBoundingClientRect().top -
+        stickyColumn.getBoundingClientRect().top;
+      const endSpace =
+        stickyColumn.getBoundingClientRect().height -
+        headingOffset -
+        lastCard.getBoundingClientRect().height;
+
+      root.style.setProperty("--cases-end-space", `${Math.max(0, endSpace)}px`);
+    };
+
+    const media = gsap.matchMedia();
+
+    media.add("(prefers-reduced-motion: no-preference)", () => {
+      const reveal = (trigger: HTMLElement, items: HTMLElement[]) => {
+        gsap.fromTo(
+          items,
+          { autoAlpha: 0, y: "var(--reveal-distance-main)" },
+          {
+            autoAlpha: 1,
+            y: 0,
+            ease: "none",
+            stagger: 0.15,
+            scrollTrigger: {
+              trigger,
+              start: "top 90%",
+              end: "top 45%",
+              scrub: true,
+              invalidateOnRefresh: true,
+            },
+          },
+        );
+      };
+
+      const stage = root.querySelector<HTMLElement>(".cases_copy-stage");
+      if (stage) reveal(root, [stage, ...indicators]);
+      groups.forEach((group) => {
+        const header = group.querySelector<HTMLElement>(".cases_header");
+        if (header)
+          reveal(
+            group,
+            Array.from(
+              header.querySelectorAll<HTMLElement>(
+                ".heading, .text, .tag-wrapper",
+              ),
+            ),
+          );
+        group
+          .querySelectorAll<HTMLElement>(".card_wrap.case")
+          .forEach((card) => {
+            reveal(
+              card,
+              Array.from(
+                card.querySelectorAll<HTMLElement>(
+                  ".card_visual, .card_title, .card_description",
+                ),
+              ),
+            );
+          });
+      });
+    });
+
+    const addCaseTriggers = (query: string, viewportPoint: number) => {
+      media.add(query, () => {
+        let measureFrame = 0;
+        const resizeObserver = new ResizeObserver(() => {
+          cancelAnimationFrame(measureFrame);
+          measureFrame = requestAnimationFrame(() => {
+            setEndSpace();
+            refreshScrollLayout();
+          });
+        });
+        resizeObserver.observe(lastCard);
+        setEndSpace();
+        let activeIndex = -1;
+
+        const reducedMotion = window.matchMedia(
+          "(prefers-reduced-motion: reduce)",
+        ).matches;
+
+        const setActive = (nextIndex: number) => {
+          if (nextIndex === activeIndex) return;
+
+          const previousCopy = copies[activeIndex];
+          const nextCopy = copies[nextIndex];
+
+          previousCopy?.classList.remove("is-active");
+          previousCopy?.setAttribute("aria-hidden", "true");
+          indicators[activeIndex]?.classList.remove("is-active");
+          groups[activeIndex]?.classList.remove("is-active");
+
+          nextCopy?.classList.add("is-active");
+          nextCopy?.setAttribute("aria-hidden", "false");
+          indicators[nextIndex]?.classList.add("is-active");
+          groups[nextIndex]?.classList.add("is-active");
+
+          if (reducedMotion) {
+            gsap.set(copies, { autoAlpha: 0 });
+            gsap.set(nextCopy, { autoAlpha: 1 });
+          }
+
+          activeIndex = nextIndex;
+        };
+
+        copies.forEach((copy, index) => {
+          copy.classList.toggle("is-active", index === 0);
+          copy.setAttribute("aria-hidden", index === 0 ? "false" : "true");
+        });
+        indicators.forEach((indicator, index) =>
+          indicator.classList.toggle("is-active", index === 0),
+        );
+        groups.forEach((group, index) =>
+          group.classList.toggle("is-active", index === 0),
+        );
+        gsap.set(copies, { autoAlpha: 0 });
+        gsap.set(copies[0], { autoAlpha: 1 });
+        setActive(0);
+
+        const syncActive = () => {
+          let index = 0;
+          const progress = groups.map((group, groupIndex) =>
+            groupIndex === 0
+              ? 1
+              : gsap.utils.clamp(
+                  0,
+                  1,
+                  (window.innerHeight * 0.65 -
+                    group.getBoundingClientRect().top) /
+                    (window.innerHeight * 0.3),
+                ),
+          );
+          groups.forEach((group, groupIndex) => {
+            if (
+              group.getBoundingClientRect().top <=
+              window.innerHeight * viewportPoint
+            )
+              index = groupIndex;
+          });
+          setActive(index);
+          groups.forEach((group, groupIndex) => {
+            const weight = reducedMotion
+              ? Number(groupIndex === index)
+              : progress[groupIndex] * (1 - (progress[groupIndex + 1] ?? 0));
+            gsap.set(group, { opacity: 0.4 + 0.6 * weight });
+            if (!reducedMotion) {
+              gsap.set(copies[groupIndex], { autoAlpha: weight });
+              Array.from(copies[groupIndex].children).forEach(
+                (item, itemIndex) => {
+                  const entry = gsap.utils.clamp(
+                    0,
+                    1,
+                    (progress[groupIndex] - itemIndex * 0.1) /
+                      (1 - itemIndex * 0.1),
+                  );
+                  gsap.set(item, {
+                    autoAlpha: entry,
+                    y: `${(1 - entry) * 1.5}rem`,
+                  });
+                },
+              );
+            }
+          });
+        };
+        const trigger = ScrollTrigger.create({
+          trigger: root,
+          start: "top bottom",
+          end: "bottom top",
+          onUpdate: () => syncActive(),
+          onRefresh: syncActive,
+        });
+        syncActive();
+
+        return () => {
+          cancelAnimationFrame(measureFrame);
+          resizeObserver.disconnect();
+          root.style.removeProperty("--cases-end-space");
+          trigger.kill();
+          gsap.set(copies, { clearProps: "opacity,visibility,transform" });
+          gsap.set(
+            copies.flatMap((copy) => Array.from(copy.children)),
+            { clearProps: "opacity,visibility,transform" },
+          );
+          gsap.set(groups, { clearProps: "opacity" });
+        };
+      });
+    };
+
+    addCaseTriggers(
+      "(width >= 64rem) and (prefers-reduced-motion: no-preference)",
+      0.5,
+    );
+    addCaseTriggers(
+      "(width >= 64rem) and (prefers-reduced-motion: reduce)",
+      0.5,
+    );
+    return () => {
+      media.revert();
+    };
+  };
+
+  mountScrollScene("[data-cases]", initCases);
+</script>
+
+<style is:global>
+  @layer components {
+    .cases_layout > :first-child {
+      min-height: calc(100svh - var(--nav-height) - var(--site-margin) * 2);
+    }
+
+    .cases_panel {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      flex-grow: 1;
+      width: 100%;
+      min-height: inherit;
+      padding-block: var(--space-40);
+    }
+
+    .cases_copy-stage {
+      display: grid;
+      width: 100%;
+      max-width: 32rem;
+    }
+
+    .cases_copy {
+      grid-area: 1 / 1;
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-36);
+      align-self: start;
+      visibility: hidden;
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .cases_copy.is-active {
+      visibility: visible;
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .cases_copy > .text {
+      color: var(--text-2);
+    }
+
+    .cases_header {
+      display: none;
+    }
+
+    .cases_header .text {
+      color: var(--text-2);
+    }
+
+    .cases_cards {
+      --_gap-size: var(--space-72);
+    }
+
+    .cases_indicator {
+      display: flex;
+      gap: var(--space-4);
+      width: 100%;
+    }
+
+    .cases_indicator-segment {
+      width: 2.25rem;
+      height: 0.0625rem;
+      background-color: var(--background-3);
+      transition: background-color var(--hover-duration) var(--hover-ease);
+    }
+
+    .cases_indicator-segment.is-active {
+      background-color: var(--text);
+    }
+
+    .cases_groups,
+    .cases_group {
+      display: flex;
+      flex-direction: column;
+      width: 100%;
+    }
+
+    .cases_groups {
+      gap: calc(var(--space-72) + var(--space-48));
+      padding-bottom: var(--cases-end-space, 0);
+    }
+
+    .cases_group {
+      gap: var(--space-48);
+      opacity: 0.4;
+    }
+
+    .cases_group.is-active {
+      opacity: 1;
+    }
+
+    .cases_wrap {
+      @media (prefers-reduced-motion: reduce) {
+        :where(&) .cases_group {
+          transition: none;
+        }
+      }
+    }
+
+    .cases_wrap {
+      @media (width >= 64rem) {
+        & .card_wrap.case > .card_content {
+          padding-left: 0;
+        }
+
+        & .card_wrap.case .card_description {
+          display: none;
+        }
+      }
+
+      @media (width < 64rem) {
+        & .cases_layout {
+          gap: 0;
+        }
+
+        & .cases_layout > :first-child {
+          display: none;
+        }
+
+        & .cases_groups {
+          gap: calc(var(--space-72) + var(--space-48));
+          padding-top: var(--nav-height);
+          padding-bottom: 0;
+        }
+
+        & .cases_group {
+          gap: var(--space-40);
+          opacity: 1;
+          transition: none;
+        }
+
+        & .cases_header {
+          display: flex;
+          max-width: 40rem;
+        }
+
+        & .cases_header > :first-child {
+          gap: var(--space-24);
+          align-self: start;
+        }
+
+        & .cases_cards {
+          gap: var(--space-24);
+          grid-template-columns: none;
+          grid-auto-flow: column;
+          grid-auto-columns: 65%;
+          align-items: start;
+          overflow-x: auto;
+          overscroll-behavior-x: contain;
+          scroll-snap-type: x proximity;
+          scrollbar-width: thin;
+          scrollbar-color: var(--background-3) transparent;
+          padding-bottom: var(--space-16);
+        }
+
+        & .cases_cards:focus-visible {
+          outline: 0.125rem solid var(--text);
+          outline-offset: 0.25rem;
+        }
+
+        & .cases_cards > .card_wrap {
+          min-width: 0;
+          scroll-snap-align: start;
+        }
+
+        & .cases_cards:has(> :only-child) {
+          grid-auto-columns: 100%;
+          overflow-x: clip;
+          padding-bottom: 0;
+        }
+
+        & .cases_cards .card_wrap.case > .card_content {
+          padding: var(--space-24) 0 0;
+        }
+      }
+
+      @media (width < 48rem) {
+        & .cases_group {
+          gap: var(--space-32);
+        }
+
+        & .cases_cards {
+          grid-auto-columns: calc(100% - var(--space-48));
+        }
+      }
+    }
+  }
+</style>

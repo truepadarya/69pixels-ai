@@ -1,0 +1,1328 @@
+---
+import Heading from "@/components/Typography/Heading.astro";
+import Img from "@/components/Media/Img.astro";
+import Video from "@/components/Media/Video.astro";
+import concepts1 from "@/assets/graphics/second/Concepts_1.webp";
+import concepts2 from "@/assets/graphics/second/Concepts_2.webp";
+import concepts3 from "@/assets/graphics/second/Concepts_3.webp";
+import concepts4 from "@/assets/graphics/second/Concepts_4.mp4";
+import concepts5 from "@/assets/graphics/second/Concepts_5.webp";
+import concepts6 from "@/assets/graphics/second/Concepts_6.mp4";
+import dev1 from "@/assets/graphics/second/dev_1.webp";
+import dev2 from "@/assets/graphics/second/dev_2.mp4";
+import dev3 from "@/assets/graphics/second/dev_3.webp";
+import dev4 from "@/assets/graphics/second/dev_4.webp";
+import dev5 from "@/assets/graphics/second/dev_5.webp";
+import devOrbit from "@/assets/graphics/second/dev_orbit.mp4";
+import devProductMotion from "@/assets/graphics/second/dev_product-motion.mp4";
+import visualsClock from "@/assets/graphics/second/visuals_clock.webp";
+import visualsGirlAndHorse from "@/assets/graphics/second/visuals_girl-and-horse.mp4";
+import visualsGirl from "@/assets/graphics/second/visuals_girl.webp";
+import visualsGuy from "@/assets/graphics/second/visuals_guy.webp";
+import visualsGuy2 from "@/assets/graphics/second/visuals_guy2.webp";
+import visualsLogo2 from "@/assets/graphics/second/visuals_logo-anim-2.mp4";
+import visualsLogoSharp from "@/assets/graphics/second/visuals_logo-sharp.mp4";
+import visualsPremiumCard from "@/assets/graphics/second/visuals_premium-card.mp4";
+import visualsMetro from "@/assets/graphics/second/visuals_metro.mp4";
+import visualsMockup from "@/assets/graphics/second/visuals_mockup.mp4";
+import visualsOldWoman from "@/assets/graphics/second/visuals_old-woman-reels.mp4";
+import visualsPackage from "@/assets/graphics/second/visuals_package.mp4";
+import visualsTeachly from "@/assets/graphics/second/visuals_teachly-mockup.webp";
+import visualsLvscp from "@/assets/graphics/second/visuals_lvscp.webp";
+import visualsTeachlyNecklace from "@/assets/graphics/second/visuals_teachly-necklace.webp";
+import type { HTMLAttributes } from "astro/types";
+
+interface Props extends HTMLAttributes<"section"> {
+  /** Set to `false` to skip rendering this component and its children. */
+  render?: boolean;
+}
+
+type CardBase = {
+  id?: string;
+  x: number;
+  width: number;
+  entry: number;
+  duration: number;
+  drift: number;
+  depth?: "near" | "mid" | "back" | "far";
+  mobileX?: number;
+  mobileWidth?: number;
+  mobileYOffset?: number;
+  mobileScrollY?: number;
+  mobileScrollAt?: number;
+  mobileScrollSpeed?: number;
+  mobileEntry?: number;
+  desktopEntry?: number;
+  mobileEntryOffset?: number;
+  hideMobile?: boolean;
+};
+
+type Card = CardBase &
+  (
+    | { kind: "image"; src: ImageMetadata }
+    | { kind: "video"; src: string; ratio?: string }
+    | { kind: "placeholder"; ratio: string }
+  );
+
+type Theme = {
+  id: "visual" | "product" | "rapid";
+  title: string;
+  cards: Card[];
+};
+
+const themes: Theme[] = [
+  {
+    id: "visual",
+    title: "Brand & Creative",
+    cards: [
+      {
+        kind: "video",
+        src: visualsOldWoman,
+        ratio: "1176 / 1764",
+        x: 2,
+        width: 22,
+        entry: -0.13,
+        duration: 0.27,
+        drift: 5,
+        mobileX: 6,
+        mobileWidth: 22,
+        mobileYOffset: 0.045,
+        mobileEntry: -0.16,
+      },
+      {
+        kind: "image",
+        id: "visual-guy",
+        src: visualsGuy,
+        x: 31,
+        width: 17,
+        entry: -0.09,
+        duration: 0.26,
+        drift: -4,
+        mobileX: 35,
+        mobileWidth: 17,
+        mobileYOffset: 0.045,
+        mobileEntry: -0.1,
+      },
+      {
+        kind: "video",
+        id: "visual-logo",
+        src: visualsLogoSharp,
+        ratio: "830 / 1108",
+        x: 58,
+        width: 18,
+        entry: 0.02,
+        duration: 0.27,
+        drift: 4,
+        mobileX: 58,
+        mobileWidth: 18,
+      },
+      {
+        kind: "image",
+        id: "visual-girl",
+        src: visualsGirl,
+        x: 84,
+        width: 17,
+        entry: 0.07,
+        duration: 0.26,
+        drift: -5,
+        mobileX: 0,
+        mobileWidth: 15.5,
+      },
+      {
+        kind: "video",
+        id: "visual-qualle",
+        src: visualsLogo2,
+        ratio: "560 / 752",
+        x: 24,
+        width: 14,
+        entry: 0.12,
+        duration: 0.25,
+        drift: 4,
+        mobileX: 24,
+        mobileWidth: 16,
+        mobileEntryOffset: 0.018,
+      },
+      {
+        kind: "image",
+        src: visualsTeachly,
+        x: 73,
+        width: 22,
+        entry: 0.18,
+        duration: 0.26,
+        drift: -5,
+        mobileX: 73,
+        mobileWidth: 22,
+      },
+      {
+        kind: "image",
+        id: "visual-guy-two",
+        src: visualsGuy2,
+        x: -2,
+        width: 14,
+        entry: 0.22,
+        duration: 0.24,
+        drift: 5,
+        depth: "back",
+        mobileX: -2,
+        mobileWidth: 14,
+      },
+      {
+        kind: "video",
+        id: "visual-package",
+        src: visualsPackage,
+        ratio: "834 / 1112",
+        x: 11,
+        width: 18,
+        entry: 0.25,
+        duration: 0.25,
+        drift: -4,
+        mobileX: 11,
+        mobileWidth: 18,
+      },
+      {
+        kind: "image",
+        src: visualsClock,
+        x: 56,
+        width: 16,
+        entry: 0.28,
+        duration: 0.23,
+        drift: 4,
+        mobileX: 66,
+        mobileWidth: 16,
+        mobileYOffset: -0.14,
+      },
+      {
+        kind: "video",
+        src: visualsMetro,
+        ratio: "832 / 1104",
+        x: 85,
+        width: 18,
+        entry: 0.31,
+        duration: 0.22,
+        drift: -4,
+        depth: "back",
+        mobileX: 0,
+        mobileWidth: 18,
+        mobileScrollY: 0.78,
+      },
+      {
+        kind: "video",
+        src: visualsGirlAndHorse,
+        ratio: "720 / 1280",
+        x: 77,
+        width: 17,
+        entry: 0.38,
+        duration: 0.17,
+        drift: -5,
+        mobileX: 58,
+        mobileWidth: 15,
+        mobileScrollY: 0.65,
+        mobileEntry: 0.31,
+      },
+      {
+        kind: "video",
+        src: visualsMockup,
+        ratio: "1066 / 600",
+        x: 17,
+        width: 30,
+        entry: 0.36,
+        duration: 0.2,
+        drift: 5,
+        mobileX: -24,
+        mobileWidth: 32,
+        mobileScrollY: 0.33,
+        mobileEntry: 0.24,
+      },
+      {
+        kind: "image",
+        id: "visual-01",
+        src: visualsLvscp,
+        x: 72,
+        width: 16,
+        entry: -0.12,
+        duration: 0.23,
+        drift: -3,
+        depth: "far",
+        mobileX: 59,
+        mobileWidth: 14,
+        mobileEntry: -0.12,
+        hideMobile: true,
+      },
+      {
+        kind: "image",
+        id: "visual-02",
+        src: visualsTeachlyNecklace,
+        x: 69,
+        width: 29,
+        entry: -0.055,
+        duration: 0.24,
+        drift: 3,
+        depth: "back",
+        mobileX: -3,
+        mobileWidth: 28,
+        mobileYOffset: -0.025,
+        mobileEntry: -0.025,
+      },
+      {
+        kind: "video",
+        id: "visual-03",
+        src: visualsPremiumCard,
+        ratio: "834 / 1112",
+        x: 6,
+        width: 19.5,
+        entry: 0.035,
+        duration: 0.23,
+        drift: 4,
+        mobileX: 87,
+        mobileWidth: 14,
+        mobileScrollY: 0.52,
+        mobileScrollAt: 0.28,
+        mobileScrollSpeed: 0.7,
+        mobileEntry: 0.16,
+      },
+    ],
+  },
+  {
+    id: "product",
+    title: "Digital Products",
+    cards: [
+      {
+        kind: "image",
+        src: dev1,
+        x: 5,
+        width: 30,
+        entry: 0.44,
+        duration: 0.21,
+        drift: 5,
+        mobileX: 3,
+        mobileWidth: 32,
+        mobileEntry: 0.44,
+      },
+      {
+        kind: "video",
+        src: dev2,
+        ratio: "1104.878 / 600",
+        x: 64,
+        width: 36,
+        entry: 0.5,
+        duration: 0.2,
+        drift: -4,
+        mobileX: 10,
+        mobileWidth: 37,
+        mobileEntry: 0.49,
+      },
+      {
+        kind: "image",
+        src: dev4,
+        x: 56,
+        width: 33,
+        entry: 0.56,
+        duration: 0.2,
+        drift: 4,
+        mobileX: 3,
+        mobileWidth: 35,
+        mobileEntry: 0.54,
+      },
+      {
+        kind: "image",
+        src: dev3,
+        x: 13,
+        width: 29,
+        entry: 0.63,
+        duration: 0.19,
+        drift: -5,
+        mobileX: 22,
+        mobileWidth: 31,
+        mobileEntry: 0.59,
+      },
+      {
+        kind: "image",
+        src: dev5,
+        x: 62,
+        width: 37,
+        entry: 0.68,
+        duration: 0.18,
+        drift: 4,
+        mobileX: 6,
+        mobileWidth: 39,
+        mobileEntry: 0.64,
+      },
+      {
+        kind: "video",
+        id: "product-01",
+        src: devOrbit,
+        ratio: "5 / 4",
+        x: 65,
+        width: 26,
+        entry: 0.44,
+        duration: 0.2,
+        drift: -4,
+        depth: "back",
+        mobileX: 48,
+        mobileWidth: 21,
+        mobileScrollY: 0.48,
+        mobileScrollAt: 0.48,
+        mobileEntry: 0.42,
+      },
+      {
+        kind: "video",
+        id: "product-02",
+        src: devProductMotion,
+        ratio: "1504 / 1024",
+        x: 22,
+        width: 27,
+        entry: 0.5,
+        duration: 0.2,
+        drift: 4,
+        depth: "mid",
+        mobileX: 5,
+        mobileWidth: 23,
+        mobileEntry: 0.49,
+        desktopEntry: 0.54,
+        hideMobile: true,
+      },
+    ],
+  },
+  {
+    id: "rapid",
+    title: "Prototypes & Tools",
+    cards: [
+      {
+        kind: "image",
+        src: concepts1,
+        x: 2,
+        width: 20,
+        entry: 0.76,
+        duration: 0.2,
+        drift: 5,
+        mobileEntry: 0.69,
+      },
+      {
+        kind: "image",
+        src: concepts2,
+        x: 29,
+        width: 21,
+        entry: 0.84,
+        duration: 0.18,
+        drift: -4,
+        mobileX: 12,
+        mobileWidth: 24.5,
+        mobileEntry: 0.81,
+      },
+      {
+        kind: "image",
+        src: concepts3,
+        x: 79,
+        width: 21,
+        entry: 0.74,
+        duration: 0.24,
+        drift: -5,
+        mobileX: 52,
+        mobileWidth: 22.5,
+        mobileEntry: 0.73,
+      },
+      {
+        kind: "video",
+        src: concepts4,
+        ratio: "1302 / 706",
+        x: -2,
+        width: 30,
+        entry: 0.88,
+        duration: 0.19,
+        drift: 4,
+        mobileX: 0,
+        mobileWidth: 36,
+        mobileEntry: 0.9,
+      },
+      {
+        kind: "image",
+        src: concepts5,
+        x: 68,
+        width: 20,
+        entry: 0.87,
+        duration: 0.15,
+        drift: -4,
+        mobileX: 44,
+        mobileWidth: 25,
+      },
+      {
+        kind: "video",
+        src: concepts6,
+        ratio: "1280 / 720",
+        x: 73,
+        width: 27,
+        entry: 0.945,
+        duration: 0.14,
+        drift: -5,
+        mobileX: 30,
+        mobileWidth: 33,
+        mobileEntry: 0.965,
+      },
+    ],
+  },
+];
+
+const desktopWidth = (card: Card) => {
+  if (card.id === "visual-guy") return 18;
+  if (card.id === "visual-girl") return 27;
+  if (card.id === "visual-logo") return 32;
+  const width = card.id === "visual-qualle" ? 18 : card.width;
+  const scale =
+    card.id === "visual-03" || card.id === "visual-qualle" ? 1.1 : 1;
+  return width * (1.12 + (width - 14) * 0.01) * scale;
+};
+
+const cardStyle = (card: Card) =>
+  [
+    `--_x:${card.x}`,
+    `--_width:${card.width}`,
+    `--_desktop-width:${desktopWidth(card)}`,
+    `--_mobile-x:${card.mobileX ?? card.x}`,
+    `--_mobile-width:${card.mobileWidth ?? card.width}`,
+    ...(card.kind === "placeholder"
+      ? [`--_placeholder-ratio:${card.ratio}`]
+      : []),
+  ].join(";");
+
+const imageSizes = (card: Card) => {
+  const mobileWidth = Math.min((card.mobileWidth ?? card.width) * 2.25, 88);
+  const tabletWidth = Math.min(card.width * 1.75, 76);
+
+  return `(width < 48rem) ${mobileWidth}vw, (width < 64rem) ${tabletWidth}vw, ${desktopWidth(card)}vw`;
+};
+
+const { render = true, class: className, ...rest } = Astro.props;
+---
+
+{
+  render && (
+    <section
+      class:list={["capabilities_wrap", className]}
+      data-capabilities
+      aria-label="Capabilities"
+      {...rest}
+    >
+      <div class="capabilities_stage">
+        {themes.map((theme) => (
+          <article
+            class="capabilities_theme"
+            data-capabilities-theme={theme.id}
+          >
+            <div class="capabilities_title">
+              <Heading tag="h2" variant="h2">
+                {theme.title}
+              </Heading>
+            </div>
+            {theme.id === "visual" && (
+              <div class="capabilities_title" data-capabilities-branding>
+                <Heading tag="h2" variant="h2">
+                  Branding
+                </Heading>
+              </div>
+            )}
+            <div class="capabilities_media" aria-hidden="true">
+              {theme.cards.map((card) => (
+                <div
+                  class="capabilities_card"
+                  data-card-id={card.id}
+                  data-kind={card.kind}
+                  data-depth={card.depth ?? "near"}
+                  data-hide-mobile={card.hideMobile ? "true" : undefined}
+                  data-entry={card.entry}
+                  data-duration={card.duration}
+                  data-drift={card.drift}
+                  data-mobile-entry={card.mobileEntry}
+                  data-desktop-entry={card.desktopEntry}
+                  data-mobile-entry-offset={card.mobileEntryOffset}
+                  data-mobile-y-offset={card.mobileYOffset}
+                  data-mobile-scroll-y={card.mobileScrollY}
+                  data-mobile-scroll-at={card.mobileScrollAt}
+                  data-mobile-scroll-speed={card.mobileScrollSpeed}
+                  style={cardStyle(card)}
+                >
+                  <div class="capabilities_surface">
+                    {card.kind === "image" ? (
+                      <Img
+                        src={card.src}
+                        alt=""
+                        variant="constrained"
+                        sizes={imageSizes(card)}
+                      />
+                    ) : card.kind === "video" ? (
+                      card.ratio ? (
+                        <Video
+                          src={card.src}
+                          variant="custom"
+                          ratio={card.ratio}
+                          preload="metadata"
+                        />
+                      ) : (
+                        <Video
+                          src={card.src}
+                          variant="auto"
+                          preload="metadata"
+                        />
+                      )
+                    ) : (
+                      <div class="capabilities_placeholder" />
+                    )}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </article>
+        ))}
+      </div>
+    </section>
+  )
+}
+
+<script>
+  import { gsap } from "gsap";
+  import { ScrollTrigger } from "gsap/ScrollTrigger";
+
+  gsap.registerPlugin(ScrollTrigger);
+
+  const MOBILE_MEDIA_QUERY = "(width < 48rem)";
+  const THEME_TOTAL = 3;
+  const VISUAL_THEME_INDEX = 0;
+  const RAPID_THEME_INDEX = 2;
+  const MOBILE_VISUAL_ANCHOR_PROGRESS = 0.4;
+  const DESKTOP_SCROLL_SCALE = 0.875;
+  const DESKTOP_SCROLL_REMOVED = 1 - DESKTOP_SCROLL_SCALE;
+  const DESKTOP_VISUAL_END = 0.39;
+
+  const clampProgress = (value: number) => gsap.utils.clamp(0, 1, value);
+  const smoothstep = (value: number) => value * value * (3 - 2 * value);
+  const readNumber = (element: HTMLElement, key: string) =>
+    Number(element.dataset[key] ?? 0);
+  const viewportExitOpacity = (
+    top: number,
+    height: number,
+    viewportHeight: number,
+  ) => {
+    const fadeStart = viewportHeight * 0.025;
+    const fadeEnd = -height * 0.9;
+
+    return clampProgress((top - fadeEnd) / (fadeStart - fadeEnd));
+  };
+
+  const initCapabilities = (root: HTMLElement) => {
+    const stage = root.querySelector<HTMLElement>(".capabilities_stage");
+    const mediaViewport = root.querySelector<HTMLElement>(
+      ".capabilities_media",
+    );
+    const themes = gsap.utils.toArray<HTMLElement>(
+      "[data-capabilities-theme]",
+      root,
+    );
+    const titles = themes.flatMap((theme) =>
+      gsap.utils.toArray<HTMLElement>(".capabilities_title", theme),
+    );
+    const visualHeading = titles[0]?.querySelector<HTMLElement>(".heading");
+    const cards = themes.map((theme) =>
+      gsap.utils.toArray<HTMLElement>(".capabilities_card", theme),
+    );
+    const visualMediaCount = cards[0].findIndex(
+      (card) => card.dataset.cardId === "visual-01",
+    );
+    const prefersReducedMotion = window.matchMedia(
+      "(prefers-reduced-motion: reduce)",
+    );
+    const isMobile = window.matchMedia(MOBILE_MEDIA_QUERY).matches;
+    const isDesktop = window.matchMedia("(width >= 64rem)").matches;
+
+    if (
+      prefersReducedMotion.matches ||
+      themes.length !== THEME_TOTAL ||
+      visualMediaCount < 2 ||
+      !stage ||
+      !mediaViewport ||
+      !visualHeading ||
+      titles.some((title) => !title)
+    )
+      return;
+
+    root.dataset.enhanced = "true";
+
+    const scrollDistance = () =>
+      Math.max(root.offsetHeight - stage.clientHeight, 0);
+
+    const themeOpacity = (themeIndex: number, progress: number) => {
+      const transitionAt =
+        themeIndex === 0
+          ? isDesktop
+            ? DESKTOP_VISUAL_END
+            : 0.5
+          : isDesktop
+            ? 0.79 - DESKTOP_SCROLL_REMOVED
+            : isMobile
+              ? 0.7
+              : 0.79;
+      if (themeIndex === RAPID_THEME_INDEX) return 1;
+      if (progress <= transitionAt - 0.03) return 1;
+
+      return gsap.utils.interpolate(
+        1,
+        0.4,
+        clampProgress((progress - transitionAt + 0.03) / 0.03),
+      );
+    };
+
+    gsap.set(titles, { autoAlpha: 0, yPercent: 0, filter: "blur(0rem)" });
+    gsap.set(titles[0], { autoAlpha: 1, yPercent: 0, filter: "blur(0rem)" });
+    gsap.set(visualHeading, { opacity: 0, y: 12 });
+    const setHeadingOpacity = gsap.quickSetter(visualHeading, "opacity");
+    const setHeadingY = gsap.quickSetter(visualHeading, "y", "px");
+
+    const flowCards = cards.flatMap((group, themeIndex) =>
+      group.map((element, cardIndex) => {
+        const media =
+          element.querySelector<HTMLElement>(".capabilities_surface") ??
+          element;
+        const explicitMobileEntry = element.dataset.mobileEntry;
+
+        gsap.set(element, { autoAlpha: 1 });
+        gsap.set(media, { opacity: 1 });
+
+        return {
+          element,
+          media,
+          themeIndex,
+          cardIndex,
+          entry: readNumber(element, "entry"),
+          desktopEntry:
+            element.dataset.desktopEntry === undefined
+              ? null
+              : readNumber(element, "desktopEntry"),
+          mobileEntry: explicitMobileEntry
+            ? readNumber(element, "mobileEntry")
+            : themeIndex === VISUAL_THEME_INDEX
+              ? gsap.utils.interpolate(
+                  -0.11,
+                  0.4,
+                  cardIndex / (visualMediaCount - 1),
+                ) + readNumber(element, "mobileEntryOffset")
+              : null,
+          duration: readNumber(element, "duration"),
+          drift: readNumber(element, "drift"),
+          mobileYOffset: readNumber(element, "mobileYOffset"),
+          mobileScrollY:
+            element.dataset.mobileScrollY === undefined
+              ? null
+              : readNumber(element, "mobileScrollY"),
+          mobileScrollAt:
+            element.dataset.mobileScrollAt === undefined
+              ? MOBILE_VISUAL_ANCHOR_PROGRESS
+              : readNumber(element, "mobileScrollAt"),
+          mobileScrollSpeed:
+            element.dataset.mobileScrollSpeed === undefined
+              ? 1
+              : readNumber(element, "mobileScrollSpeed"),
+          setX: gsap.quickSetter(element, "xPercent"),
+          setY: gsap.quickSetter(element, "y", "px"),
+          setOpacity: gsap.quickSetter(media, "opacity"),
+          setRevealOpacity: gsap.quickSetter(element, "opacity"),
+        };
+      }),
+    );
+    const introDepthCards = ["visual-01", "visual-02"].map((id) =>
+      flowCards.find(({ element }) => element.dataset.cardId === id),
+    );
+
+    const renderIntro = (progress: number) => {
+      const reveal = (start: number, end: number) =>
+        smoothstep(clampProgress((progress - start) / (end - start)));
+      const headingReveal = reveal(
+        isMobile ? 0.33 : 0.3,
+        isMobile ? 0.72 : 0.68,
+      );
+      setHeadingOpacity(headingReveal);
+      setHeadingY((1 - headingReveal) * 12);
+      flowCards[0].setRevealOpacity(reveal(0, isMobile ? 0.4 : 0.36));
+      flowCards[1].setRevealOpacity(reveal(isMobile ? 0.68 : 0.64, 1));
+      introDepthCards[0]?.setRevealOpacity(reveal(0.43, 0.82));
+      introDepthCards[1]?.setRevealOpacity(reveal(0.62, 1));
+    };
+
+    const renderFlow = (progress: number) => {
+      const viewportHeight = mediaViewport.clientHeight;
+      const travelDistance = isMobile ? scrollDistance() : 0;
+      const timelineProgress =
+        progress * (isDesktop ? DESKTOP_SCROLL_SCALE : 1);
+      let visualBottom = 0;
+
+      flowCards.forEach(
+        ({
+          element,
+          media,
+          themeIndex,
+          cardIndex,
+          entry,
+          desktopEntry,
+          mobileEntry,
+          duration,
+          drift,
+          mobileYOffset,
+          mobileScrollY,
+          mobileScrollAt,
+          mobileScrollSpeed,
+          setX,
+          setY,
+          setOpacity,
+        }) => {
+          const originalEntry =
+            isMobile && mobileEntry !== null
+              ? mobileEntry
+              : isDesktop && desktopEntry !== null
+                ? desktopEntry
+                : entry;
+          const resolvedEntry = isDesktop
+            ? themeIndex === VISUAL_THEME_INDEX
+              ? originalEntry * 0.7
+              : originalEntry - DESKTOP_SCROLL_REMOVED
+            : originalEntry;
+          const resolvedDuration =
+            isDesktop && themeIndex === VISUAL_THEME_INDEX
+              ? Math.min(duration * 0.85, DESKTOP_VISUAL_END - resolvedEntry)
+              : duration;
+          const departureProgress =
+            isDesktop && themeIndex === VISUAL_THEME_INDEX && cardIndex < 10
+              ? smoothstep(clampProgress((timelineProgress - 0.27) / 0.055)) *
+                0.2
+              : 0;
+          const rawLocalProgress = gsap.utils.interpolate(
+            clampProgress(
+              (timelineProgress - resolvedEntry) / resolvedDuration,
+            ),
+            1,
+            departureProgress,
+          );
+          const localProgress =
+            rawLocalProgress +
+            (Math.sin(Math.PI * rawLocalProgress) / Math.PI) * 0.3;
+          const startY = viewportHeight * 1.12;
+          const mediaHeight = media.offsetHeight || element.offsetHeight;
+          const endY = -mediaHeight - viewportHeight * 0.14;
+          let y =
+            isMobile && mobileScrollY !== null
+              ? viewportHeight * mobileScrollY -
+                (progress - mobileScrollAt) * travelDistance * mobileScrollSpeed
+              : gsap.utils.interpolate(startY, endY, localProgress) +
+                (isMobile ? viewportHeight * mobileYOffset : 0);
+          if (isDesktop && themeIndex === 1 && visualBottom > 0) {
+            y = Math.max(y, visualBottom + viewportHeight * 0.18);
+          }
+          const exitOpacity = viewportExitOpacity(
+            y,
+            mediaHeight,
+            viewportHeight,
+          );
+
+          setX(gsap.utils.interpolate(drift * -0.35, drift, localProgress));
+          setY(y);
+          setOpacity(themeOpacity(themeIndex, timelineProgress) * exitOpacity);
+          if (
+            isDesktop &&
+            themeIndex === VISUAL_THEME_INDEX &&
+            exitOpacity > 0.01 &&
+            y < viewportHeight
+          ) {
+            visualBottom = Math.max(visualBottom, y + mediaHeight);
+          }
+        },
+      );
+    };
+
+    const introTrigger = ScrollTrigger.create({
+      trigger: root,
+      start: "top 70%",
+      end: "top top",
+      invalidateOnRefresh: true,
+      onUpdate: ({ progress }) => renderIntro(progress),
+      onRefresh: ({ progress }) => renderIntro(progress),
+    });
+
+    const flowTrigger = ScrollTrigger.create({
+      trigger: root,
+      start: "top top",
+      end: () => `+=${scrollDistance()}`,
+      invalidateOnRefresh: true,
+      onUpdate: ({ progress }) => renderFlow(progress),
+      onRefresh: ({ progress }) => renderFlow(progress),
+    });
+
+    renderIntro(introTrigger.progress);
+    renderFlow(flowTrigger.progress);
+
+    const titleTimeline = gsap.timeline({
+      defaults: { ease: "none" },
+      scrollTrigger: {
+        trigger: root,
+        start: "top top",
+        end: () => `+=${scrollDistance()}`,
+        scrub: 0.45,
+        invalidateOnRefresh: true,
+      },
+    });
+
+    const swapTitle = (
+      index: number,
+      start: number,
+      nextIndex = index + 1,
+      scrollDuration = 0.07,
+    ) => {
+      const duration = scrollDuration / (isDesktop ? DESKTOP_SCROLL_SCALE : 1);
+      titleTimeline.to(
+        titles[index],
+        { autoAlpha: 0, duration: duration * (0.12 / 0.36) },
+        start,
+      );
+      titleTimeline.to(
+        titles[nextIndex],
+        { autoAlpha: 1, duration: duration * (0.14 / 0.36) },
+        start + duration * (0.22 / 0.36),
+      );
+    };
+    const desktopTitleTime = (position: number) =>
+      (position - DESKTOP_SCROLL_REMOVED) / DESKTOP_SCROLL_SCALE;
+    if (isDesktop) {
+      swapTitle(0, 0.325 / DESKTOP_SCROLL_SCALE, 2, 0.035);
+      swapTitle(2, desktopTitleTime(0.77));
+    } else {
+      swapTitle(0, 0.23);
+      swapTitle(1, 0.48);
+      swapTitle(2, isMobile ? 0.68 : 0.77);
+    }
+    titleTimeline.to(
+      {},
+      {
+        duration: isDesktop
+          ? 0.21 / DESKTOP_SCROLL_SCALE
+          : isMobile
+            ? 0.3
+            : 0.21,
+      },
+      isDesktop ? desktopTitleTime(0.79) : isMobile ? 0.7 : 0.79,
+    );
+    const setStageOpacity = gsap.quickSetter(stage, "opacity");
+    const renderViewportExit = ({ progress }: { progress: number }) => {
+      setStageOpacity(1 - smoothstep(progress));
+    };
+    const exitTrigger = ScrollTrigger.create({
+      trigger: root,
+      start: "bottom 120%",
+      end: "bottom 65%",
+      invalidateOnRefresh: true,
+      onEnter: renderViewportExit,
+      onUpdate: renderViewportExit,
+      onLeave: renderViewportExit,
+      onLeaveBack: () => {
+        setStageOpacity(1);
+        renderFlow(flowTrigger.progress);
+      },
+      onRefresh: renderViewportExit,
+    });
+    renderViewportExit(exitTrigger);
+
+    let isActive = true;
+    const refresh = () => ScrollTrigger.refresh();
+    void document.fonts.ready.then(() => isActive && refresh());
+    window.addEventListener("load", refresh, { once: true });
+
+    return () => {
+      isActive = false;
+      window.removeEventListener("load", refresh);
+      flowTrigger.kill();
+      introTrigger.kill();
+      exitTrigger.kill();
+      gsap.set(stage, { clearProps: "opacity" });
+      titleTimeline.scrollTrigger?.kill();
+      titleTimeline.kill();
+    };
+  };
+
+  const roots = gsap.utils.toArray<HTMLElement>("[data-capabilities]");
+  const mount = () =>
+    roots
+      .map(initCapabilities)
+      .filter((cleanup): cleanup is () => void => Boolean(cleanup));
+  let cleanups = mount();
+  let resizeFrame = 0;
+  const breakpoints = [
+    window.matchMedia(MOBILE_MEDIA_QUERY),
+    window.matchMedia("(width >= 64rem)"),
+  ];
+  const onBreakpointChange = () => {
+    cancelAnimationFrame(resizeFrame);
+    resizeFrame = requestAnimationFrame(() => {
+      cleanups.forEach((cleanup) => cleanup());
+      cleanups = mount();
+      ScrollTrigger.refresh();
+    });
+  };
+  breakpoints.forEach((query) =>
+    query.addEventListener("change", onBreakpointChange),
+  );
+
+  document.addEventListener(
+    "astro:before-swap",
+    () => {
+      cancelAnimationFrame(resizeFrame);
+      breakpoints.forEach((query) =>
+        query.removeEventListener("change", onBreakpointChange),
+      );
+      cleanups.forEach((cleanup) => cleanup());
+    },
+    { once: true },
+  );
+</script>
+
+<style is:global>
+  @layer components {
+    .capabilities_wrap {
+      height: 1100svh;
+      position: relative;
+      overflow: clip;
+      background: var(--dark-900);
+      color: var(--light-100);
+
+      @media (width >= 64rem) {
+        height: 975svh;
+
+        & [data-capabilities-branding] {
+          display: none;
+        }
+      }
+    }
+
+    .capabilities_stage {
+      height: 100svh;
+      position: sticky;
+      top: 0;
+      isolation: isolate;
+      container-type: inline-size;
+    }
+
+    .capabilities_theme,
+    .capabilities_media {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+    }
+
+    .capabilities_media {
+      height: 100svh;
+      overflow: clip;
+    }
+
+    .capabilities_title {
+      width: min(88%, 70rem);
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      z-index: 2;
+      translate: -50% -50%;
+      text-align: center;
+      pointer-events: none;
+
+      & > .heading {
+        font-size: clamp(3rem, 5.1cqw, 5rem);
+        line-height: var(--line-height-compact);
+        text-wrap: balance;
+      }
+    }
+
+    .capabilities_wrap:not([data-enhanced="true"])
+      .capabilities_theme:not(:first-child) {
+      display: none;
+    }
+
+    .capabilities_wrap:not([data-enhanced="true"])
+      [data-capabilities-branding] {
+      display: none;
+    }
+
+    .capabilities_card {
+      --_depth-blur: 0rem;
+      --_depth-shade: 0;
+      width: calc(var(--_width) * 1%);
+      position: absolute;
+      top: 0;
+      left: calc(var(--_x) * 1%);
+      overflow: hidden;
+      filter: blur(var(--_depth-blur));
+      pointer-events: none;
+      will-change: transform, opacity;
+
+      @media (width >= 64rem) {
+        width: calc(var(--_desktop-width) * 1%);
+        z-index: 1;
+      }
+
+      &[data-depth="mid"] {
+        --_depth-blur: 0.08rem;
+        --_depth-shade: 0.16;
+      }
+
+      &[data-depth="back"] {
+        --_depth-blur: 0.2rem;
+        --_depth-shade: 0.32;
+      }
+
+      &[data-depth="far"] {
+        --_depth-blur: 0.38rem;
+        --_depth-shade: 0.48;
+      }
+    }
+
+    .capabilities_card[data-card-id="visual-01"] {
+      --_depth-shade: 0.66;
+    }
+
+    .capabilities_card[data-card-id="visual-02"] {
+      --_depth-blur: 0rem;
+    }
+
+    .capabilities_card[data-card-id="visual-guy"] {
+      --_depth-blur: 0.1rem;
+      --_depth-shade: 0.2;
+
+      @media (width >= 64rem) {
+        --_depth-blur: 0rem;
+        --_depth-shade: 0.35;
+        left: 33.5%;
+      }
+    }
+
+    .capabilities_card[data-card-id="visual-girl"] {
+      @media (width >= 64rem) {
+        left: 78%;
+        z-index: 2;
+      }
+    }
+
+    .capabilities_card[data-card-id="visual-logo"] {
+      --_depth-blur: 0.4rem;
+      filter: none;
+      background: var(--dark-1000);
+
+      @media (width >= 64rem) {
+        --_depth-blur: 0.35rem;
+        left: 51%;
+        z-index: 0;
+      }
+
+      & .capabilities_surface {
+        filter: blur(var(--_depth-blur));
+        scale: 1.03;
+      }
+    }
+
+    .capabilities_surface {
+      width: 100%;
+      position: relative;
+
+      &::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: var(--dark-1000);
+        opacity: var(--_depth-shade);
+        pointer-events: none;
+      }
+
+      & > :is(.image, .video) {
+        width: 100%;
+        height: auto;
+        display: block;
+        object-fit: cover;
+      }
+    }
+
+    .capabilities_placeholder {
+      width: 100%;
+      aspect-ratio: var(--_placeholder-ratio);
+      background: var(--gray-500);
+      border: var(--border-width) solid var(--gray-400);
+    }
+
+    .capabilities_card[data-card-id="product-01"] .video {
+      background: var(--dark-1000);
+      object-fit: contain;
+    }
+
+    .capabilities_wrap {
+      @media (width >= 64rem) {
+        :where(&) .capabilities_card[data-card-id="product-02"] {
+          left: 7%;
+        }
+      }
+    }
+
+    .capabilities_wrap {
+      @media (width < 64rem) {
+        :where(&) .capabilities_title {
+          width: calc(100% - var(--site-margin) * 2);
+
+          & > .heading {
+            font-size: clamp(2.75rem, 8.5cqw, 4.75rem);
+          }
+        }
+
+        :where(&) .capabilities_card {
+          width: min(calc(var(--_width) * 1.75%), 76%);
+        }
+      }
+    }
+
+    .capabilities_wrap {
+      @media (width < 48rem) {
+        & {
+          height: calc(1000svh + 100lvh);
+        }
+
+        :where(&) .capabilities_stage,
+        :where(&) .capabilities_media {
+          height: 100lvh;
+        }
+
+        :where(&) .capabilities_title {
+          top: calc(50% - (100lvh - 100svh) / 2 - 2svh);
+
+          & > .heading {
+            font-size: clamp(3rem, 9.2cqw, 4.75rem);
+          }
+        }
+
+        :where(&) .capabilities_card[data-hide-mobile="true"] {
+          display: none;
+        }
+
+        :where(&) .capabilities_card {
+          width: min(calc(var(--_mobile-width) * 2.25%), 88%);
+          left: calc(var(--_mobile-x) * 1%);
+          z-index: 1;
+          filter: none;
+        }
+
+        :where(&)
+          .capabilities_card:is(
+            [data-card-id="visual-02"],
+            [data-card-id="visual-03"]
+          ) {
+          z-index: 0;
+        }
+
+        :where(&) .capabilities_card[data-card-id="visual-02"] {
+          --_depth-shade: 0.48;
+
+          & .capabilities_surface {
+            aspect-ratio: 5 / 3;
+            overflow: hidden;
+          }
+
+          & .image {
+            height: 100%;
+            position: absolute;
+            inset: 0;
+            object-fit: cover;
+          }
+        }
+
+        :where(&) .capabilities_card[data-card-id="visual-03"] .video {
+          aspect-ratio: 4 / 5 !important;
+        }
+
+        :where(&)
+          .capabilities_card[data-card-id="visual-logo"]
+          .capabilities_surface {
+          filter: none;
+          scale: 1;
+        }
+      }
+    }
+
+    .capabilities_wrap {
+      @media (hover: hover) and (pointer: fine) {
+        :where(&) .capabilities_card {
+          pointer-events: auto;
+          transition: filter 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+
+        :where(&) .capabilities_surface::after {
+          transition: opacity 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+
+        :where(&)
+          .capabilities_card[data-card-id="visual-logo"]
+          .capabilities_surface {
+          transition: filter 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+
+        :where(&) .capabilities_card:hover {
+          --_depth-blur: 0rem;
+          --_depth-shade: 0;
+        }
+      }
+    }
+
+    .capabilities_wrap {
+      @media (prefers-reduced-motion: reduce) {
+        :where(&) .capabilities_card,
+        :where(&) .capabilities_surface::after,
+        :where(&)
+          .capabilities_card[data-card-id="visual-logo"]
+          .capabilities_surface {
+          transition: none;
+        }
+
+        & {
+          height: auto;
+        }
+
+        :where(&) .capabilities_stage {
+          height: auto;
+          position: relative;
+          overflow: hidden;
+        }
+
+        :where(&) .capabilities_theme,
+        &:not([data-enhanced="true"]) .capabilities_theme:not(:first-child) {
+          display: block;
+          min-height: 100svh;
+          position: relative;
+          padding: var(--section-space-medium) var(--site-margin);
+        }
+
+        :where(&) .capabilities_title {
+          width: 100%;
+          position: relative;
+          top: auto;
+          left: auto;
+          translate: none;
+          margin-bottom: var(--space-64);
+        }
+
+        :where(&) .capabilities_media {
+          position: relative;
+          height: auto;
+          display: grid;
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+          gap: var(--site-gutter);
+          align-items: start;
+        }
+
+        :where(&) .capabilities_card {
+          width: 100%;
+          position: relative;
+          top: auto;
+          left: auto;
+          opacity: 1 !important;
+          visibility: visible !important;
+          transform: none !important;
+        }
+      }
+    }
+  }
+</style>

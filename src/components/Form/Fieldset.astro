@@ -78,21 +78,21 @@ const content = await slotContent(Astro.slots);
 
     .form-fieldset_legend {
       padding: 0;
-      margin-bottom: var(--space-2);
+      margin-bottom: var(--space-12);
     }
 
     .form-fieldset_legend-heading {
-      margin-bottom: var(--space-3);
+      margin-bottom: var(--space-16);
     }
 
     .form-fieldset_fields {
       display: grid;
-      gap: var(--space-5);
+      gap: var(--space-32);
 
       .form-fieldset.inline & {
         display: flex;
         flex-wrap: wrap;
-        gap: var(--space-3) var(--space-5);
+        gap: var(--space-16) var(--space-32);
         > * {
           width: auto;
         }

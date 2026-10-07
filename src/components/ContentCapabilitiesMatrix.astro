@@ -1,0 +1,242 @@
+---
+import type { HTMLAttributes } from "astro/types";
+import Heading from "@/components/Typography/Heading.astro";
+import Paragraph from "@/components/Typography/Paragraph.astro";
+import ContentWrapper from "@/components/Wrapper/ContentWrapper.astro";
+
+interface Props extends HTMLAttributes<"div"> {
+  /** Set to `false` to skip rendering this component and its children. */
+  render?: boolean;
+}
+
+const { render = true, class: className, ...rest } = Astro.props;
+
+const disciplines = ["Brand", "Web", "Product"];
+
+const groups = [
+  {
+    name: "Strategy",
+    columns: [
+      ["Brand Narrative", "Positioning Strategy", "Tone of Voice"],
+      ["Content Architecture", "Sitemaps", "User Journeys"],
+      [
+        "Product Vision",
+        "Rapid Prototyping",
+        "Roadmapping",
+        "Technical Feasibility",
+      ],
+    ],
+  },
+  {
+    name: "Design",
+    columns: [
+      [
+        "Creative Direction",
+        "Visual Identity",
+        "Motion Systems",
+        "Campaign Assets",
+      ],
+      [
+        "Design Systems",
+        "Module Based UI",
+        "Micro Interactions",
+        "Art Direction",
+        "Video Assets",
+      ],
+      [
+        "Adaptive Interfaces",
+        "Interaction Models",
+        "System Behaviour",
+        "Trust + Feedback Loops",
+      ],
+    ],
+  },
+  {
+    name: "Code",
+    columns: [
+      ["Creative Coding", "Generative Templates", "Automation Tools"],
+      [
+        "Scalable Architecture",
+        "Full-Stack Development",
+        "CMS Implementation",
+        "Deployment",
+        "QA",
+      ],
+      [
+        "Data Infrastructure",
+        "Full-Stack Development",
+        "Infrastructure + DevOps",
+        "Model Integration",
+        "System Architecture",
+      ],
+    ],
+  },
+];
+---
+
+{
+  render && (
+    <div class:list={["capabilities-matrix_wrap", className]} {...rest}>
+      <ContentWrapper>
+        <Heading
+          id="capabilities-matrix-title"
+          tag="h2"
+          variant="h4"
+          maxWidth={20}
+        >
+          Big-picture thinking.
+          <br />
+          Full-scale execution.
+        </Heading>
+      </ContentWrapper>
+
+      <div class="capabilities-matrix_content">
+        <div class="capabilities-matrix_disciplines" aria-hidden="true">
+          {disciplines.map((discipline) => (
+            <Paragraph tag="div" variant="small">
+              {discipline}
+            </Paragraph>
+          ))}
+        </div>
+
+        <div class="capabilities-matrix_groups">
+          {groups.map((group) => (
+            <section
+              class="capabilities-matrix_group"
+              aria-labelledby={`capabilities-${group.name.toLowerCase()}`}
+            >
+              <Heading
+                id={`capabilities-${group.name.toLowerCase()}`}
+                tag="h3"
+                variant="h6"
+                class="capabilities-matrix_group-title"
+              >
+                {group.name}
+              </Heading>
+
+              <div class="capabilities-matrix_layout">
+                {group.columns.map((items, index) => (
+                  <div class="capabilities-matrix_column">
+                    <Paragraph
+                      tag="div"
+                      variant="small"
+                      class="capabilities-matrix_discipline"
+                    >
+                      {disciplines[index]}
+                    </Paragraph>
+                    <ul>
+                      {items.map((item) => (
+                        <li>
+                          <Paragraph tag="span" variant="small">
+                            {item}
+                          </Paragraph>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                ))}
+              </div>
+            </section>
+          ))}
+        </div>
+      </div>
+    </div>
+  )
+}
+
+<style is:global>
+  @layer components {
+    .capabilities-matrix_wrap {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-80);
+    }
+
+    .capabilities-matrix_content,
+    .capabilities-matrix_groups,
+    .capabilities-matrix_group,
+    .capabilities-matrix_column {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .capabilities-matrix_content {
+      gap: var(--space-16);
+    }
+
+    .capabilities-matrix_groups {
+      gap: var(--space-40);
+    }
+
+    .capabilities-matrix_group {
+      gap: var(--space-12);
+    }
+
+    .capabilities-matrix_disciplines,
+    .capabilities-matrix_layout {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: var(--space-16);
+    }
+
+    .capabilities-matrix_disciplines > *,
+    .capabilities-matrix_discipline {
+      padding: var(--space-8) var(--space-12);
+      background-color: var(--text);
+      color: var(--background);
+    }
+
+    .capabilities-matrix_group-title {
+      padding: var(--space-8) var(--space-12);
+      background-color: var(--background-2-solid);
+    }
+
+    .capabilities-matrix_discipline {
+      display: none;
+    }
+
+    .capabilities-matrix_column ul {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .capabilities-matrix_column li {
+      min-height: var(--space-32);
+      display: flex;
+      align-items: center;
+      padding: var(--space-4) var(--space-8);
+      border-bottom: var(--border-width) solid var(--border);
+    }
+
+    .capabilities-matrix_wrap {
+      @media (width < 48rem) {
+        :where(&) .capabilities-matrix_disciplines {
+          display: none;
+        }
+
+        :where(&) .capabilities-matrix_content {
+          gap: 0;
+        }
+
+        :where(&) .capabilities-matrix_groups {
+          gap: var(--space-48);
+        }
+
+        :where(&) .capabilities-matrix_group {
+          gap: var(--space-16);
+        }
+
+        :where(&) .capabilities-matrix_layout {
+          grid-template-columns: 1fr;
+          gap: var(--space-24);
+        }
+
+        :where(&) .capabilities-matrix_discipline {
+          display: block;
+        }
+      }
+    }
+  }
+</style>

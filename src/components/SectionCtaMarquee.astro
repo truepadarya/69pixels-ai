@@ -1,0 +1,390 @@
+---
+import Section from "@/components/Wrapper/Section.astro";
+import Heading from "@/components/Typography/Heading.astro";
+import Paragraph from "@/components/Typography/Paragraph.astro";
+import Button from "@/components/Button.astro";
+import Img from "@/components/Media/Img.astro";
+import ButtonWrapper from "@/components/Wrapper/ButtonWrapper.astro";
+import plantCare from "@/assets/graphics/marquee/image-91f6772c-b056-4f4c-95ea-4f348a93ee76.webp";
+import fitnessApp from "@/assets/graphics/marquee/image-df9182d2-bc3f-411e-97d7-eab4e95a61a5.webp";
+import socialFitness from "@/assets/graphics/marquee/image-6e61674d-6c42-4635-a13a-7f98a4b951f4.webp";
+import medicalDashboard from "@/assets/graphics/marquee/image-13adcd0b-82e0-4db0-8765-9134857ca7e1.webp";
+import racingTablet from "@/assets/graphics/marquee/image-3a38e582-ff03-4575-ba70-216375b04067.webp";
+import cryptoWeb from "@/assets/graphics/marquee/image-804f731c-5df1-46fd-b70a-1e41d0daf85f.webp";
+import benefitsSite from "@/assets/graphics/marquee/image-0da52794-f90a-499e-b9c6-8ca28613f77f.webp";
+import racingSimulator from "@/assets/graphics/marquee/image-e55266c5-a871-4e19-b728-8a71d52586da.webp";
+
+interface Props {
+  /** Set to `false` to skip rendering this component and its children. */
+  render?: boolean;
+}
+
+const { render = true } = Astro.props;
+
+const lanes = [
+  [
+    {
+      src: plantCare,
+      alt: "Plant care app notifications over indoor plants",
+    },
+    {
+      src: fitnessApp,
+      alt: "Fitness tracking app interface on a phone",
+    },
+    {
+      src: socialFitness,
+      alt: "Social fitness app notification over a photo",
+    },
+    {
+      src: medicalDashboard,
+      alt: "Medical administration dashboard screens",
+    },
+  ],
+  [
+    {
+      src: racingTablet,
+      alt: "Automotive website displayed on a tablet",
+    },
+    {
+      src: cryptoWeb,
+      alt: "Cryptocurrency platform page designs",
+    },
+    {
+      src: benefitsSite,
+      alt: "Employee benefits website displayed on a laptop",
+    },
+    {
+      src: racingSimulator,
+      alt: "Racing simulator setup in a studio",
+    },
+  ],
+];
+---
+
+{
+  render && (
+    <Section
+      theme="dark"
+      paddingTop="none"
+      paddingBottom="small"
+      gap="0"
+      class="cta-marquee_section"
+      id="contact"
+      aria-labelledby="cta-marquee-title"
+    >
+      <div
+        class="cta-marquee_wrap theme-light"
+        data-reveal
+        data-reveal-speed="slow"
+      >
+        <div class="cta-marquee_content">
+          <Heading
+            tag="h2"
+            variant="h1"
+            class="cta-marquee_heading"
+            id="cta-marquee-title"
+          >
+            What are
+            <br />
+            you waiting
+            <br />
+            to build?
+          </Heading>
+          <Paragraph variant="main" class="cta-marquee_text weight-medium">
+            Tell us what’s next. We’ll bring the <br /> team, the approach and a
+            clear <br />
+            proposal.
+          </Paragraph>
+          <ButtonWrapper class="cta-marquee_actions">
+            <Button
+              element="link"
+              href="mailto:hello@69pixels.com?subject=Schedule%20a%20call"
+            >
+              Schedule a call
+            </Button>
+            <Button
+              element="link"
+              href="mailto:hello@69pixels.com?subject=Project%20enquiry"
+              emphasis="secondary"
+            >
+              Write us
+            </Button>
+          </ButtonWrapper>
+        </div>
+
+        <div
+          class="cta-marquee_gallery"
+          data-cta-marquee
+          role="group"
+          aria-label="Selected work"
+        >
+          <div class="cta-marquee_lanes">
+            {lanes.map((items, laneIndex) => (
+              <div
+                class:list={["cta-marquee_lane", laneIndex === 1 && "reverse"]}
+              >
+                <div class="cta-marquee_track">
+                  {[false, true].map((duplicate) => (
+                    <div
+                      class="cta-marquee_panel"
+                      aria-hidden={duplicate ? "true" : undefined}
+                      inert={duplicate ? true : undefined}
+                    >
+                      {items.map((item) => (
+                        <figure class="cta-marquee_media">
+                          <Img
+                            src={item.src}
+                            alt={duplicate ? "" : item.alt}
+                            variant="constrained"
+                            sizes="(min-width: 93.75rem) 22vw, (min-width: 64rem) 45vw, 68vw"
+                            quality="mid"
+                            class="cta-marquee_image"
+                          />
+                        </figure>
+                      ))}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </Section>
+  )
+}
+
+<style is:global>
+  @layer components {
+    .cta-marquee_wrap {
+      width: 100%;
+      height: 43rem;
+      display: grid;
+      grid-template-columns: minmax(33rem, 1.1fr) minmax(0, 1fr);
+      overflow: clip;
+      background-color: var(--background);
+      color: var(--text);
+    }
+
+    .cta-marquee_content {
+      min-width: 0;
+      padding: var(--space-64) var(--space-48) var(--space-48);
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+    }
+
+    .cta-marquee_heading {
+      margin: 0;
+      font-size: clamp(3.25rem, 8.33vw, 7.5rem);
+      line-height: var(--line-height-small);
+      letter-spacing: var(--letter-spacing-tight);
+    }
+
+    .cta-marquee_text {
+      margin-top: var(--space-48);
+      color: var(--text);
+      font-size: var(--h6);
+      line-height: var(--line-height-compact);
+    }
+
+    .cta-marquee_actions {
+      width: 100%;
+      margin-top: auto;
+      display: flex;
+      align-items: center;
+      gap: var(--space-8);
+    }
+
+    .cta-marquee_gallery {
+      min-width: 0;
+      min-height: 0;
+      position: relative;
+      overflow: clip;
+      background-color: var(--background);
+    }
+
+    .cta-marquee_lanes {
+      height: 100%;
+      display: grid;
+      grid-template-columns: minmax(0, 1fr);
+      gap: var(--space-20);
+      padding-inline: var(--space-12);
+    }
+
+    .cta-marquee_lane {
+      min-width: 0;
+      height: 100%;
+      overflow: clip;
+    }
+
+    .cta-marquee_lane.reverse {
+      display: none;
+    }
+
+    .cta-marquee_track {
+      --_marquee-gap: var(--space-32);
+      width: 100%;
+      height: max-content;
+      display: flex;
+      flex-direction: column;
+      gap: var(--_marquee-gap);
+      animation: cta-marquee-y 20s linear infinite;
+      will-change: transform;
+    }
+
+    .cta-marquee_lane.reverse .cta-marquee_track {
+      animation-direction: reverse;
+      animation-duration: 24s;
+    }
+
+    .cta-marquee_panel {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: var(--_marquee-gap);
+    }
+
+    .cta-marquee_media {
+      width: 100%;
+      flex: none;
+      overflow: hidden;
+      background-color: var(--background-3);
+    }
+
+    .cta-marquee_image.image {
+      width: 100%;
+      height: auto;
+    }
+
+    @keyframes cta-marquee-y {
+      to {
+        transform: translate3d(0, calc(-50% - var(--_marquee-gap) / 2), 0);
+      }
+    }
+
+    @keyframes cta-marquee-x {
+      to {
+        transform: translate3d(calc(-50% - var(--_marquee-gap) / 2), 0, 0);
+      }
+    }
+
+    .cta-marquee_wrap {
+      @media (width >= 93.75rem) {
+        & {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+
+        :where(&) .cta-marquee_lanes {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+
+        :where(&) .cta-marquee_lane.reverse {
+          display: block;
+        }
+      }
+    }
+
+    .cta-marquee_wrap {
+      @media (width < 64rem) {
+        & {
+          --_content-padding-inline: var(--space-24);
+          --_content-padding-top: var(--space-44);
+          --_heading-gap: var(--space-32);
+          --_actions-gap: var(--space-32);
+          --_seam-gap: var(--space-32);
+          --_marquee-card-height: 18rem;
+          height: auto;
+          grid-template-columns: 1fr;
+        }
+
+        :where(&) .cta-marquee_content {
+          padding: var(--_content-padding-top) var(--_content-padding-inline) 0;
+        }
+
+        :where(&) .cta-marquee_text {
+          margin-top: var(--_heading-gap);
+        }
+
+        :where(&) .cta-marquee_actions {
+          margin-top: var(--_actions-gap);
+        }
+
+        :where(&) .cta-marquee_gallery {
+          padding-block: var(--_seam-gap);
+          border-top: var(--border-width) solid var(--border);
+        }
+
+        :where(&) .cta-marquee_lanes {
+          height: auto;
+          padding-inline: 0;
+        }
+
+        :where(&) .cta-marquee_lane {
+          height: auto;
+        }
+
+        :where(&) .cta-marquee_track {
+          width: max-content;
+          height: auto;
+          flex-direction: row;
+          animation-name: cta-marquee-x;
+          animation-duration: 16s;
+        }
+
+        :where(&) .cta-marquee_panel {
+          width: max-content;
+          height: auto;
+          flex-direction: row;
+        }
+
+        :where(&) .cta-marquee_media {
+          width: auto;
+          height: var(--_marquee-card-height);
+        }
+
+        :where(&) .cta-marquee_image.image {
+          width: auto;
+          height: 100%;
+        }
+      }
+    }
+
+    .cta-marquee_wrap {
+      @media (width < 48rem) {
+        & {
+          max-width: calc(100vw - 2 * var(--space-24));
+        }
+
+        :where(&) .cta-marquee_text {
+          font-size: var(--text-main);
+          line-height: var(--line-height-medium);
+          overflow-wrap: anywhere;
+        }
+
+        :where(&) .cta-marquee_actions {
+          display: grid;
+          grid-template-columns: minmax(0, 1fr);
+
+          & > .button_wrap.main {
+            width: 100%;
+            padding-inline: var(--space-12);
+            font-size: var(--text-main);
+          }
+        }
+
+        :where(&) .cta-marquee_track {
+          --_marquee-gap: var(--space-20);
+        }
+      }
+    }
+
+    .cta-marquee_wrap {
+      @media (prefers-reduced-motion: reduce) {
+        :where(&) .cta-marquee_track {
+          animation-name: none;
+        }
+      }
+    }
+  }
+</style>

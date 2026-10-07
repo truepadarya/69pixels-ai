@@ -13,6 +13,7 @@ type ParagraphStyle =
   | "h5"
   | "h6"
   | "large"
+  | "main-xl"
   | "main"
   | "small";
 
@@ -25,7 +26,7 @@ interface Props extends HTMLAttributes<"p"> {
    * Type style.
    *
    * - `display`, `h1`–`h6` — the heading sizes
-   * - `large`, `main`, `small` — the body sizes
+   * - `large`, `main-xl`, `main`, `small` — the body sizes
    * - `inherit` — take the style from its surroundings (default)
    */
   variant?: ParagraphStyle;

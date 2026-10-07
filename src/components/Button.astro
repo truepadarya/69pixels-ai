@@ -32,16 +32,17 @@ type Kind =
        * What kind of button it is.
        *
        * - `main` — a labelled button (default)
+       * - `compact` — a smaller labelled button
        * - `link` — text on a rule that travels across on hover
        * - `play`, `close`, `arrow` — a mark on its own, with a label for
        *   anyone who cannot see it
        */
-      variant?: "main";
+      variant?: "main" | "compact";
       /**
        * How much weight the button carries.
        *
        * - `primary` — filled, for the main action (default)
-       * - `secondary` — outlined, for anything sitting beside a primary
+       * - `secondary` — subtly filled, for anything sitting beside a primary
        */
       emphasis?: Emphasis;
       label?: never;
@@ -92,7 +93,7 @@ type Props = {
 type AllProps = HTMLAttributes<"button"> &
   Omit<HTMLAttributes<"a">, "type"> & {
     render?: boolean;
-    variant?: "main" | "link" | "play" | "close" | "arrow";
+    variant?: "main" | "compact" | "link" | "play" | "close" | "arrow";
     emphasis?: Emphasis;
     label?: string;
     pressed?: boolean;
@@ -123,8 +124,9 @@ const tagAttrs = isLink
   : { type: type === "submit" ? undefined : type };
 
 const marks = { play, close, arrow };
-/* main and link are written, the rest are marks with a label. */
-const isWritten = variant === "main" || variant === "link";
+/* main, compact and link are written, the rest are marks with a label. */
+const isWritten =
+  variant === "main" || variant === "compact" || variant === "link";
 const content = isWritten ? await slotContent(Astro.slots) : "";
 
 const named = {
@@ -139,6 +141,7 @@ const named = {
     <Tag
       class:list={[
         "button_wrap",
+        (variant === "main" || variant === "compact") && "main",
         emphasis !== "primary" && emphasis,
         variant !== "main" && variant,
         variant === "arrow" && direction === "back" && "back",
@@ -177,11 +180,12 @@ const named = {
       justify-content: center;
       align-items: center;
       gap: 0.5em;
-      padding: 0.75em 1.5em;
+      padding: 0.95em 1.5em;
       background-color: var(--button-background);
       color: var(--button-text);
       border: var(--border-width) solid var(--button-border);
-      border-radius: 0.5em;
+      border-radius: var(--radius-small);
+      font-weight: var(--button-font-weight);
       line-height: 1.2;
       text-decoration: none;
       text-align: center;
@@ -203,6 +207,34 @@ const named = {
         --button-background-hover: var(--button-2-background-hover);
         --button-text-hover: var(--button-2-text-hover);
         --button-border-hover: var(--button-2-border-hover);
+      }
+      &.main {
+        min-height: calc(var(--space-48) + var(--space-20));
+        padding: 0 var(--space-48);
+        border-radius: var(--space-24);
+        font-size: var(--h6);
+        font-weight: var(--primary-semibold);
+        line-height: var(--line-height-compact);
+        letter-spacing: var(--letter-spacing-small);
+      }
+      &.compact {
+        padding: var(--space-16) var(--space-32);
+        min-height: 3.5rem;
+        border: 0;
+        border-radius: 0.875rem;
+        font-size: 1.25rem;
+        font-weight: var(--primary-semibold);
+        line-height: 1.2;
+        letter-spacing: var(--letter-spacing-small);
+        --button-background: var(--light-250);
+        --button-text: var(--dark-900);
+        --button-background-hover: var(--light-100);
+
+        &.secondary {
+          --button-background: var(--dark-790);
+          --button-text: var(--light-100);
+          --button-background-hover: var(--dark-750);
+        }
       }
       &.link {
         --button-background: transparent;

@@ -1,0 +1,683 @@
+---
+import Heading from "@/components/Typography/Heading.astro";
+import Paragraph from "@/components/Typography/Paragraph.astro";
+import Button from "@/components/Button.astro";
+import ContentWrapper from "@/components/Wrapper/ContentWrapper.astro";
+import casesScroll from "@/assets/icons/cases-scroll.svg";
+import experienceStrip from "@/assets/graphics/work-ai-experience-strip.png";
+import toolsDock from "@/assets/graphics/work-ai-tools-dock.png";
+
+interface Props {
+  /** Set to `false` to skip rendering this component and its children. */
+  render?: boolean;
+  /** Lines of the section heading, in reading order. */
+  lines?: string[];
+  class?: string;
+}
+const {
+  render = true,
+  lines = ["Rebuilding", "work around AI"],
+  class: className = "",
+} = Astro.props;
+const cards = [
+  { title: "Build the tools", tone: "dark" },
+  { title: "Months become days", tone: "light" },
+  { title: "Experience sparks action", tone: "gray" },
+];
+---
+
+{
+  render && lines.some((line) => line.trim()) && (
+    <section class:list={["rebuilding_wrap", className]} data-rebuilding>
+      <div class="rebuilding_stage">
+        <Heading
+          tag="h2"
+          variant="h2"
+          class="rebuilding_title"
+          aria-label={lines.join(" ")}
+        >
+          {lines.map((line) => (
+            <span class="rebuilding_line" aria-hidden="true">
+              <span class="rebuilding_words">{line}</span>
+            </span>
+          ))}
+        </Heading>
+        <div class="rebuilding_cards">
+          {cards.map((card) => (
+            <article class:list={["rebuilding_card", card.tone]}>
+              <Heading tag="h3" variant="h5" class="rebuilding_card-title">
+                {card.tone === "gray" ? (
+                  <Fragment>
+                    <span class="rebuilding_card-title-line">
+                      Experience sparks
+                    </span>
+                    <br />
+                    action
+                  </Fragment>
+                ) : (
+                  card.title
+                )}
+              </Heading>
+              {card.tone === "gray" && (
+                <Paragraph variant="main-xl" class="rebuilding_card-text">
+                  Our senior creators decide what to explore, challenge what the
+                  tools produce and refine the work until it is ready to launch.
+                </Paragraph>
+              )}
+              <div class="rebuilding_illustration" aria-hidden="true">
+                {card.tone === "gray" && (
+                  <img
+                    class="rebuilding_experience"
+                    src={experienceStrip.src}
+                    width={experienceStrip.width}
+                    height={experienceStrip.height}
+                    alt=""
+                  />
+                )}
+                {card.tone === "light" && (
+                  <div class="rebuilding-months_wrap" aria-hidden="true">
+                    <div class="rebuilding-months_layout">
+                      <div class="rebuilding-months_days">
+                        <span class="rebuilding-months_label">days</span>
+                        <span class="rebuilding-months_handle top-left" />
+                        <span class="rebuilding-months_handle top-right" />
+                        <span class="rebuilding-months_handle bottom-left" />
+                        <span class="rebuilding-months_handle bottom-right" />
+                        <svg
+                          class="rebuilding-months_cursor"
+                          viewBox="0 0 18 24"
+                          fill="none"
+                        >
+                          <path
+                            d="M1 1L16 15L9 15L12 22L8 23L5 16L1 20V1Z"
+                            fill="black"
+                            stroke="white"
+                            stroke-width="1.2"
+                            stroke-linejoin="round"
+                          />
+                        </svg>
+                      </div>
+                      <div class="rebuilding-months_months">
+                        <span class="rebuilding-months_label">months</span>
+                      </div>
+                    </div>
+                  </div>
+                )}
+                {card.tone === "dark" && (
+                  <img
+                    class="rebuilding_tools"
+                    src={toolsDock.src}
+                    width={toolsDock.width}
+                    height={toolsDock.height}
+                    alt=""
+                  />
+                )}
+              </div>
+            </article>
+          ))}
+        </div>
+      </div>
+      <ContentWrapper centered class="rebuilding_cue">
+        <Paragraph class="rebuilding_cue-text">
+          See the work behind the method
+        </Paragraph>
+        <Button
+          element="link"
+          href="#cases"
+          class="rebuilding_cue-button"
+          aria-label="View case studies"
+        >
+          <img src={casesScroll.src} width="46" height="46" alt="" />
+        </Button>
+      </ContentWrapper>
+    </section>
+  )
+}
+
+<style is:global>
+  @layer components {
+    .rebuilding_wrap {
+      --_card-width: min(clamp(17rem, 32vw, 29rem), 70svh);
+      --_card-left: 27%;
+      --_card-right: 73%;
+      --_scroll-length: 4.1;
+      --_card-padding-top: clamp(2rem, 4vw, 3.5rem);
+      --_card-padding-inline: clamp(0.75rem, 1.4vw, 1.25rem);
+      --_card-padding-bottom: clamp(1rem, 2vw, 1.75rem);
+      background: var(--dark-900);
+      color: var(--light-100);
+      position: relative;
+    }
+    .rebuilding_stage {
+      min-height: 100svh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: clamp(1.5rem, 6svh, 4rem) 1.25rem;
+      overflow: clip;
+      position: relative;
+    }
+    .rebuilding_title {
+      font-size: clamp(2rem, min(10.15vw, 22svh), 9.8125rem);
+      font-weight: var(--primary-medium);
+      letter-spacing: -0.055em;
+      line-height: 0.95;
+      text-align: center;
+      margin: 0;
+      position: relative;
+      z-index: 1;
+    }
+    .rebuilding_line {
+      display: block;
+      overflow: clip;
+      padding-bottom: 0.1em;
+    }
+    .rebuilding_words {
+      display: block;
+      white-space: nowrap;
+    }
+    .rebuilding_wrap.is-animated {
+      margin-bottom: -35svh;
+    }
+    .rebuilding_cards {
+      display: flex;
+      gap: 1.5rem;
+      width: min(100%, 72rem);
+      margin-top: 3rem;
+    }
+    .rebuilding_card {
+      flex: 1;
+      min-width: 0;
+      padding: var(--_card-padding-top) var(--_card-padding-inline)
+        var(--_card-padding-bottom);
+      background: var(--dark-825);
+      color: var(--light-100);
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-24);
+      aspect-ratio: 1.05;
+      position: relative;
+      z-index: 2;
+    }
+    .rebuilding_card.light {
+      background: var(--light-100);
+      color: var(--dark-900);
+    }
+    .rebuilding_card.gray {
+      background: var(--light-225);
+      color: var(--dark-900);
+    }
+    .rebuilding_card-title {
+      flex: none;
+      margin: 0;
+    }
+    .rebuilding_card-title-line {
+      white-space: nowrap;
+    }
+    .rebuilding_card.gray {
+      padding-bottom: clamp(1.5rem, 2.4vw, 2.25rem);
+      gap: 0;
+    }
+    .rebuilding_card-text {
+      font-size: clamp(1rem, 1.45vw, 1.375rem);
+      line-height: 1.35;
+      width: 100%;
+      margin: auto 0;
+      color: color-mix(in srgb, var(--dark-900) 70%, transparent);
+      text-align: center;
+
+      & > span {
+        display: block;
+      }
+    }
+    .rebuilding_card.gray .rebuilding_illustration {
+      flex: none;
+      display: flex;
+      justify-content: center;
+      background: transparent;
+    }
+    .rebuilding_experience {
+      display: block;
+      width: 49%;
+      height: auto;
+    }
+    .rebuilding_illustration {
+      flex: 1;
+      width: 100%;
+      min-height: 0;
+      background: #ff80c0;
+    }
+    .rebuilding_card.dark .rebuilding_illustration {
+      background: transparent;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .rebuilding_card.light .rebuilding_illustration {
+      background: transparent;
+      position: static;
+    }
+
+    .rebuilding-months_wrap {
+      position: absolute;
+      inset: 0;
+      top: 2rem;
+      container-type: inline-size;
+      aspect-ratio: 494 / 470;
+      pointer-events: none;
+    }
+
+    .rebuilding-months_layout {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      translate: -50% -50%;
+      display: flex;
+      align-items: stretch;
+      width: 76cqw;
+      height: 13.2cqw;
+      font-size: 11.3cqw;
+      font-weight: var(--primary-semibold);
+      line-height: 1;
+      letter-spacing: -0.06em;
+    }
+
+    .rebuilding-months_days,
+    .rebuilding-months_months {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding-bottom: 0.6cqw;
+    }
+
+    .rebuilding-months_label {
+      display: block;
+      line-height: 1;
+      text-box-trim: trim-both;
+      text-box-edge: cap alphabetic;
+    }
+
+    .rebuilding-months_days {
+      position: relative;
+      z-index: 1;
+      width: 30cqw;
+      flex: none;
+      border: 0.4cqw solid var(--graphic-accent);
+      color: var(--dark-1000);
+    }
+
+    .rebuilding-months_months {
+      flex: 1;
+      border: 0.4cqw dashed var(--gray-300);
+      border-left: 0;
+      color: var(--gray-300);
+    }
+
+    .rebuilding-months_handle {
+      position: absolute;
+      width: 1.7cqw;
+      height: 1.7cqw;
+      background: var(--light-100);
+      border: 0.35cqw solid var(--graphic-accent);
+      translate: -50% -50%;
+
+      &.top-left {
+        top: 0;
+        left: 0;
+      }
+      &.top-right {
+        top: 0;
+        left: 100%;
+      }
+      &.bottom-left {
+        top: 100%;
+        left: 0;
+      }
+      &.bottom-right {
+        top: 100%;
+        left: 100%;
+      }
+    }
+
+    .rebuilding-months_cursor {
+      position: absolute;
+      top: 100%;
+      left: 100%;
+      width: 3.65cqw;
+      height: 4.85cqw;
+      translate: 0.2cqw 0.2cqw;
+    }
+
+    .rebuilding_tools {
+      display: block;
+      width: 70%;
+      height: auto;
+      max-height: 100%;
+      object-fit: contain;
+      translate: 0 -12%;
+    }
+    .rebuilding_wrap.is-animated .rebuilding_stage {
+      height: 100svh;
+    }
+    .rebuilding_cue {
+      flex: none;
+      width: max-content;
+      max-width: 100%;
+      margin-top: var(--space-48);
+      margin-inline: auto;
+      z-index: 3;
+
+      & > :first-child {
+        gap: var(--space-16);
+      }
+    }
+    .rebuilding_cue-text {
+      font-size: 1.5rem;
+      font-weight: var(--primary-medium);
+      line-height: 1;
+      letter-spacing: -0.04em;
+      color: var(--light-100);
+    }
+    .rebuilding_cue-button.button_wrap.main {
+      --button-background: transparent;
+      --button-background-hover: transparent;
+      width: 2.875rem;
+      height: 2.875rem;
+      min-height: 0;
+      padding: 0;
+      border: 0;
+      border-radius: 50%;
+
+      & .button_text,
+      & img {
+        display: block;
+        width: 100%;
+        height: 100%;
+      }
+    }
+    .rebuilding_wrap.is-animated .rebuilding_cue {
+      position: absolute;
+      top: 0;
+      left: 50%;
+      translate: none;
+      margin-top: 0;
+    }
+    .rebuilding_wrap.is-animated .rebuilding_cards {
+      pointer-events: none;
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      margin: 0;
+      display: block;
+    }
+    .rebuilding_wrap.is-animated .rebuilding_card {
+      position: absolute;
+      width: var(--_card-width);
+      top: 50%;
+      left: 50%;
+    }
+    .rebuilding_wrap.is-animated .rebuilding_card:nth-child(1) {
+      left: var(--_card-left);
+    }
+    .rebuilding_wrap.is-animated .rebuilding_card:nth-child(3) {
+      left: var(--_card-right);
+    }
+    .rebuilding_wrap {
+      @media (width < 64rem) {
+        --_card-width: min(38vw, 25rem, 70svh);
+        --_card-left: 30%;
+        --_card-right: 70%;
+        --_scroll-length: 3.8;
+
+        & .rebuilding_cards {
+          flex-direction: column;
+          max-width: 32rem;
+        }
+
+        &.is-animated .rebuilding_cards {
+          max-width: none;
+        }
+
+        & .rebuilding_card {
+          flex: auto;
+        }
+
+        & .rebuilding_card.gray {
+          gap: var(--space-24);
+        }
+
+        & .rebuilding_card-title-line {
+          white-space: normal;
+        }
+
+        & .rebuilding_card-text > span {
+          display: inline;
+        }
+      }
+      @media (width < 48rem) {
+        --_card-width: min(72vw, 22rem, 70svh);
+        --_card-left: 40%;
+        --_card-right: 60%;
+        --_scroll-length: 3.5;
+        & .rebuilding_title {
+          font-size: clamp(2rem, min(11vw, 22svh), 5rem);
+        }
+        & .rebuilding_cards {
+          flex-direction: column;
+          max-width: 22rem;
+        }
+        & .rebuilding_card {
+          flex: auto;
+        }
+        &.is-animated .rebuilding_cards {
+          max-width: none;
+        }
+      }
+    }
+  }
+</style>
+
+<script>
+  import { gsap } from "gsap";
+  import { ScrollTrigger } from "gsap/ScrollTrigger";
+  gsap.registerPlugin(ScrollTrigger);
+  const instances = new Map<HTMLElement, ReturnType<typeof gsap.matchMedia>>();
+  let generation = 0;
+  function cleanup() {
+    generation++;
+    instances.forEach((media) => media.revert());
+    instances.clear();
+  }
+  async function initialize() {
+    const current = ++generation;
+    await document.fonts.ready;
+    if (current !== generation) return;
+    document
+      .querySelectorAll<HTMLElement>("[data-rebuilding]")
+      .forEach((section) => {
+        if (instances.has(section)) return;
+        const media = gsap.matchMedia();
+        instances.set(section, media);
+        media.add("(prefers-reduced-motion: no-preference)", () => {
+          section.classList.add("is-animated");
+          const stage =
+            section.querySelector<HTMLElement>(".rebuilding_stage")!;
+          const title =
+            section.querySelector<HTMLElement>(".rebuilding_title")!;
+          const words = section.querySelectorAll(".rebuilding_words");
+          const cue = section.querySelector<HTMLElement>(".rebuilding_cue")!;
+          const cards =
+            section.querySelectorAll<HTMLElement>(".rebuilding_card");
+          gsap.set(words, { yPercent: 110, opacity: 0 });
+          gsap.to(words, {
+            yPercent: 0,
+            opacity: 1,
+            stagger: 0.24,
+            duration: 0.55,
+            ease: "power2.out",
+            scrollTrigger: {
+              trigger: section,
+              start: "top 25%",
+              end: () => `+=${stage.clientHeight * 0.55}`,
+              scrub: 0.25,
+              invalidateOnRefresh: true,
+            },
+          });
+          const travel = (card: HTMLElement) =>
+            stage.clientHeight / 2 + card.offsetHeight * 0.65;
+          let contactY = 0;
+          let fadeDistance = 1;
+          const measureOverlap = () => {
+            contactY =
+              title.offsetTop +
+              title.offsetHeight -
+              stage.clientHeight / 2 +
+              cards[0].offsetHeight / 2;
+            fadeDistance = Math.max(
+              title.offsetHeight * 1.15,
+              cards[0].offsetHeight * 0.85,
+              1,
+            );
+          };
+          measureOverlap();
+          gsap.set(title, { opacity: 1 });
+          gsap.set(cue, { autoAlpha: 0, xPercent: -50, yPercent: -50 });
+          const setTitleOpacity = gsap.quickSetter(title, "opacity");
+          gsap.set(cards, {
+            xPercent: -50,
+            yPercent: -50,
+            y: (i) => travel(cards[i]),
+            x: (i) => stage.clientWidth * [-0.012, 0.008, 0.012][i],
+            rotation: (i) => [-1.4, 1.2, -0.9][i],
+          });
+          const timeline = gsap.timeline({
+            scrollTrigger: {
+              trigger: section,
+              start: "top top",
+              end: () =>
+                `+=${stage.clientHeight * Number(getComputedStyle(section).getPropertyValue("--_scroll-length"))}`,
+              pin: stage,
+              scrub: 0.35,
+              invalidateOnRefresh: true,
+              onRefreshInit: measureOverlap,
+              onRefresh: (self) => {
+                gsap.set(cue, {
+                  top: self.end - self.start + stage.clientHeight * 0.3,
+                });
+              },
+            },
+            onUpdate: () => {
+              const y = Number(gsap.getProperty(cards[0], "y"));
+              const overlap = gsap.utils.clamp(
+                0,
+                1,
+                (contactY - y) / fadeDistance,
+              );
+              const fade = overlap * overlap * (3 - 2 * overlap);
+              const lastCardY = Number(gsap.getProperty(cards[2], "y"));
+              const exitProgress = gsap.utils.clamp(
+                0,
+                1,
+                (stage.clientHeight * 0.03 - lastCardY) /
+                  (stage.clientHeight * 0.25),
+              );
+              const exitFade =
+                exitProgress * exitProgress * (3 - 2 * exitProgress);
+              setTitleOpacity((1 - 0.9 * fade) * (1 - exitFade));
+            },
+          });
+          const flights = [
+            {
+              start: 1.0,
+              duration: 3.2,
+              drift: -0.02,
+              rotation: 0.7,
+              exitRotation: -0.6,
+            },
+            {
+              start: 1.7,
+              duration: 3.28,
+              drift: -0.006,
+              rotation: -0.6,
+              exitRotation: 0.8,
+            },
+            {
+              start: 2.4,
+              duration: 3.24,
+              drift: 0.02,
+              rotation: 0.6,
+              exitRotation: -0.4,
+            },
+          ];
+          cards.forEach((card, index) => {
+            const flight = flights[index];
+            timeline.fromTo(
+              card,
+              { y: () => travel(card) },
+              {
+                y: () => -travel(card),
+                duration: flight.duration,
+                ease: (progress: number) =>
+                  progress + 0.1 * Math.sin(2 * Math.PI * progress),
+              },
+              flight.start,
+            );
+            timeline.to(
+              card,
+              {
+                x: () => stage.clientWidth * flight.drift,
+                duration: flight.duration,
+                ease: "none",
+              },
+              flight.start,
+            );
+            timeline.to(
+              card,
+              {
+                rotation: flight.rotation,
+                duration: flight.duration * 0.52,
+                ease: "sine.inOut",
+              },
+              flight.start,
+            );
+            timeline.to(
+              card,
+              {
+                rotation: flight.exitRotation,
+                duration: flight.duration * 0.48,
+                ease: "sine.inOut",
+              },
+              flight.start + flight.duration * 0.52,
+            );
+          });
+          const pin = timeline.scrollTrigger!;
+          gsap.set(cue, {
+            top: pin.end - pin.start + stage.clientHeight * 0.3,
+          });
+          gsap.to(cue, {
+            autoAlpha: 1,
+            duration: 0.45,
+            ease: "power2.out",
+            scrollTrigger: {
+              trigger: cue,
+              start: "center 70%",
+              toggleActions: "play none none reverse",
+            },
+          });
+          return () => {
+            section.classList.remove("is-animated");
+            title.style.removeProperty("opacity");
+            gsap.set(cue, {
+              clearProps: "transform,translate,opacity,visibility,top",
+            });
+          };
+        });
+      });
+    ScrollTrigger.refresh();
+  }
+  initialize();
+  document.addEventListener("astro:page-load", initialize);
+  document.addEventListener("astro:before-swap", cleanup);
+</script>

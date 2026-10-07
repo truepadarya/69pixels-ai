@@ -1,41 +1,25 @@
 ---
 import Layout from "@/layouts/BaseLayout.astro";
-import Section from "@/components/Wrapper/Section.astro";
-import Heading from "@/components/Typography/Heading.astro";
-import Eyebrow from "@/components/Typography/Eyebrow.astro";
-import Img from "@/components/Media/Img.astro";
-import lumos_background from "@/assets/graphics/lumos-background.svg";
-import Icon from "@/components/Media/Icon.astro";
-import logo_icon from "@/assets/logo/logo-icon.svg";
-import ContentWrapper from "@/components/Wrapper/ContentWrapper.astro";
+import NavMinimal from "@/components/Global/NavMinimal.astro";
+import SectionHeroCapabilities from "@/components/SectionHeroCapabilities.astro";
+import SectionCreatorsDirection from "@/components/SectionCreatorsDirection.astro";
+import SectionServicesOverview from "@/components/SectionServicesOverview.astro";
+import SectionWorkSetup from "@/components/SectionWorkSetup.astro";
+import SectionCtaProject from "@/components/SectionCtaProject.astro";
+import SectionCases from "@/components/SectionCases.astro";
+import ScrollLetters from "@/components/ScrollLetters.astro";
 ---
 
-<Layout theme="dark">
-  <Section
-    paddingBottom="even"
-    containerClass="flex-grow"
-    paddingTop="even"
-    class="flex-grow"
-    style="min-height: calc(100svh - var(--nav-height));"
-  >
-    <ContentWrapper
-      class="flex-grow theme-brand"
-      variant="card"
-      mediaOpacity={100}
-    >
-      <Icon src={logo_icon} variant="large" />
-      <Heading variant="display" tag="h1" class="margin-block-8"
-        >Style Guide</Heading
-      >
-      <Eyebrow variant="tag">v0.0.3</Eyebrow>
-      <Img
-        slot="column2"
-        src={lumos_background}
-        width={1920}
-        height={1080}
-        loading="eager"
-        fetchPriority="high"
-      />
-    </ContentWrapper>
-  </Section>
+<Layout
+  titleOverride="69pixels | Creative studio with AI in the workflow."
+  theme="dark"
+>
+  <NavMinimal />
+  <SectionHeroCapabilities variant="centered" />
+  <ScrollLetters />
+  <SectionCases />
+  <SectionCreatorsDirection />
+  <SectionServicesOverview />
+  <SectionWorkSetup />
+  <SectionCtaProject />
 </Layout>

@@ -1,0 +1,123 @@
+---
+import type { HTMLAttributes } from "astro/types";
+import Button from "@/components/Button.astro";
+
+interface Props extends HTMLAttributes<"div"> {
+  /** Set to `false` to skip rendering this component and its children. */
+  render?: boolean;
+}
+
+const { render = true, class: className, ...rest } = Astro.props;
+---
+
+{
+  render && (
+    <Fragment>
+      <div
+        class:list={["pointillist_wrap", className]}
+        aria-hidden="true"
+        {...rest}
+      >
+        <img
+          class="pointillist_background"
+          src="/pointillist/background.webp"
+          alt=""
+          width="2048"
+          height="1231"
+        />
+        <picture>
+          <source
+            media="(width < 48rem)"
+            srcset="/pointillist/silhouette-mobile.webp"
+            type="image/webp"
+          />
+          <source srcset="/pointillist/silhouette.webp" type="image/webp" />
+          <source
+            media="(width < 48rem)"
+            srcset="/pointillist/silhouette-mobile.svg"
+          />
+          <img
+            class="pointillist_original"
+            src="/pointillist/silhouette.svg"
+            alt=""
+            width="2048"
+            height="1231"
+          />
+        </picture>
+      </div>
+      <Button
+        class="pointillist_control"
+        variant="link"
+        hidden
+        aria-label="Enable tilt motion"
+      >
+        Enable tilt motion
+      </Button>
+      <script is:inline src="/pointillist/turn.js" defer />
+    </Fragment>
+  )
+}
+
+<style is:global>
+  @layer components {
+    .pointillist_wrap {
+      position: absolute;
+      inset: 0;
+      isolation: isolate;
+      overflow: hidden;
+      background: var(--dark-700);
+    }
+    .pointillist_wrap::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      z-index: 2;
+      background: rgb(0 0 0 / 10%);
+      pointer-events: none;
+    }
+    .pointillist_wrap img,
+    .pointillist_wrap canvas {
+      position: absolute;
+      inset: 0;
+      display: block;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center top;
+      user-select: none;
+      pointer-events: none;
+    }
+    .pointillist_original,
+    .pointillist_light {
+      z-index: 1;
+      image-rendering: pixelated;
+    }
+    .pointillist_control.button_wrap {
+      position: absolute;
+      z-index: 4;
+      top: var(--nav-height);
+      right: var(--site-margin);
+      display: none;
+      min-height: max(2.75rem, var(--space-48));
+      padding-inline: var(--space-16);
+      font-size: var(--text-small);
+    }
+    .pointillist_wrap {
+      @media (width < 48rem), (width < 64rem) and (pointer: coarse) {
+        & + .pointillist_control:not([hidden]) {
+          display: inline-flex;
+        }
+      }
+      @media (width < 48rem) {
+        --hero-face-scale: 1.15;
+        --hero-face-y: -10%;
+        & .pointillist_original,
+        & .pointillist_light {
+          transform: translateY(var(--hero-face-y))
+            scale(var(--hero-face-scale));
+          transform-origin: center top;
+        }
+      }
+    }
+  }
+</style>

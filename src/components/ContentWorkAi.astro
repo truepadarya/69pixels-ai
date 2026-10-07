@@ -1,0 +1,496 @@
+---
+import type { HTMLAttributes } from "astro/types";
+import Button from "@/components/Button.astro";
+import Img from "@/components/Media/Img.astro";
+import Heading from "@/components/Typography/Heading.astro";
+import Paragraph from "@/components/Typography/Paragraph.astro";
+import ContentWrapper from "@/components/Wrapper/ContentWrapper.astro";
+import Grid from "@/components/Wrapper/Grid.astro";
+import workAi1 from "@/assets/graphics/work-ai_1.png";
+import experienceIlya from "@/assets/graphics/work-ai-experience/work-ai-experience_ilya.png";
+import experienceVadim from "@/assets/graphics/work-ai-experience/work-ai-experience_vadim.png";
+import experienceIlona from "@/assets/graphics/work-ai-experience/work-ai-experience_ilona.png";
+import experiencePrism from "@/assets/graphics/work-ai-experience/work-ai-experience_prism.png";
+import experiencePasha from "@/assets/graphics/work-ai-experience/work-ai-experience_pasha.png";
+import experienceGlowRight from "@/assets/graphics/work-ai-experience/work-ai-experience_glow-right.svg";
+import experienceGlowLeft from "@/assets/graphics/work-ai-experience/work-ai-experience_glow-left.svg";
+import experienceOpenAi from "@/assets/graphics/work-ai-experience/work-ai-experience_openai.svg";
+import experienceStar from "@/assets/graphics/work-ai-experience/work-ai-experience_star.svg";
+import experienceM from "@/assets/graphics/work-ai-experience/work-ai-experience_m.svg";
+
+interface Props extends HTMLAttributes<"div"> {
+  /** Set to `false` to skip rendering this component and its children. */
+  render?: boolean;
+}
+
+const { render = true, class: className, ...rest } = Astro.props;
+
+const cards = [
+  {
+    heading: "Months become days",
+    text: "AI-powered workflows turn weeks into days, with human expertise leading the way.",
+    visual: "months",
+  },
+  {
+    heading: "Experience sparks action",
+    text: "Senior designers use AI as a creative partner to explore, refine and deliver better solutions.",
+    visual: "experience",
+  },
+  {
+    heading: "Build the tools",
+    text: "Custom AI tools remove repetitive work and help teams move from ideas to execution faster.",
+    image: workAi1,
+  },
+];
+---
+
+{
+  render && (
+    <div class:list={["work-ai_wrap", className]} {...rest}>
+      <div class="work-ai_intro">
+        <Heading
+          id="work-ai-title"
+          tag="h2"
+          variant="h2"
+          class="work-ai_title section-heading-primary"
+        >
+          Rebuilding work around AI
+        </Heading>
+      </div>
+
+      <Grid class="work-ai_layout" data-reveal-group data-reveal-stagger="main">
+        {cards.map((card) => (
+          <div class="work-ai_card" data-reveal>
+            <div
+              class:list={[
+                "work-ai_card-zone",
+                { months: card.visual === "months" },
+              ]}
+            >
+              {card.visual === "months" ? (
+                <div class="work-ai-months_wrap" aria-hidden="true">
+                  <div class="work-ai-months_layout">
+                    <div class="work-ai-months_days">
+                      days
+                      <span class="work-ai-months_handle top-left" />
+                      <span class="work-ai-months_handle top-right" />
+                      <span class="work-ai-months_handle bottom-left" />
+                      <span class="work-ai-months_handle bottom-right" />
+                      <svg
+                        class="work-ai-months_cursor"
+                        viewBox="0 0 18 24"
+                        fill="none"
+                      >
+                        <path
+                          d="M1 1L16 15L9 15L12 22L8 23L5 16L1 20V1Z"
+                          fill="black"
+                          stroke="white"
+                          stroke-width="1.2"
+                          stroke-linejoin="round"
+                        />
+                      </svg>
+                    </div>
+                    <div class="work-ai-months_months">months</div>
+                  </div>
+                </div>
+              ) : card.visual === "experience" ? (
+                <div class="work-ai-experience_wrap" aria-hidden="true">
+                  <img
+                    class="work-ai-experience_glow work-ai-experience_glow-left"
+                    src={experienceGlowLeft.src}
+                    alt=""
+                  />
+                  <img
+                    class="work-ai-experience_glow work-ai-experience_glow-right"
+                    src={experienceGlowRight.src}
+                    alt=""
+                  />
+
+                  <div class="work-ai-experience_tile work-ai-experience_openai">
+                    <img src={experienceOpenAi.src} alt="" />
+                  </div>
+                  <div class="work-ai-experience_photo work-ai-experience_ilya">
+                    <img src={experienceIlya.src} alt="" />
+                  </div>
+                  <div class="work-ai-experience_photo work-ai-experience_ilona">
+                    <img src={experienceIlona.src} alt="" />
+                  </div>
+                  <div class="work-ai-experience_tile work-ai-experience_prism">
+                    <img src={experiencePrism.src} alt="" />
+                  </div>
+                  <div class="work-ai-experience_photo work-ai-experience_vadim">
+                    <img src={experienceVadim.src} alt="" />
+                  </div>
+                  <div class="work-ai-experience_tile work-ai-experience_star">
+                    <img src={experienceStar.src} alt="" />
+                  </div>
+                  <div class="work-ai-experience_tile work-ai-experience_m">
+                    <img src={experienceM.src} alt="" />
+                  </div>
+                  <div class="work-ai-experience_photo work-ai-experience_pasha">
+                    <img src={experiencePasha.src} alt="" />
+                  </div>
+                </div>
+              ) : (
+                <Img
+                  src={card.image!}
+                  alt=""
+                  variant="constrained"
+                  sizes="(width < 48rem) 100vw, (width < 64rem) 50vw, 33vw"
+                  transparent
+                />
+              )}
+            </div>
+            <div class="work-ai_card-content margin-trim">
+              <Heading tag="h3" variant="h5">
+                {card.heading}
+              </Heading>
+              <Paragraph variant="main">{card.text}</Paragraph>
+            </div>
+          </div>
+        ))}
+      </Grid>
+
+      <ContentWrapper
+        centered
+        class="work-ai_cta padding-top-64"
+        data-reveal
+        column1Class="gap-16"
+      >
+        <Heading tag="h3" variant="h5" maxWidth={18}>
+          Here&rsquo;s what that looks
+          <br />
+          like in practice
+        </Heading>
+        <Button
+          element="link"
+          href="#cases"
+          variant="arrow"
+          emphasis="secondary"
+          label="See what that looks like in practice"
+        />
+      </ContentWrapper>
+    </div>
+  )
+}
+
+<style is:global>
+  @layer components {
+    .work-ai_wrap {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .work-ai_intro {
+      display: flex;
+      justify-content: center;
+      margin-bottom: var(--space-96);
+    }
+
+    .work-ai_layout.grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: var(--space-16);
+
+      @media (width < 64rem) {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      @media (width < 48rem) {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .work-ai_title {
+      flex: none;
+    }
+
+    .work-ai_cta {
+      margin-top: var(--space-80);
+    }
+
+    .work-ai_card {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      background-color: var(--background-2);
+      overflow: clip;
+    }
+
+    .work-ai_card-content {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-20);
+      padding: var(--space-40);
+
+      & > .text {
+        color: var(--text-2);
+      }
+    }
+
+    .work-ai_card-zone {
+      position: relative;
+      aspect-ratio: 17 / 11;
+      background-color: var(--dark-850);
+      overflow: clip;
+
+      & > .image {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+    }
+
+    .work-ai_card-zone.months {
+      background-color: var(--light-100);
+    }
+
+    .work-ai-months_wrap {
+      position: absolute;
+      inset: 0;
+      container-type: inline-size;
+      aspect-ratio: 17 / 11;
+    }
+
+    .work-ai-months_layout {
+      position: absolute;
+      top: 54%;
+      left: 50%;
+      translate: -50% -50%;
+      display: flex;
+      align-items: stretch;
+      width: 76cqw;
+      height: 13.2cqw;
+      font-size: 11.3cqw;
+      font-weight: var(--primary-semibold);
+      line-height: 1;
+      letter-spacing: -0.06em;
+    }
+
+    .work-ai-months_days,
+    .work-ai-months_months {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding-bottom: 0.6cqw;
+    }
+
+    .work-ai-months_days {
+      position: relative;
+      z-index: 1;
+      width: 30cqw;
+      flex: none;
+      border: 0.4cqw solid var(--graphic-accent);
+      color: var(--dark-1000);
+    }
+
+    .work-ai-months_months {
+      flex: 1;
+      border: 0.4cqw dashed var(--gray-300);
+      border-left: 0;
+      color: var(--gray-300);
+    }
+
+    .work-ai-months_handle {
+      position: absolute;
+      width: 1.7cqw;
+      height: 1.7cqw;
+      background: var(--light-100);
+      border: 0.35cqw solid var(--graphic-accent);
+      translate: -50% -50%;
+
+      &.top-left {
+        top: 0;
+        left: 0;
+      }
+      &.top-right {
+        top: 0;
+        left: 100%;
+      }
+      &.bottom-left {
+        top: 100%;
+        left: 0;
+      }
+      &.bottom-right {
+        top: 100%;
+        left: 100%;
+      }
+    }
+
+    .work-ai-months_cursor {
+      position: absolute;
+      top: 100%;
+      left: 100%;
+      width: 3.65cqw;
+      height: 4.85cqw;
+      translate: 0.2cqw 0.2cqw;
+    }
+
+    .work-ai-experience_wrap {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 82.2%;
+      aspect-ratio: 331.25 / 186.636;
+      translate: -50% -50%;
+    }
+
+    .work-ai-experience_wrap img {
+      display: block;
+      max-width: none;
+    }
+
+    .work-ai-experience_glow,
+    .work-ai-experience_photo,
+    .work-ai-experience_tile {
+      position: absolute;
+    }
+
+    .work-ai-experience_glow {
+      pointer-events: none;
+    }
+
+    .work-ai-experience_glow-left {
+      top: -30%;
+      left: -19.6%;
+      width: 64.3%;
+    }
+
+    .work-ai-experience_glow-right {
+      top: -21.1%;
+      left: 60.1%;
+      width: 61.2%;
+    }
+
+    .work-ai-experience_photo,
+    .work-ai-experience_tile {
+      overflow: clip;
+      background-color: var(--dark-780);
+    }
+
+    .work-ai-experience_openai {
+      top: 0;
+      left: 12.8%;
+      width: 21.1%;
+      height: 38.9%;
+      border-radius: 18%;
+    }
+
+    .work-ai-experience_openai img {
+      position: absolute;
+      top: 19.8%;
+      left: 18.6%;
+      width: 62.8%;
+    }
+
+    .work-ai-experience_ilya {
+      top: 23.3%;
+      left: 0;
+      width: 20.5%;
+      height: 37.7%;
+      border-radius: 50%;
+    }
+
+    .work-ai-experience_ilya img {
+      position: absolute;
+      top: -32.6%;
+      left: -53.9%;
+      width: 348.3%;
+    }
+
+    .work-ai-experience_ilona {
+      top: 1%;
+      left: 58.7%;
+      width: 10.4%;
+      height: 19%;
+      border-radius: 50%;
+    }
+
+    .work-ai-experience_ilona img {
+      width: 112%;
+      height: 109%;
+      object-fit: cover;
+      translate: -6% -4%;
+    }
+
+    .work-ai-experience_prism {
+      top: 8.5%;
+      left: 72.8%;
+      width: 20.1%;
+      height: 36.9%;
+      border-radius: 21%;
+    }
+
+    .work-ai-experience_prism img {
+      position: absolute;
+      top: -13.7%;
+      left: -66.6%;
+      width: 222.7%;
+      height: 177%;
+    }
+
+    .work-ai-experience_vadim {
+      top: 32.6%;
+      left: 82.1%;
+      width: 17.9%;
+      height: 32.7%;
+      border-radius: 50%;
+    }
+
+    .work-ai-experience_vadim img {
+      width: 112.1%;
+      height: 108.8%;
+      object-fit: cover;
+      translate: -6% -4.4%;
+    }
+
+    .work-ai-experience_star {
+      top: 78.1%;
+      left: 68.5%;
+      width: 12%;
+      height: 21.9%;
+      background: transparent;
+    }
+
+    .work-ai-experience_star img,
+    .work-ai-experience_m img {
+      width: 100%;
+      height: 100%;
+    }
+
+    .work-ai-experience_m {
+      top: 62.5%;
+      left: 25.1%;
+      width: 17.7%;
+      height: 32.7%;
+      background: transparent;
+    }
+
+    .work-ai-experience_pasha {
+      top: 34.1%;
+      left: 36.3%;
+      width: 27.5%;
+      height: 50.6%;
+      border-radius: 50%;
+      box-shadow: 0 0.7rem 11.7rem -0.7rem var(--dark-1000);
+    }
+
+    .work-ai-experience_pasha img {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 152.8%;
+      height: 147.9%;
+      object-fit: cover;
+      translate: -50% -49.2%;
+    }
+
+    .work-ai_cta .button_wrap {
+      font-size: var(--text-main-xl);
+    }
+
+    .work-ai_cta .button_mark {
+      rotate: 90deg;
+    }
+  }
+</style>

@@ -1,9 +1,10 @@
 import type { APIRoute } from "astro";
+import { SITE_IS_PUBLIC } from "@/consts.ts";
 
 export const GET: APIRoute = ({ site }) => {
-  const lines = ["User-agent: *", "Allow: /"];
+  const lines = ["User-agent: *", SITE_IS_PUBLIC ? "Allow: /" : "Disallow: /"];
 
-  if (site) {
+  if (site && SITE_IS_PUBLIC) {
     lines.push("", `Sitemap: ${new URL("sitemap-index.xml", site).href}`);
   }
 

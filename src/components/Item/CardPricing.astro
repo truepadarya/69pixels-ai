@@ -1,0 +1,381 @@
+---
+import type { HTMLAttributes } from "astro/types";
+import Eyebrow from "@/components/Typography/Eyebrow.astro";
+import Heading from "@/components/Typography/Heading.astro";
+import Paragraph from "@/components/Typography/Paragraph.astro";
+
+type Base = HTMLAttributes<"a"> & {
+  /** Set to `false` to skip rendering this component and its children. */
+  render?: boolean;
+  /** Small line of text above the pricing details. Inline markup is rendered. */
+  label: string;
+  /** The card's price or pricing title. Inline markup is rendered. */
+  heading: string;
+  /** Short qualifier displayed beside the heading. Inline markup is rendered. */
+  suffix?: string;
+  /** Makes a numeric price more prominent than a pricing title. */
+  price?: boolean;
+  /** Body copy under the heading. Inline markup is rendered. */
+  text: string;
+};
+
+type Props = Base &
+  (
+    | {
+        /**
+         * How the card is composed.
+         *
+         * - `pricing` — linked pricing details (default)
+         * - `setup` — linked work setup with a pricing footer
+         */
+        variant?: "pricing";
+        footer?: never;
+        /** Where the card leads. */
+        href: string;
+      }
+    | {
+        variant: "setup";
+        /** Single line of pricing copy in the footer. */
+        footer: string;
+        /** Where the card leads. */
+        href: string;
+      }
+  );
+
+const {
+  render = true,
+  label,
+  heading,
+  suffix,
+  price = false,
+  text,
+  variant = "pricing",
+  footer,
+  href,
+  class: className,
+  ...rest
+} = Astro.props;
+
+const hasContent = !!(
+  label &&
+  heading &&
+  text &&
+  href &&
+  (variant !== "setup" || footer)
+);
+---
+
+{
+  render && hasContent && (
+    <a
+      class:list={[
+        "pricing-card_wrap",
+        variant === "setup" && "setup",
+        price && "price",
+        className,
+      ]}
+      href={href}
+      {...rest}
+    >
+      <div class="pricing-card_body">
+        <Eyebrow class="pricing-card_label">
+          <Fragment set:html={label} />
+        </Eyebrow>
+        <div class="pricing-card_content">
+          <div class="pricing-card_heading-row">
+            <Heading
+              tag="h3"
+              variant={price ? "h1" : "h4"}
+              class="pricing-card_heading"
+            >
+              <Fragment set:html={heading} />
+            </Heading>
+            {suffix && (
+              <Paragraph
+                tag="span"
+                variant="main-xl"
+                class="pricing-card_suffix"
+              >
+                <Fragment set:html={suffix} />
+              </Paragraph>
+            )}
+          </div>
+          <Paragraph variant="main-xl" class="pricing-card_text">
+            <Fragment set:html={text} />
+          </Paragraph>
+        </div>
+      </div>
+      {variant === "setup" && (
+        <div class="pricing-card_footer">
+          <Eyebrow class="pricing-card_footer-label">{footer}</Eyebrow>
+          <span class="pricing-card_seam" aria-hidden="true" />
+        </div>
+      )}
+    </a>
+  )
+}
+
+<style is:global>
+  @layer components {
+    .pricing-card_wrap {
+      --_seam-position: 18%;
+      --_cutout-size: var(--space-24);
+      width: 100%;
+      height: auto;
+      aspect-ratio: 6 / 7;
+      align-self: start;
+      padding: var(--space-28);
+      padding-bottom: var(--space-32);
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      container-type: inline-size;
+      background-color: var(--background-2-solid);
+      color: var(--text);
+      text-decoration: none;
+      transition:
+        background-color var(--hover-duration) var(--hover-ease),
+        color var(--hover-duration) var(--hover-ease);
+
+      &:not(.setup):is(:hover, :focus-visible) {
+        --text: var(--dark-900);
+        --text-2: color-mix(in srgb, var(--dark-900) 70%, transparent);
+        background-color: color-mix(
+          in srgb,
+          var(--light-100) 97%,
+          var(--dark-900)
+        );
+      }
+
+      &::before,
+      &::after,
+      .pricing-card_footer::before,
+      .pricing-card_footer::after {
+        content: "";
+        width: var(--_cutout-size);
+        aspect-ratio: 1;
+        position: absolute;
+        z-index: 2;
+        top: var(--_seam-position);
+        border-radius: 50%;
+        background-color: var(--background);
+        translate: 0 -50%;
+        scale: 0;
+        transition: scale 180ms var(--hover-ease);
+        pointer-events: none;
+      }
+
+      &::before,
+      .pricing-card_footer::before {
+        left: calc(var(--_cutout-size) / -2);
+      }
+
+      &::after,
+      .pricing-card_footer::after {
+        right: calc(var(--_cutout-size) / -2);
+      }
+
+      &:is(:hover, :focus-visible)::before,
+      &:is(:hover, :focus-visible)::after,
+      &:is(:hover, :focus-visible) .pricing-card_footer::before,
+      &:is(:hover, :focus-visible) .pricing-card_footer::after {
+        scale: 1;
+      }
+    }
+
+    .pricing-card_label {
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .pricing-card_label::after,
+    .pricing-card_seam {
+      content: "";
+      position: absolute;
+      top: var(--_seam-position);
+      right: 0;
+      left: 0;
+      border-top: 0.0625rem dashed
+        color-mix(in srgb, var(--_seam-color, var(--dark-900)) 56%, transparent);
+      opacity: 0;
+      scale: 0 1;
+      transform-origin: right;
+      transition:
+        opacity 100ms linear,
+        scale 220ms var(--hover-ease);
+      pointer-events: none;
+    }
+
+    .pricing-card_wrap:is(:hover, :focus-visible) .pricing-card_label::after,
+    .pricing-card_wrap:is(:hover, :focus-visible) .pricing-card_seam {
+      opacity: 1;
+      scale: 1;
+    }
+
+    .pricing-card_content {
+      margin-top: auto;
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-24);
+    }
+
+    .pricing-card_body {
+      display: contents;
+    }
+
+    .pricing-card_wrap.setup {
+      --_card-padding: var(--space-28);
+      --_card-padding-bottom: var(--space-32);
+      --_footer-background: transparent;
+      --_seam-color: var(--text);
+      padding: 0;
+      aspect-ratio: auto;
+      background-color: var(--light-100);
+      align-self: stretch;
+
+      &:is(:hover, :focus-visible) {
+        background-color: color-mix(
+          in srgb,
+          var(--light-100) 92%,
+          var(--dark-900)
+        );
+      }
+
+      .pricing-card_seam {
+        opacity: 1;
+        scale: 1;
+      }
+
+      &::before,
+      &::after,
+      .pricing-card_label::after {
+        display: none;
+      }
+
+      .pricing-card_body {
+        display: flex;
+        flex-direction: column;
+        flex: 1;
+        aspect-ratio: auto;
+        min-height: 27rem;
+        padding: var(--_card-padding);
+        padding-bottom: var(--_card-padding-bottom);
+      }
+
+      .pricing-card_label,
+      .pricing-card_footer-label {
+        --text-small-font-weight: var(--primary-medium);
+        letter-spacing: var(--letter-spacing-small);
+        text-transform: none;
+      }
+
+      .pricing-card_label {
+        color: var(--text);
+      }
+
+      .pricing-card_content {
+        margin-top: var(--space-64);
+        gap: var(--space-24);
+      }
+
+      .pricing-card_heading {
+        font-size: clamp(1.375rem, 6cqw, 1.75rem);
+        line-height: 1.2;
+        min-height: 4.8em;
+        text-wrap: pretty;
+      }
+
+      .pricing-card_text {
+        font-size: clamp(1rem, 4.6cqw, var(--text-main-xl));
+        color: color-mix(in srgb, var(--text) 60%, transparent);
+      }
+
+      @media (width < 48rem) {
+        --_card-padding: var(--space-20);
+        --_card-padding-bottom: var(--space-24);
+        height: auto;
+        padding: 0;
+
+        .pricing-card_body {
+          min-height: 0;
+          aspect-ratio: auto;
+        }
+        .pricing-card_content {
+          margin-top: var(--space-40);
+        }
+        .pricing-card_heading {
+          min-height: 0;
+        }
+      }
+    }
+
+    .pricing-card_footer {
+      --_seam-position: 0rem;
+      position: relative;
+      display: flex;
+      align-items: center;
+      padding: var(--space-16) var(--_card-padding);
+      background-color: var(--_footer-background);
+      white-space: nowrap;
+
+      .pricing-card_footer-label {
+        color: var(--text);
+      }
+    }
+
+    .pricing-card_wrap.price .pricing-card_content {
+      gap: var(--space-28);
+    }
+
+    .pricing-card_wrap.price .pricing-card_heading {
+      min-width: 0;
+      font-size: clamp(3.25rem, 13cqw, calc(var(--h1) * 0.74));
+      white-space: nowrap;
+    }
+
+    .pricing-card_heading-row {
+      display: flex;
+      align-items: flex-end;
+      gap: var(--space-8);
+      flex-wrap: nowrap;
+    }
+
+    .pricing-card_suffix {
+      flex: none;
+      white-space: nowrap;
+    }
+
+    .pricing-card_text {
+      color: var(--text-2);
+      transition: color var(--hover-duration) var(--hover-ease);
+    }
+
+    @media (width < 48rem) {
+      .pricing-card_wrap {
+        height: 24rem;
+        max-height: none;
+        aspect-ratio: auto;
+        align-self: stretch;
+        padding: var(--space-20);
+        padding-bottom: var(--space-24);
+      }
+
+      .pricing-card_wrap.price .pricing-card_heading {
+        font-size: clamp(3rem, 15cqw, 4.5rem);
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .pricing-card_wrap,
+      .pricing-card_wrap::before,
+      .pricing-card_wrap::after,
+      .pricing-card_label::after,
+      .pricing-card_seam,
+      .pricing-card_footer::before,
+      .pricing-card_footer::after,
+      .pricing-card_text {
+        transition: none;
+      }
+    }
+  }
+</style>

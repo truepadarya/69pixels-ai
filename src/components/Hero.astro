@@ -1,0 +1,379 @@
+---
+import Heading from "@/components/Typography/Heading.astro";
+import Paragraph from "@/components/Typography/Paragraph.astro";
+import PointillistHero from "@/components/PointillistHero.astro";
+import Marquee from "@/components/Interactive/Marquee.astro";
+import Forbes from "@/assets/logo/forbes.svg";
+import ProductHunt from "@/assets/logo/producthunt.svg";
+import TechCrunch from "@/assets/logo/tc.svg";
+import Clutch from "@/assets/logo/clutch.svg";
+import type { HTMLAttributes } from "astro/types";
+
+interface Props extends HTMLAttributes<"section"> {
+  /** Set to `false` to skip rendering this component and its children. */
+  render?: boolean;
+  /**
+   * How the contents are arranged.
+   *
+   * - `split` — heading and description side by side (default)
+   * - `centered` — heading and description in a centered stack
+   */
+  variant?: "split" | "centered";
+}
+
+const {
+  render = true,
+  variant = "split",
+  class: className,
+  ...rest
+} = Astro.props;
+---
+
+{
+  render && (
+    <section class:list={["hero_wrap", variant, className]} {...rest}>
+      <PointillistHero />
+      <div
+        class="hero_layout"
+        data-reveal-group
+        data-reveal-stagger="main"
+        data-reveal-trigger="page-ready"
+      >
+        <div class="hero_main">
+          <div class="hero_main_layout">
+            <div class="hero_primary">
+              <div class="hero_heading" data-reveal>
+                <Heading tag="h1" variant="display">
+                  AI expands what we can try
+                  <br />
+                  <strong>
+                    Senior creators decide
+                    <br />
+                    what's worth shipping
+                  </strong>
+                </Heading>
+              </div>
+            </div>
+            <div class="hero_secondary">
+              <div class="hero_content">
+                <div class="hero_description" data-reveal>
+                  <Paragraph variant="large">
+                    Creative studio for brands, products and campaigns
+                  </Paragraph>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="hero_bottom" data-reveal>
+          <Marquee class="hero_marquee" label="Awards" showToggle={false}>
+            <div class="hero_logo">
+              <Forbes aria-label="Forbes" />
+            </div>
+            <div class="hero_logo">
+              <ProductHunt aria-label="Product Hunt" />
+            </div>
+            <div class="hero_logo">
+              <TechCrunch aria-label="TechCrunch" />
+            </div>
+            <div class="hero_logo">
+              <Clutch aria-label="Clutch" />
+            </div>
+            <div class="hero_label">
+              <Paragraph>Top Digital Design 2023</Paragraph>
+              <Paragraph>11th Global</Paragraph>
+            </div>
+            <div class="hero_label">
+              <Paragraph>Top B2B 2019</Paragraph>
+              <Paragraph>Eastern Europe</Paragraph>
+            </div>
+            <div class="hero_label">
+              <Paragraph>Top Product Design 2023</Paragraph>
+              <Paragraph>Global</Paragraph>
+            </div>
+            <div class="hero_label">
+              <Paragraph>Top Digital Design 2023</Paragraph>
+              <Paragraph>Gaming</Paragraph>
+            </div>
+          </Marquee>
+        </div>
+      </div>
+      <div class="hero_shade" aria-hidden="true" />
+    </section>
+  )
+}
+
+<style is:global>
+  @layer components {
+    .hero_wrap {
+      height: 100svh;
+      position: relative;
+      isolation: isolate;
+      overflow: hidden;
+    }
+
+    .hero_layout {
+      position: relative;
+      z-index: 2;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-12);
+      padding: var(--site-margin);
+    }
+
+    .hero_layout [data-reveal][data-motion-ready] {
+      --_reveal-duration: calc(var(--motion-duration-slow) * 1.4);
+      --_reveal-y: var(--reveal-distance-small);
+      --_reveal-blur: 0.125rem;
+    }
+
+    .hero_shade {
+      position: absolute;
+      inset: 0;
+      z-index: 3;
+      background: var(--dark-1000);
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .hero_marquee {
+      --_gap-size: var(--space-80);
+      --_speed: 6s;
+
+      & .marquee_panel {
+        justify-content: flex-start;
+      }
+
+      & .marquee_viewport {
+        mask-image: linear-gradient(
+          to right,
+          transparent,
+          var(--dark-900) 8%,
+          var(--dark-900) 92%,
+          transparent
+        );
+      }
+    }
+
+    .hero_label {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: calc(var(--space-4) * 0.85);
+      text-align: center;
+      opacity: 0.4;
+
+      & > .text {
+        font-size: calc(var(--text-main) * 0.85);
+        width: 100%;
+        text-align: center;
+      }
+    }
+
+    .hero_logo {
+      height: calc(var(--size-48) * 0.85);
+      width: auto;
+      opacity: 0.4;
+
+      & > svg {
+        display: block;
+        width: auto;
+        height: 100%;
+      }
+    }
+
+    .hero_main {
+      min-height: 0;
+      flex: 1;
+      display: flex;
+      align-items: center;
+    }
+
+    .hero_main_layout {
+      width: 100%;
+      display: flex;
+      align-items: stretch;
+      gap: var(--space-24);
+    }
+
+    .hero_primary,
+    .hero_secondary {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .hero_primary {
+      display: flex;
+    }
+
+    .hero_heading {
+      width: 100%;
+      min-width: 0;
+      align-self: center;
+
+      & strong {
+        font-weight: inherit;
+      }
+    }
+
+    .hero_secondary {
+      display: flex;
+      justify-content: flex-end;
+    }
+
+    .hero_content {
+      width: 100%;
+      max-width: 24rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .hero_description > .text {
+      opacity: 0.35;
+    }
+
+    .hero_wrap.centered {
+      & .hero_main {
+        padding-block: var(--nav-height) var(--space-32);
+      }
+
+      & .hero_main_layout {
+        flex-direction: column;
+        align-items: center;
+        gap: var(--space-32);
+        translate: 0 calc(var(--space-24) * -1);
+        text-align: center;
+      }
+
+      & .hero_primary,
+      & .hero_secondary {
+        flex: none;
+        width: 100%;
+        justify-content: center;
+      }
+
+      & .hero_heading > .heading {
+        font-size: clamp(2.25rem, min(5.4vw, 9svh), 6rem);
+        max-width: 100%;
+        margin-inline: auto;
+        text-wrap: balance;
+        font-weight: var(--primary-medium);
+        line-height: 1.04;
+        letter-spacing: -0.045em;
+
+        & strong {
+          font-weight: inherit;
+        }
+      }
+
+      & .hero_content {
+        max-width: 47.5rem;
+        align-items: center;
+        gap: var(--space-56);
+      }
+
+      & .hero_description > .text {
+        font-size: clamp(1.125rem, 1.65vw, 1.5rem);
+        line-height: 1.45;
+        opacity: 0.65;
+        text-wrap: balance;
+      }
+
+      & .hero_logo {
+        height: calc(var(--size-48) * 0.765);
+        opacity: 0.3;
+      }
+
+      & .hero_label {
+        gap: calc(var(--space-4) * 0.765);
+        opacity: 0.3;
+
+        & > .text {
+          font-size: calc(var(--text-main) * 0.765);
+        }
+      }
+
+      @media (width < 48rem) {
+        & .hero_main {
+          padding-block: var(--nav-height) var(--space-48);
+        }
+
+        & .hero_heading > .heading {
+          font-size: clamp(2rem, min(8.5vw, 6.5svh), 4rem);
+        }
+
+        & .hero_main_layout {
+          gap: var(--space-32);
+        }
+
+        & .hero_content {
+          gap: var(--space-40);
+        }
+
+        & .hero_description > .text {
+          font-size: 1.125rem;
+          max-width: 32ch;
+        }
+
+        & .hero_description br {
+          display: none;
+        }
+      }
+    }
+
+    .hero_wrap {
+      @media (width < 64rem) {
+        &,
+        :where(&) .hero_layout {
+          height: auto;
+          min-height: 100svh;
+        }
+
+        :where(&) .hero_main {
+          padding-block: var(--space-64);
+        }
+
+        :where(&) .hero_main_layout {
+          flex-direction: column;
+          gap: var(--space-64);
+        }
+
+        :where(&) .hero_primary,
+        :where(&) .hero_secondary {
+          width: 100%;
+          flex: none;
+        }
+
+        :where(&) .hero_secondary {
+          justify-content: flex-start;
+        }
+
+        :where(&) .hero_content {
+          width: 100%;
+          max-width: 32rem;
+          gap: var(--space-80);
+        }
+      }
+    }
+
+    .hero_wrap {
+      @media (width < 48rem) {
+        & {
+          --hero-main-offset: 1rem;
+          --hero-marquee-bottom-space: 1.5rem;
+        }
+
+        :where(&) .hero_main_layout {
+          translate: 0 var(--hero-main-offset);
+        }
+
+        :where(&) .hero_bottom {
+          margin-bottom: var(--hero-marquee-bottom-space);
+        }
+      }
+    }
+  }
+</style>

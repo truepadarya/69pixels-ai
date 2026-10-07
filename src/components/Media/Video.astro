@@ -1,5 +1,6 @@
 ---
 import type { HTMLAttributes } from "astro/types";
+import videoDimensions from "../../data/video-dimensions.json";
 
 type VideoRatio = "2-1" | "16-9" | "3-2" | "5-4" | "1-1" | "4-5" | "2-3";
 
@@ -24,6 +25,8 @@ type Tail = {
   muted?: boolean;
   /** For cutouts: fit the whole frame in rather than cropping, and drop the skeleton tint. */
   transparent?: boolean;
+  /** Load near the viewport. Use `eager` for a video on the first screen. */
+  loading?: "lazy" | "eager";
 };
 
 type Props = Head &
@@ -36,9 +39,8 @@ type Props = Head &
          * - `3-2`, `5-4`, `1-1` — squarer
          * - `4-5`, `2-3` — upright, for a phone
          *
-         * `custom` takes a ratio of your own. `auto` matches the file, but its
-         * height is unknown until the file's metadata arrives, so the page
-         * shifts once it loads.
+         * `custom` takes a ratio of your own. `auto` uses the recorded dimensions
+         * for local files; other files need metadata to establish their height.
          */
         variant?: VideoRatio;
         ratio?: never;
@@ -80,6 +82,8 @@ const {
   autoplay = true,
   muted = true,
   transparent = false,
+  loading = "lazy",
+  preload,
   class: className,
   ...rest
 } = Astro.props as AllProps;
@@ -103,6 +107,19 @@ if (import.meta.env.DEV && render) {
 }
 
 const isCustom = variant === "custom";
+const filename = src?.split(/[?#]/)[0].split("/").at(-1);
+const dimensions = filename
+  ? ((videoDimensions as Record<string, number[]>)[filename] ??
+    (videoDimensions as Record<string, number[]>)[
+      filename.replace(/\.[\w-]+(?=\.mp4$)/, "")
+    ])
+  : undefined;
+const aspectRatio = isCustom
+  ? ratio
+  : variant === "auto" && dimensions
+    ? `${dimensions[0]} / ${dimensions[1]}`
+    : undefined;
+const deferred = loading === "lazy" && (variant !== "auto" || !!dimensions);
 ---
 
 {
@@ -116,12 +133,21 @@ const isCustom = variant === "custom";
         transparent && "transparent",
         className,
       ]}
-      style={isCustom && ratio ? `aspect-ratio: ${ratio};` : undefined}
+      style={aspectRatio ? `aspect-ratio: ${aspectRatio};` : undefined}
       loop={loop}
-      autoplay={autoplay}
+      autoplay={!deferred && autoplay}
       muted={muted}
       playsinline
       {...rest}
+      preload={deferred ? "none" : (preload ?? "metadata")}
+      data-video-deferred={deferred || undefined}
+      data-video-autoplay={(deferred && autoplay) || undefined}
     />
   )
 }
+
+<script>
+  import { initializeLazyVideos } from "../../utils/lazyVideos";
+  initializeLazyVideos();
+  document.addEventListener("astro:page-load", initializeLazyVideos);
+</script>

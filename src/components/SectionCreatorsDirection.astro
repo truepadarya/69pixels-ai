@@ -1,0 +1,861 @@
+---
+import type { HTMLAttributes } from "astro/types";
+import Heading from "@/components/Typography/Heading.astro";
+import Img from "@/components/Media/Img.astro";
+import darya from "@/assets/graphics/team-flying-photos/darya-new.png";
+import dima from "@/assets/graphics/team-flying-photos/dima1-new.png";
+import ivan from "@/assets/graphics/team-flying-photos/ivan-new.png";
+import julia from "@/assets/graphics/team-flying-photos/julia-new.png";
+import leshaOne from "@/assets/graphics/team-flying-photos/lesha1-new.png";
+import leshaTwo from "@/assets/graphics/team-flying-photos/lesha2-new.png";
+import maks from "@/assets/graphics/team-flying-photos/maks1-updated.png";
+import nOne from "@/assets/graphics/team-flying-photos/n1-new.png";
+import nTwo from "@/assets/graphics/team-flying-photos/n2-new.png";
+import ruslan from "@/assets/graphics/team-flying-photos/ruslan-new.png";
+
+interface Props extends HTMLAttributes<"section"> {
+  /** Set to `false` to skip rendering this component and its children. */
+  render?: boolean;
+}
+
+const { render = true, class: className, ...rest } = Astro.props;
+
+const photos = [
+  { name: "lesha-one", src: leshaOne, width: 653, height: 775 },
+  { name: "maks", src: maks, width: 688, height: 816 },
+  { name: "julia", src: julia, width: 688, height: 816 },
+  { name: "dima", src: dima, width: 688, height: 816 },
+  { name: "lesha-two", src: leshaTwo, width: 688, height: 816 },
+  { name: "n-one", src: nOne, width: 688, height: 816 },
+  { name: "ruslan", src: ruslan, width: 688, height: 816 },
+  { name: "ivan", src: ivan, width: 688, height: 816 },
+  { name: "darya", src: darya, width: 688, height: 816 },
+  { name: "n-two", src: nTwo, width: 688, height: 816 },
+];
+---
+
+{
+  render && (
+    <section
+      class:list={["creators-direction_wrap theme-light", className]}
+      aria-labelledby="creators-direction-title"
+      data-creators-direction
+      {...rest}
+    >
+      <div class="creators-direction_sticky">
+        <div class="creators-direction_artboard">
+          <div class="creators-direction_stage">
+            <Heading
+              id="creators-direction-title"
+              tag="h2"
+              variant="inherit"
+              class="creators-direction_heading"
+            >
+              <span
+                class="creators-direction_phrase creators-direction_phrase-ai"
+                data-phrase="ai"
+              >
+                AI speeds the work
+              </span>
+              <span
+                class="creators-direction_phrase creators-direction_phrase-creators"
+                data-phrase="creators"
+              >
+                Creators lead it
+              </span>
+            </Heading>
+
+            <div class="creators-direction_photos" aria-hidden="true">
+              {photos.map((photo) => (
+                <div
+                  class:list={[
+                    "creators-direction_photo",
+                    `creators-direction_photo-${photo.name}`,
+                  ]}
+                  data-photo={photo.name}
+                >
+                  <Img
+                    src={photo.src}
+                    alt=""
+                    width={photo.width}
+                    height={photo.height}
+                    transparent
+                    loading="eager"
+                    fetchPriority="low"
+                  />
+                </div>
+              ))}
+            </div>
+
+            <span
+              class="creators-direction_square"
+              data-square
+              aria-hidden="true"
+            />
+          </div>
+        </div>
+      </div>
+    </section>
+  )
+}
+
+<script>
+  import { gsap } from "gsap";
+  import { ScrollTrigger } from "gsap/ScrollTrigger";
+  import { mountScrollScene } from "@/utils/motion/scrollScene";
+
+  gsap.registerPlugin(ScrollTrigger);
+
+  type PhotoState = {
+    x: number;
+    y: number;
+    scale: number;
+    opacity: number;
+  };
+
+  type PhraseState = PhotoState & { color: string };
+
+  const hidden = (x: number, y: number, scale = 0.12): PhotoState => ({
+    x,
+    y,
+    scale,
+    opacity: 0,
+  });
+
+  const photoFrames: Record<string, PhotoState[]> = {
+    "lesha-one": [
+      { x: 8.7, y: 12.9, scale: 0.9, opacity: 0 },
+      { x: 17, y: 15.2, scale: 0.7, opacity: 1 },
+      { x: 25.4, y: 17.5, scale: 0.5, opacity: 1 },
+      { x: 33.7, y: 19.7, scale: 0.3, opacity: 0.35 },
+      hidden(42, 22, 0.1),
+      hidden(42, 22, 0.1),
+      hidden(42, 22, 0.1),
+    ],
+    maks: [
+      { x: 101.5, y: 10.5, scale: 0.72, opacity: 0 },
+      { x: 90.6, y: 13.4, scale: 0.565, opacity: 1 },
+      { x: 79.8, y: 16.3, scale: 0.41, opacity: 1 },
+      { x: 68.9, y: 19.1, scale: 0.255, opacity: 0.35 },
+      hidden(58, 22, 0.1),
+      hidden(58, 22, 0.1),
+      hidden(58, 22, 0.1),
+    ],
+    julia: [
+      { x: 7, y: 51.5, scale: 0.58, opacity: 0 },
+      { x: 15.8, y: 46.6, scale: 0.46, opacity: 1 },
+      { x: 24.5, y: 41.8, scale: 0.34, opacity: 1 },
+      { x: 33.3, y: 36.9, scale: 0.22, opacity: 0.35 },
+      hidden(42, 32, 0.1),
+      hidden(42, 32, 0.1),
+      hidden(42, 32, 0.1),
+    ],
+    dima: [
+      { x: 104, y: 47, scale: 0.65, opacity: 0 },
+      { x: 92.5, y: 43.3, scale: 0.5125, opacity: 1 },
+      { x: 81, y: 39.5, scale: 0.375, opacity: 1 },
+      { x: 69.5, y: 35.8, scale: 0.2375, opacity: 0.35 },
+      hidden(58, 32, 0.1),
+      hidden(58, 32, 0.1),
+      hidden(58, 32, 0.1),
+    ],
+    "lesha-two": [
+      hidden(-18, -10, 0.82),
+      hidden(-18, -10, 0.82),
+      { x: -5.2, y: -3.4, scale: 0.676, opacity: 0 },
+      { x: 7.6, y: 3.2, scale: 0.532, opacity: 1 },
+      { x: 20.4, y: 9.8, scale: 0.388, opacity: 1 },
+      { x: 33.2, y: 16.4, scale: 0.244, opacity: 0.35 },
+      hidden(46, 23, 0.1),
+    ],
+    "n-one": [
+      hidden(118, 4, 0.82),
+      hidden(118, 4, 0.82),
+      { x: 105.2, y: 7.8, scale: 0.676, opacity: 0 },
+      { x: 92.4, y: 11.6, scale: 0.532, opacity: 1 },
+      { x: 79.6, y: 15.4, scale: 0.388, opacity: 1 },
+      { x: 66.8, y: 19.2, scale: 0.244, opacity: 0.35 },
+      hidden(54, 23, 0.1),
+    ],
+    ruslan: [
+      hidden(-17, 62, 0.82),
+      hidden(-17, 62, 0.82),
+      { x: -3.6, y: 57.6, scale: 0.676, opacity: 0 },
+      { x: 9.8, y: 53.2, scale: 0.532, opacity: 1 },
+      { x: 23.2, y: 48.8, scale: 0.388, opacity: 1 },
+      { x: 36.6, y: 44.4, scale: 0.244, opacity: 0.35 },
+      hidden(46, 40, 0.1),
+    ],
+    ivan: [
+      hidden(116, 62, 0.78),
+      hidden(116, 62, 0.78),
+      { x: 102.8, y: 57.6, scale: 0.644, opacity: 0 },
+      { x: 89.6, y: 53.2, scale: 0.508, opacity: 1 },
+      { x: 76.4, y: 48.8, scale: 0.372, opacity: 1 },
+      { x: 63.2, y: 44.4, scale: 0.236, opacity: 0.35 },
+      hidden(52, 40, 0.1),
+    ],
+    darya: [
+      hidden(-20, 52, 0.75),
+      hidden(-20, 52, 0.75),
+      hidden(-20, 52, 0.75),
+      hidden(-20, 52, 0.75),
+      { x: 1, y: 44.3, scale: 0.54, opacity: 1 },
+      { x: 22, y: 36.7, scale: 0.33, opacity: 1 },
+      hidden(43, 29, 0.12),
+    ],
+    "n-two": [
+      hidden(120, 52, 0.82),
+      hidden(120, 52, 0.82),
+      hidden(120, 52, 0.82),
+      hidden(120, 52, 0.82),
+      { x: 99, y: 44.3, scale: 0.587, opacity: 1 },
+      { x: 78, y: 36.7, scale: 0.353, opacity: 1 },
+      hidden(57, 29, 0.12),
+    ],
+  };
+
+  const compactPhotoFrames: Record<string, PhotoState[]> = {
+    "lesha-one": [
+      { x: 16, y: 18, scale: 0.9, opacity: 0 },
+      { x: 28, y: 31, scale: 0.68, opacity: 1 },
+      { x: 36, y: 41, scale: 0.46, opacity: 0 },
+      { x: 42, y: 47, scale: 0.24, opacity: 0 },
+      hidden(42, 47, 0.1),
+      hidden(42, 47, 0.1),
+      hidden(42, 47, 0.1),
+    ],
+    maks: [
+      { x: 84, y: 16, scale: 0.84, opacity: 0 },
+      { x: 72, y: 30, scale: 0.63, opacity: 1 },
+      { x: 64, y: 41, scale: 0.43, opacity: 0 },
+      { x: 58, y: 47, scale: 0.22, opacity: 0 },
+      hidden(58, 47, 0.1),
+      hidden(58, 47, 0.1),
+      hidden(58, 47, 0.1),
+    ],
+    julia: [
+      { x: 18, y: 84, scale: 0.82, opacity: 0 },
+      { x: 28, y: 69, scale: 0.62, opacity: 1 },
+      { x: 36, y: 59, scale: 0.43, opacity: 0 },
+      { x: 42, y: 53, scale: 0.22, opacity: 0 },
+      hidden(42, 53, 0.1),
+      hidden(42, 53, 0.1),
+      hidden(42, 53, 0.1),
+    ],
+    dima: [
+      { x: 82, y: 86, scale: 0.8, opacity: 0 },
+      { x: 72, y: 70, scale: 0.6, opacity: 1 },
+      { x: 64, y: 59, scale: 0.41, opacity: 0 },
+      { x: 58, y: 53, scale: 0.2, opacity: 0 },
+      hidden(58, 53, 0.1),
+      hidden(58, 53, 0.1),
+      hidden(58, 53, 0.1),
+    ],
+    "lesha-two": [
+      hidden(-20, -8, 0.88),
+      hidden(-20, -8, 0.88),
+      hidden(-4, 8, 0.76),
+      { x: 18, y: 24, scale: 0.62, opacity: 1 },
+      { x: 28, y: 35, scale: 0.46, opacity: 1 },
+      hidden(38, 43, 0.28),
+      hidden(44, 48, 0.12),
+    ],
+    "n-one": [
+      hidden(120, -8, 0.88),
+      hidden(120, -8, 0.88),
+      hidden(104, 8, 0.76),
+      { x: 82, y: 24, scale: 0.62, opacity: 1 },
+      { x: 72, y: 35, scale: 0.46, opacity: 1 },
+      hidden(62, 43, 0.28),
+      hidden(56, 48, 0.12),
+    ],
+    ruslan: [
+      hidden(-20, 108, 0.88),
+      hidden(-20, 108, 0.88),
+      hidden(-4, 92, 0.76),
+      { x: 18, y: 76, scale: 0.62, opacity: 1 },
+      { x: 28, y: 65, scale: 0.46, opacity: 1 },
+      hidden(38, 57, 0.28),
+      hidden(44, 52, 0.12),
+    ],
+    ivan: [
+      hidden(120, 108, 0.88),
+      hidden(120, 108, 0.88),
+      hidden(104, 92, 0.76),
+      { x: 82, y: 76, scale: 0.62, opacity: 1 },
+      { x: 72, y: 65, scale: 0.46, opacity: 1 },
+      hidden(62, 57, 0.28),
+      hidden(56, 52, 0.12),
+    ],
+    darya: [
+      hidden(-24, 92, 0.86),
+      hidden(-24, 92, 0.86),
+      hidden(-24, 92, 0.86),
+      hidden(-24, 92, 0.86),
+      hidden(0, 88, 0.72),
+      { x: 20, y: 78, scale: 0.58, opacity: 1 },
+      hidden(42, 52, 0.14),
+    ],
+    "n-two": [
+      hidden(124, 8, 0.86),
+      hidden(124, 8, 0.86),
+      hidden(124, 8, 0.86),
+      hidden(124, 8, 0.86),
+      hidden(100, 12, 0.72),
+      { x: 80, y: 22, scale: 0.58, opacity: 1 },
+      hidden(58, 48, 0.14),
+    ],
+  };
+
+  const phraseInitial: Record<string, PhraseState> = {
+    ai: { x: 50, y: 27, scale: 1, opacity: 0, color: "#000000" },
+    creators: {
+      x: 50,
+      y: 27.5,
+      scale: 1,
+      opacity: 0,
+      color: "#000000",
+    },
+  };
+
+  const compactPhraseInitial: Record<string, PhraseState> = {
+    ai: { x: 50, y: 48, scale: 1, opacity: 0, color: "#000000" },
+    creators: {
+      x: 50,
+      y: 50,
+      scale: 1,
+      opacity: 0,
+      color: "#000000",
+    },
+  };
+
+  const motionProps = (state: PhotoState, compact = false) => ({
+    x: `${state.x}cqw`,
+    y: `${state.y}${compact ? "cqh" : "cqw"}`,
+    scale: state.scale,
+    autoAlpha: state.opacity,
+  });
+
+  const initCreatorsDirection = (root: HTMLElement) => {
+    const phrases = new Map(
+      gsap.utils
+        .toArray<HTMLElement>("[data-phrase]", root)
+        .map((element) => [element.dataset.phrase ?? "", element]),
+    );
+    const photos = new Map(
+      gsap.utils
+        .toArray<HTMLElement>("[data-photo]", root)
+        .map((element) => [element.dataset.photo ?? "", element]),
+    );
+    const tags = new Map(
+      gsap.utils
+        .toArray<HTMLElement>("[data-tag]", root)
+        .map((element) => [element.dataset.tag ?? "", element]),
+    );
+    const square = root.querySelector<HTMLElement>("[data-square]");
+
+    if (!square || phrases.size !== 2 || photos.size !== 10) return;
+
+    const media = gsap.matchMedia();
+
+    const createScene = (
+      frames: Record<string, PhotoState[]>,
+      phraseStates: Record<string, PhraseState>,
+      compact: boolean,
+    ) => {
+      photos.forEach((element, name) => {
+        const first = frames[name]?.[0];
+        if (!first) return;
+        gsap.set(element, {
+          ...motionProps(first, compact),
+          xPercent: -50,
+          yPercent: -50,
+          transformOrigin: "center",
+        });
+      });
+
+      phrases.forEach((element, name) => {
+        const first = phraseStates[name];
+        if (!first) return;
+        gsap.set(element, {
+          ...motionProps(first, compact),
+          color: first.color,
+          xPercent: -50,
+          yPercent: -50,
+          transformOrigin: "center",
+        });
+      });
+
+      tags.forEach((element) => gsap.set(element, { autoAlpha: 0 }));
+      gsap.set(square, { autoAlpha: 0, scale: 0.2 });
+
+      const photoTimeline = gsap.timeline({
+        defaults: { ease: "none" },
+        scrollTrigger: {
+          trigger: root,
+          start: "top top",
+          end: "bottom bottom",
+          scrub: 0.35,
+          invalidateOnRefresh: true,
+        },
+      });
+
+      const contentTimeline = gsap.timeline({
+        defaults: { ease: "none" },
+        scrollTrigger: {
+          trigger: root,
+          start: "top top",
+          end: "bottom bottom",
+          scrub: true,
+          invalidateOnRefresh: true,
+        },
+      });
+
+      for (let frame = 1; frame < 7; frame += 1) {
+        photos.forEach((element, name) => {
+          const states = frames[name];
+          const previous = states?.[frame - 1];
+          const next = states?.[frame];
+          if (!previous || !next) return;
+          const { autoAlpha, ...movement } = motionProps(next, compact);
+
+          photoTimeline.to(
+            element,
+            {
+              ...movement,
+              duration: 1,
+            },
+            frame - 1,
+          );
+          photoTimeline.to(
+            element,
+            {
+              autoAlpha,
+              duration: 1,
+              ease:
+                next.opacity < previous.opacity ? "power2.in" : "power2.out",
+            },
+            frame - 1,
+          );
+        });
+      }
+
+      const aiPhrase = phrases.get("ai");
+      const creatorsPhrase = phrases.get("creators");
+
+      if (aiPhrase && creatorsPhrase) {
+        contentTimeline
+          .to(
+            aiPhrase,
+            {
+              autoAlpha: 1,
+              duration: 0.38,
+            },
+            0,
+          )
+          .to(
+            aiPhrase,
+            {
+              x: "50cqw",
+              y: compact ? "39cqh" : "19.5cqw",
+              scale: compact ? 0.4 : 0.7,
+              autoAlpha: 0.2,
+              duration: 0.25,
+            },
+            2.45,
+          )
+          .to(
+            creatorsPhrase,
+            {
+              x: "50cqw",
+              y: compact ? "50cqh" : "27.5cqw",
+              scale: 1,
+              autoAlpha: 1,
+              duration: 0.22,
+            },
+            2.52,
+          )
+          .to(
+            aiPhrase,
+            {
+              autoAlpha: 0,
+              duration: 0.35,
+            },
+            4.95,
+          )
+          .to(
+            creatorsPhrase,
+            {
+              scale: 0.72,
+              autoAlpha: 0.55,
+              duration: 0.3,
+            },
+            5.15,
+          )
+          .to(
+            creatorsPhrase,
+            {
+              scale: 0.55,
+              autoAlpha: 0,
+              duration: 0.35,
+            },
+            5.45,
+          );
+      }
+
+      ["team", "clients", "services"].forEach((name, index) => {
+        const element = tags.get(name);
+        if (!element) return;
+        contentTimeline.to(
+          element,
+          {
+            autoAlpha: 1,
+            duration: 0.55,
+            ease: "none",
+          },
+          0.08 + index * 0.22,
+        );
+        contentTimeline.to(
+          element,
+          {
+            autoAlpha: 0,
+            duration: 0.9,
+            ease: "none",
+          },
+          4.9 + index * 0.06,
+        );
+      });
+
+      contentTimeline.to(
+        square,
+        {
+          autoAlpha: 1,
+          scale: 1,
+          duration: 0.34,
+          ease: "power2.out",
+        },
+        5.66,
+      );
+
+      // Keep the completed frame on screen before the next section covers it.
+      photoTimeline.to({}, { duration: 2 }, 6);
+      contentTimeline.to({}, { duration: 2 }, 6);
+
+      return () => {
+        photoTimeline.kill();
+        contentTimeline.kill();
+        gsap.set(
+          [...photos.values(), ...phrases.values(), ...tags.values(), square],
+          { clearProps: "all" },
+        );
+      };
+    };
+
+    media.add(
+      "(prefers-reduced-motion: no-preference) and (width >= 64rem)",
+      () => createScene(photoFrames, phraseInitial, false),
+    );
+    media.add(
+      "(prefers-reduced-motion: no-preference) and (width < 64rem)",
+      () => createScene(compactPhotoFrames, compactPhraseInitial, true),
+    );
+
+    return () => media.revert();
+  };
+
+  mountScrollScene("[data-creators-direction]", initCreatorsDirection);
+</script>
+
+<style is:global>
+  @layer components {
+    .creators-direction_wrap {
+      position: relative;
+      z-index: 99;
+      height: 600svh;
+      background-color: var(--light-100);
+      color: var(--text);
+    }
+
+    .creators-direction_sticky {
+      position: sticky;
+      top: 0;
+      width: 100%;
+      height: 100svh;
+      display: grid;
+      place-items: center;
+      overflow: hidden;
+      background-color: var(--light-100);
+    }
+
+    .creators-direction_artboard {
+      position: relative;
+      width: 100%;
+      height: 100svh;
+      overflow: hidden;
+      isolation: isolate;
+      background-color: var(--light-100);
+    }
+
+    .creators-direction_stage {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: min(100%, 183.39svh);
+      aspect-ratio: 1546 / 843;
+      translate: -50% -50%;
+      container-type: inline-size;
+    }
+
+    .creators-direction_heading {
+      position: absolute;
+      inset: 0;
+      z-index: 2;
+      margin: 0;
+      pointer-events: none;
+    }
+
+    .creators-direction_phrase {
+      position: absolute;
+      top: 0;
+      left: 0;
+      display: block;
+      width: min(88vw, 70rem);
+      font-family: var(--h2-font-family);
+      font-size: clamp(3rem, 5.1vw, 5rem);
+      font-weight: var(--h2-font-weight);
+      line-height: var(--h2-line-height);
+      letter-spacing: var(--h2-letter-spacing);
+      text-align: center;
+      text-wrap: nowrap;
+      transform: translate(50cqw, 27cqw) translate(-50%, -50%);
+      will-change: transform, opacity;
+    }
+
+    .creators-direction_phrase-ai,
+    .creators-direction_phrase-creators,
+    .creators-direction_photo {
+      opacity: 0;
+    }
+
+    .creators-direction_photos {
+      position: absolute;
+      inset: 0;
+      z-index: 1;
+      pointer-events: none;
+    }
+
+    .creators-direction_photo {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 44.5cqw;
+      aspect-ratio: 688 / 816;
+      will-change: transform, opacity;
+
+      & .image {
+        display: block;
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+      }
+    }
+
+    .creators-direction_photo-lesha-one {
+      width: 42.24cqw;
+      aspect-ratio: 653 / 775;
+    }
+
+    .creators-direction_tags {
+      position: absolute;
+      z-index: 3;
+      bottom: 3.55cqw;
+      left: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5cqw;
+      translate: -50% 0;
+      white-space: nowrap;
+
+      & > span {
+        opacity: 0;
+        padding: 0.48cqw 0.72cqw;
+        border-radius: 0.26cqw;
+        background-color: var(--light-200);
+        color: var(--gray-600);
+        font-family: var(--text-small-font-family);
+        font-size: 0.86cqw;
+        font-weight: var(--text-small-font-weight);
+        line-height: 1;
+        will-change: opacity;
+      }
+    }
+
+    .creators-direction_square {
+      position: absolute;
+      z-index: 4;
+      top: 50%;
+      left: 50%;
+      width: 3.94cqw;
+      aspect-ratio: 1;
+      translate: -50% -50%;
+      background-color: var(--dark-1000);
+      opacity: 0;
+      will-change: transform, opacity;
+    }
+
+    .creators-direction_wrap {
+      @media (width < 64rem) {
+        :where(&) .creators-direction_stage {
+          width: 100%;
+          height: 100%;
+          aspect-ratio: auto;
+          container-type: size;
+        }
+
+        :where(&) .creators-direction_phrase {
+          width: calc(100cqw - var(--site-margin) * 2);
+          font-size: clamp(2.75rem, 8.5vw, 4.75rem);
+          line-height: var(--h2-line-height);
+          letter-spacing: var(--h2-letter-spacing);
+          text-wrap: balance;
+        }
+
+        :where(&) .creators-direction_phrase-ai {
+          white-space: nowrap;
+        }
+
+        :where(&) .creators-direction_tags {
+          bottom: var(--space-24);
+          width: calc(100% - var(--site-margin) * 2);
+          flex-wrap: wrap;
+          gap: var(--space-8);
+          white-space: normal;
+
+          & > span {
+            padding: var(--space-8) var(--space-12);
+            border-radius: var(--space-4);
+            font-size: var(--text-small);
+            line-height: var(--text-small-line-height);
+            text-align: center;
+          }
+        }
+
+        :where(&) .creators-direction_square {
+          width: var(--space-48);
+        }
+      }
+    }
+
+    .creators-direction_wrap {
+      @media (width < 48rem) {
+        :where(&) .creators-direction_photo {
+          width: 56cqw;
+        }
+
+        :where(&) .creators-direction_photo-lesha-one {
+          width: 53.2cqw;
+        }
+
+        :where(&) .creators-direction_tags {
+          bottom: var(--space-16);
+          flex-direction: column;
+          align-items: center;
+        }
+      }
+    }
+
+    .creators-direction_wrap {
+      @media (prefers-reduced-motion: reduce) {
+        & {
+          height: 100svh;
+        }
+
+        :where(&) .creators-direction_photo,
+        :where(&) .creators-direction_phrase,
+        :where(&) .creators-direction_tags > span,
+        :where(&) .creators-direction_square {
+          will-change: auto;
+        }
+
+        :where(&) .creators-direction_phrase-ai {
+          left: 50%;
+          top: 19.5cqw;
+          opacity: 0.2;
+          transform: translate(-50%, -50%) scale(0.42);
+        }
+
+        :where(&) .creators-direction_phrase-creators {
+          left: 50%;
+          top: 27.7cqw;
+          opacity: 1;
+          transform: translate(-50%, -50%);
+        }
+
+        :where(&) .creators-direction_photo {
+          opacity: 0;
+        }
+
+        :where(&) .creators-direction_photo-lesha-two,
+        :where(&) .creators-direction_photo-n-one,
+        :where(&) .creators-direction_photo-ruslan,
+        :where(&) .creators-direction_photo-ivan {
+          opacity: 1;
+        }
+
+        :where(&) .creators-direction_photo-lesha-two {
+          transform: translate(-50%, -50%) translate(20cqw, 13cqw) scale(0.24);
+        }
+
+        :where(&) .creators-direction_photo-n-one {
+          transform: translate(-50%, -50%) translate(80.5cqw, 15.5cqw)
+            scale(0.23);
+        }
+
+        :where(&) .creators-direction_photo-ruslan {
+          transform: translate(-50%, -50%) translate(24cqw, 40cqw) scale(0.26);
+        }
+
+        :where(&) .creators-direction_photo-ivan {
+          opacity: 1;
+          transform: translate(-50%, -50%) translate(80cqw, 40cqw) scale(0.23);
+        }
+
+        :where(&) .creators-direction_square {
+          display: none;
+        }
+
+        :where(&) .creators-direction_tags > span {
+          opacity: 1;
+        }
+
+        @media (width < 64rem) {
+          .creators-direction_phrase-ai {
+            top: 39cqh;
+          }
+
+          .creators-direction_phrase-creators {
+            top: 50cqh;
+          }
+
+          .creators-direction_photo-lesha-two {
+            transform: translate(-50%, -50%) translate(18cqw, 30cqh) scale(0.38);
+          }
+
+          .creators-direction_photo-n-one {
+            transform: translate(-50%, -50%) translate(82cqw, 30cqh) scale(0.38);
+          }
+
+          .creators-direction_photo-ruslan {
+            transform: translate(-50%, -50%) translate(18cqw, 70cqh) scale(0.38);
+          }
+
+          .creators-direction_photo-ivan {
+            transform: translate(-50%, -50%) translate(82cqw, 70cqh) scale(0.38);
+          }
+        }
+      }
+    }
+  }
+</style>

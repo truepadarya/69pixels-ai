@@ -7,14 +7,25 @@ type SectionSpace =
 
 type ContainerGap =
   | "0"
-  | "1"
-  | "2"
-  | "3"
   | "4"
-  | "5"
-  | "6"
-  | "7"
   | "8"
+  | "12"
+  | "16"
+  | "20"
+  | "24"
+  | "28"
+  | "32"
+  | "36"
+  | "40"
+  | "44"
+  | "48"
+  | "52"
+  | "56"
+  | "64"
+  | "72"
+  | "80"
+  | "88"
+  | "96"
   | "small"
   | "medium"
   | "large";
@@ -23,7 +34,7 @@ interface Props extends HTMLAttributes<"section"> {
   /** Set to `false` to skip rendering this component and its children. */
   render?: boolean;
   /** Colors this section and everything inside it. */
-  theme?: "inherit" | "light" | "dark" | "brand";
+  theme?: "inherit" | "light" | "dark";
   /**
    * Space above the content.
    *
@@ -36,7 +47,7 @@ interface Props extends HTMLAttributes<"section"> {
   paddingTop?: SectionSpace;
   /** Space below the content. Takes the same values as `paddingTop`. */
   paddingBottom?: SectionSpace;
-  /** Space between the children, from the spacing scale. Defaults to `8`. */
+  /** Space between the children, from the spacing scale. Defaults to `64`. */
   gap?: ContainerGap;
   /** Where the content sits across the section. Defaults to `start`. */
   align?: "start" | "center" | "end";
@@ -53,7 +64,7 @@ const {
   theme = "inherit",
   paddingTop = "medium",
   paddingBottom = "medium",
-  gap = "8",
+  gap = "64",
   align,
   fullHeight = false,
   containerClass,
@@ -97,7 +108,7 @@ const background = await slotContent(Astro.slots, "background");
         <div
           class:list={[
             "container",
-            gap !== "8" && `gap-${gap}`,
+            gap !== "64" && `gap-${gap}`,
             containerClass,
             containerAttrsClass,
           ]}

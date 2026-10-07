@@ -1,0 +1,153 @@
+---
+import type { HTMLAttributes } from "astro/types";
+import CardPricing from "@/components/Item/CardPricing.astro";
+import Paragraph from "@/components/Typography/Paragraph.astro";
+import ContentWrapper from "@/components/Wrapper/ContentWrapper.astro";
+import Heading from "@/components/Typography/Heading.astro";
+import Grid from "@/components/Wrapper/Grid.astro";
+
+interface Props extends HTMLAttributes<"div"> {
+  /** Set to `false` to skip rendering this component and its children. */
+  render?: boolean;
+}
+
+const { render = true, class: className, ...rest } = Astro.props;
+
+const cards = [
+  {
+    label: "Fixed project",
+    footer: "Quoted by scope",
+    subject: "Project enquiry",
+    heading: "For a launch or redesign with a clear scope and deadline",
+    text: "We join your team for a defined scope and own the agreed deliverables. Milestones, revisions and price are set before work starts.",
+  },
+  {
+    label: "Dedicated subscription",
+    footer: "€6,900 / month",
+    subject: "Project enquiry",
+    heading:
+      "For ongoing products that need design capacity inside an existing team",
+    text: "One full-time designer works with part-time art direction and project management. We join your planning and reviews and own quality control. You can add specialists or capacity for an agreed extra fee.",
+  },
+  {
+    label: "Custom partnership",
+    footer: "Tailored pricing",
+    subject: "Project enquiry",
+    heading:
+      "For several workstreams or projects that need a mix of disciplines",
+    text: "We agree on the team, responsibilities and budget around the work you need done. You get one accountable partner across strategy, design, production and development.",
+  },
+];
+---
+
+{
+  render && (
+    <div class:list={["work-setup_wrap", className]} data-work-setup {...rest}>
+      <ContentWrapper centered>
+        <Heading
+          id="work-setup-title"
+          tag="h2"
+          variant="h2"
+          class="section-heading-primary work-setup_heading"
+        >
+          Three ways to work together
+        </Heading>
+        <Paragraph variant="large" maxWidth={48} class="work-setup_lead">
+          Tell us where the project stands. We'll agree on the scope, team and
+          terms before work begins.
+        </Paragraph>
+      </ContentWrapper>
+
+      <Grid class="work-setup_layout">
+        {cards.map((card) => (
+          <CardPricing
+            class="work-setup_card"
+            variant="setup"
+            label={card.label}
+            heading={card.heading}
+            text={card.text}
+            footer={card.footer}
+            href={`mailto:hello@69pixels.com?subject=${encodeURIComponent(card.subject)}`}
+            aria-label={`${card.label}: ${card.footer}`}
+          />
+        ))}
+      </Grid>
+    </div>
+  )
+}
+
+<script>
+  import { gsap } from "gsap";
+  import { ScrollTrigger } from "gsap/ScrollTrigger";
+  import { mountScrollScene } from "@/utils/motion/scrollScene";
+
+  gsap.registerPlugin(ScrollTrigger);
+
+  mountScrollScene("[data-work-setup]", (root) => {
+    const media = gsap.matchMedia();
+    media.add("(prefers-reduced-motion: no-preference)", () => {
+      const items = root.querySelectorAll<HTMLElement>(
+        ".work-setup_heading, .work-setup_card",
+      );
+      const timeline = gsap.timeline({
+        defaults: { ease: "none" },
+        scrollTrigger: {
+          trigger: root,
+          start: "top 80%",
+          end: "top 25%",
+          scrub: true,
+          invalidateOnRefresh: true,
+        },
+      });
+
+      gsap.set(items, { autoAlpha: 0, y: "var(--reveal-distance-main)" });
+      timeline.to(items, { autoAlpha: 1, y: 0, duration: 1, stagger: 0.18 });
+    });
+    return () => media.revert();
+  });
+</script>
+
+<style is:global>
+  @layer components {
+    .work-setup_wrap {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      margin-top: var(--space-24);
+      gap: var(--space-88);
+    }
+
+    .work-setup_layout.grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      align-items: stretch;
+      gap: var(--space-16);
+
+      @media (width < 64rem) {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+
+        > :last-child:nth-child(odd) {
+          grid-column: 1 / -1;
+
+          & .pricing-card_body {
+            aspect-ratio: auto;
+            gap: var(--space-64);
+          }
+        }
+      }
+
+      @media (width < 48rem) {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .work-setup_heading {
+      align-self: center;
+    }
+    .work-setup_lead {
+      font-size: clamp(1.125rem, 1.65vw, 1.5rem);
+      line-height: 1.5;
+      color: var(--text-2);
+      text-wrap: balance;
+    }
+  }
+</style>

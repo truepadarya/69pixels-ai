@@ -1,0 +1,26 @@
+﻿---
+import Layout from "@/layouts/BaseLayout.astro";
+import NavMinimal from "@/components/Global/NavMinimal.astro";
+import SectionHeroCapabilities from "@/components/SectionHeroCapabilities.astro";
+import SectionCreatorsDirection from "@/components/SectionCreatorsDirection.astro";
+import SectionServicesOverview from "@/components/SectionServicesOverview.astro";
+import SectionWorkSetup from "@/components/SectionWorkSetup.astro";
+import SectionCtaProject from "@/components/SectionCtaProject.astro";
+import SectionCases from "@/components/SectionCases.astro";
+import ScrollLetters from "@/components/ScrollLetters.astro";
+---
+
+<Layout
+  title="Original Hero Preview"
+  description="An alternative hero layout for internal design review."
+  theme="dark"
+>
+  <NavMinimal />
+  <SectionHeroCapabilities variant="split" />
+  <ScrollLetters />
+  <SectionCases />
+  <SectionCreatorsDirection />
+  <SectionServicesOverview />
+  <SectionWorkSetup />
+  <SectionCtaProject />
+</Layout>

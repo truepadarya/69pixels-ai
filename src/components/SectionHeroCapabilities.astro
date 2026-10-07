@@ -1,0 +1,85 @@
+---
+import Hero from "@/components/Hero.astro";
+import SectionCapabilities from "@/components/SectionCapabilities.astro";
+
+interface Props {
+  /** Set to `false` to skip rendering this component and its children. */
+  render?: boolean;
+  /**
+   * How the hero contents are arranged.
+   *
+   * - `split` — heading and description side by side (default)
+   * - `centered` — heading and description in a centered stack
+   */
+  variant?: "split" | "centered";
+}
+
+const { render = true, variant = "split" } = Astro.props;
+---
+
+{
+  render && (
+    <div class="hero-capabilities_wrap">
+      <Hero variant={variant} />
+      <SectionCapabilities id="capabilities" />
+    </div>
+  )
+}
+
+<script>
+  import { gsap } from "gsap";
+  import { ScrollTrigger } from "gsap/ScrollTrigger";
+
+  gsap.registerPlugin(ScrollTrigger);
+
+  const roots = gsap.utils.toArray<HTMLElement>(".hero-capabilities_wrap");
+  const triggers = roots.flatMap((root) => {
+    const shade = root.querySelector<HTMLElement>(".hero_shade");
+    const capabilities = root.querySelector<HTMLElement>(".capabilities_wrap");
+    if (!shade || !capabilities) return [];
+
+    const setOpacity = gsap.quickSetter(shade, "opacity");
+    const trigger = ScrollTrigger.create({
+      trigger: capabilities,
+      start: "top bottom",
+      end: "top top",
+      invalidateOnRefresh: true,
+      onUpdate: ({ progress }) => setOpacity(progress),
+      onRefresh: ({ progress }) => setOpacity(progress),
+    });
+    setOpacity(trigger.progress);
+    return [trigger];
+  });
+
+  document.addEventListener(
+    "astro:before-swap",
+    () => triggers.forEach((trigger) => trigger.kill()),
+    { once: true },
+  );
+</script>
+
+<style is:global>
+  @layer components {
+    .hero-capabilities_wrap {
+      position: relative;
+      isolation: isolate;
+
+      & > .hero_wrap {
+        position: sticky;
+        top: 0;
+      }
+
+      & > .capabilities_wrap {
+        z-index: 1;
+      }
+    }
+
+    .hero-capabilities_wrap {
+      @media (prefers-reduced-motion: reduce) {
+        & > .hero_wrap {
+          position: relative;
+        }
+      }
+    }
+  }
+</style>

@@ -2,22 +2,17 @@
 import "@/styles/global.css";
 import BaseHead from "@/components/Utility/BaseHead.astro";
 import SkipLink from "@/components/Global/SkipLink.astro";
-import Nav from "@/components/Global/Nav.astro";
 import Footer from "@/components/Global/Footer.astro";
+import SquareCursor from "@/components/Interactive/SquareCursor.astro";
+import PagePreloader from "@/components/Utility/PagePreloader.astro";
 import type { SeoProps } from "@/types.ts";
 
 type Props = SeoProps & {
   /** Theme for the whole page. `inherit` leaves the root defaults in place. */
-  theme?: "inherit" | "light" | "dark" | "brand";
-  /**
-   * Fix the nav over the page rather than letting it stick in flow, so the
-   * first section starts underneath it. Give that section
-   * `paddingTop="navoverlap"` to clear the bar.
-   */
-  overlap?: boolean;
+  theme?: "inherit" | "light" | "dark";
 };
 
-const { theme = "inherit", overlap = false, ...seo } = Astro.props;
+const { theme = "inherit", ...seo } = Astro.props;
 ---
 
 <!doctype html>
@@ -28,10 +23,35 @@ const { theme = "inherit", overlap = false, ...seo } = Astro.props;
   </head>
   <body>
     <SkipLink />
-    <Nav overlap={overlap} />
     <main id="main" tabindex="-1">
       <slot />
     </main>
     <Footer />
+    <SquareCursor />
+    <PagePreloader />
+
+    <script>
+      import Lenis from "lenis";
+      import "lenis/dist/lenis.css";
+
+      new Lenis({
+        autoRaf: true,
+        anchors: true,
+      });
+    </script>
+    <script>
+      import { initMotion } from "@/utils/motion";
+
+      let cleanupMotion = () => {};
+
+      const startMotion = () => {
+        cleanupMotion();
+        cleanupMotion = initMotion(document);
+      };
+
+      startMotion();
+      document.addEventListener("astro:page-load", startMotion);
+      document.addEventListener("astro:before-swap", () => cleanupMotion());
+    </script>
   </body>
 </html>

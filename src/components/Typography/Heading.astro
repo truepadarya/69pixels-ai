@@ -13,6 +13,7 @@ type HeadingStyle =
   | "h5"
   | "h6"
   | "large"
+  | "main-xl"
   | "main"
   | "small";
 
@@ -26,7 +27,7 @@ interface Props extends HTMLAttributes<"div"> {
    * changing size. Defaults to matching `tag`.
    *
    * - `display`, `h1`–`h6` — the heading sizes
-   * - `large`, `main`, `small` — the body sizes
+   * - `large`, `main-xl`, `main`, `small` — the body sizes
    * - `inherit` — take the style from its surroundings
    */
   variant?: HeadingStyle;

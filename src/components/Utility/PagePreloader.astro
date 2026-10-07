@@ -1,0 +1,85 @@
+---
+interface Props {
+  /** Set to `false` to skip rendering this component and its children. */
+  render?: boolean;
+}
+
+const { render = true } = Astro.props;
+const fallback =
+  "<noscript><style>.page-preloader { display: none; }</style></noscript>";
+---
+
+{
+  render && (
+    <Fragment>
+      <div class="page-preloader" aria-hidden="true" />
+      <Fragment set:html={fallback} />
+    </Fragment>
+  )
+}
+
+<script is:inline>
+  (() => {
+    const hidePreloader = () => {
+      clearTimeout(timeout);
+      const preloader = document.querySelector(".page-preloader");
+      if (preloader?.classList.contains("is-hidden")) return;
+
+      const revealPage = () => {
+        if (document.documentElement.classList.contains("is-page-reveal-ready"))
+          return;
+        document.documentElement.classList.add("is-page-reveal-ready");
+        document.dispatchEvent(new Event("page:ready"));
+      };
+
+      if (preloader) {
+        preloader.classList.add("is-hidden");
+      }
+      revealPage();
+      document.documentElement.classList.add("is-page-ready");
+    };
+
+    const timeout = window.setTimeout(hidePreloader, 3000);
+    if (document.readyState !== "loading") {
+      hidePreloader();
+    } else {
+      document.addEventListener("DOMContentLoaded", hidePreloader, {
+        once: true,
+      });
+      window.addEventListener("load", hidePreloader, { once: true });
+    }
+    document.addEventListener("astro:page-load", hidePreloader);
+    document.addEventListener(
+      "astro:before-swap",
+      () => {
+        clearTimeout(timeout);
+        document.removeEventListener("DOMContentLoaded", hidePreloader);
+        window.removeEventListener("load", hidePreloader);
+        document.removeEventListener("astro:page-load", hidePreloader);
+      },
+      { once: true },
+    );
+  })();
+</script>
+
+<style is:global>
+  @layer components {
+    .page-preloader {
+      position: fixed;
+      inset: 0;
+      z-index: 2147483647;
+      background: var(--dark-1000);
+      opacity: 1;
+      transition: opacity calc(var(--motion-duration-main) * 2)
+        var(--motion-ease-out);
+      @media (prefers-reduced-motion: reduce) {
+        transition: none;
+      }
+    }
+
+    .page-preloader.is-hidden {
+      opacity: 0;
+      pointer-events: none;
+    }
+  }
+</style>

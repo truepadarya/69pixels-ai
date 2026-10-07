@@ -1,0 +1,157 @@
+---
+import type { HTMLAttributes } from "astro/types";
+import Heading from "@/components/Typography/Heading.astro";
+import Paragraph from "@/components/Typography/Paragraph.astro";
+
+interface Props extends HTMLAttributes<"div"> {
+  /** Set to `false` to skip rendering this component and its children. */
+  render?: boolean;
+}
+
+const { render = true, class: className, ...rest } = Astro.props;
+
+const services = [
+  {
+    title: "Brand & Strategy",
+    description:
+      "We define the positioning and build an identity your team can use across channels.",
+  },
+  {
+    title: "Digital Products",
+    description:
+      "We design apps and platforms around the flows people need, then build interfaces and systems your team can keep developing.",
+  },
+  {
+    title: "Creative Production",
+    description:
+      "We produce commercials, campaigns, motion and 3D assets with art direction that holds across formats.",
+  },
+  {
+    title: "AI Systems & Automation",
+    description:
+      "We build custom tools for recurring production tasks, including visual assets and detailed UI handoff. Senior creators define the rules and review the output. Your team can produce consistent work as volume grows.",
+  },
+];
+---
+
+{
+  render && (
+    <div
+      class:list={["services-overview_wrap", className]}
+      data-services-overview
+      {...rest}
+    >
+      <Heading
+        id="services-overview-title"
+        tag="h2"
+        variant="h2"
+        class="section-heading-primary services-overview_heading"
+      >
+        Creative work under one roof
+      </Heading>
+
+      <div class="services-overview_list">
+        {services.map((service) => (
+          <article class="services-overview_item">
+            <Heading tag="h3" variant="h6">
+              {service.title}
+            </Heading>
+            <Paragraph variant="main-xl" maxWidth={54}>
+              {service.description}
+            </Paragraph>
+          </article>
+        ))}
+      </div>
+    </div>
+  )
+}
+
+<script>
+  import { gsap } from "gsap";
+  import { ScrollTrigger } from "gsap/ScrollTrigger";
+  import { mountScrollScene } from "@/utils/motion/scrollScene";
+
+  gsap.registerPlugin(ScrollTrigger);
+
+  mountScrollScene("[data-services-overview]", (root) => {
+    const media = gsap.matchMedia();
+    media.add("(prefers-reduced-motion: no-preference)", () => {
+      const items = root.querySelectorAll<HTMLElement>(
+        ".services-overview_heading, .services-overview_item",
+      );
+      const timeline = gsap.timeline({
+        defaults: { ease: "none" },
+        scrollTrigger: {
+          trigger: root,
+          start: "top 80%",
+          end: "bottom 85%",
+          scrub: true,
+          invalidateOnRefresh: true,
+        },
+      });
+
+      gsap.set(items, { autoAlpha: 0, y: "var(--reveal-distance-main)" });
+      timeline.to(items, { autoAlpha: 1, y: 0, duration: 1, stagger: 1 });
+    });
+    return () => media.revert();
+  });
+</script>
+
+<style is:global>
+  @layer components {
+    .services-overview_wrap {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-72);
+    }
+
+    .services-overview_list {
+      width: 100%;
+    }
+
+    .services-overview_heading {
+      align-self: center;
+    }
+
+    .services-overview_heading-line {
+      display: block;
+    }
+
+    .services-overview_item {
+      display: grid;
+      grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+      gap: var(--site-gutter);
+      align-items: start;
+      min-height: calc(var(--space-96) + var(--space-8));
+      padding-block: var(--space-48);
+    }
+
+    .services-overview_item:not(:last-child) {
+      border-bottom: var(--border-width) solid var(--border);
+    }
+
+    .services-overview_item > .heading {
+      font-weight: var(--primary-semibold);
+    }
+
+    .services-overview_item > .text {
+      color: var(--text-2);
+    }
+
+    .services-overview_wrap {
+      @media (width < 48rem) {
+        & {
+          gap: var(--space-64);
+        }
+
+        :where(&) .services-overview_item {
+          grid-template-columns: 1fr;
+          gap: var(--space-16);
+          min-height: 0;
+          padding-block: var(--space-48);
+        }
+      }
+    }
+  }
+</style>
