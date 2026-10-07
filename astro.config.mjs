@@ -7,6 +7,7 @@ import { isNoindexRoute } from "./src/utils/seo.ts";
 
 export default defineConfig({
   site: SITE_URL,
+  base: process.env.SITE_BASE || "/",
   integrations: [
     ...(SITE_IS_PUBLIC
       ? [

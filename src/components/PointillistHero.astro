@@ -7,6 +7,8 @@ interface Props extends HTMLAttributes<"div"> {
   render?: boolean;
 }
 
+const pointillistPath = `${import.meta.env.BASE_URL.replace(/\/$/, "")}/pointillist`;
+
 const { render = true, class: className, ...rest } = Astro.props;
 ---
 
@@ -20,7 +22,7 @@ const { render = true, class: className, ...rest } = Astro.props;
       >
         <img
           class="pointillist_background"
-          src="/pointillist/background.webp"
+          src={`${pointillistPath}/background.webp`}
           alt=""
           width="2048"
           height="1231"
@@ -28,17 +30,17 @@ const { render = true, class: className, ...rest } = Astro.props;
         <picture>
           <source
             media="(width < 48rem)"
-            srcset="/pointillist/silhouette-mobile.webp"
+            srcset={`${pointillistPath}/silhouette-mobile.webp`}
             type="image/webp"
           />
-          <source srcset="/pointillist/silhouette.webp" type="image/webp" />
+          <source srcset={`${pointillistPath}/silhouette.webp`} type="image/webp" />
           <source
             media="(width < 48rem)"
-            srcset="/pointillist/silhouette-mobile.svg"
+            srcset={`${pointillistPath}/silhouette-mobile.svg`}
           />
           <img
             class="pointillist_original"
-            src="/pointillist/silhouette.svg"
+            src={`${pointillistPath}/silhouette.svg`}
             alt=""
             width="2048"
             height="1231"
@@ -53,7 +55,7 @@ const { render = true, class: className, ...rest } = Astro.props;
       >
         Enable tilt motion
       </Button>
-      <script is:inline src="/pointillist/turn.js" defer />
+      <script is:inline src={`${pointillistPath}/turn.js`} defer />
     </Fragment>
   )
 }

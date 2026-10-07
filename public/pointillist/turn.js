@@ -1,4 +1,5 @@
 (() => {
+  const pointillistPath = new URL(".", document.currentScript.src).href;
   const surface = document.querySelector(".pointillist_wrap");
   if (!surface || surface.dataset.lightingReady) return;
   surface.dataset.lightingReady = "true";
@@ -70,8 +71,8 @@
       const portrait = mobile.matches;
       const response = await fetch(
         portrait
-          ? "/pointillist/relight-mobile.bin"
-          : "/pointillist/relight.bin",
+          ? `${pointillistPath}relight-mobile.bin`
+          : `${pointillistPath}relight.bin`,
       );
       if (!response.ok) throw new Error("Lighting data unavailable");
       const buffer = await response.arrayBuffer();

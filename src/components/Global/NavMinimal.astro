@@ -14,7 +14,7 @@ const { render = true, class: className, ...rest } = Astro.props;
 {
   render && (
     <div class:list={["nav-minimal_wrap", className]} {...rest}>
-      <a class="nav-minimal_logo" href="/" aria-label={SITE_NAME}>
+      <a class="nav-minimal_logo" href={import.meta.env.BASE_URL} aria-label={SITE_NAME}>
         <img
           src={logo.src}
           width={logo.width}
