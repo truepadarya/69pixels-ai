@@ -14,6 +14,19 @@
   text-align: center;
 }
 
+.section-heading-support {
+  max-width: min(100%, 60ch);
+  margin: 0;
+  font-size: clamp(1.0625rem, 1.4vw, 1.25rem);
+  font-family: var(--primary-family);
+  font-weight: var(--primary-regular);
+  line-height: 1.5;
+  letter-spacing: var(--letter-spacing-normal);
+  text-align: center;
+  text-wrap: balance;
+  color: var(--text-2);
+}
+
 @media (width < 64rem) {
   .section-heading-primary {
     width: 100%;

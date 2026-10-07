@@ -57,7 +57,7 @@ const {
             <div class="hero_secondary">
               <div class="hero_content">
                 <div class="hero_description" data-reveal>
-                  <Paragraph variant="large">
+                  <Paragraph variant="large" class="section-heading-support">
                     Creative studio for brands, products and campaigns
                   </Paragraph>
                 </div>
@@ -243,7 +243,7 @@ const {
       & .hero_main_layout {
         flex-direction: column;
         align-items: center;
-        gap: var(--space-32);
+        gap: var(--space-40);
         translate: 0 calc(var(--space-24) * -1);
         text-align: center;
       }
@@ -276,10 +276,7 @@ const {
       }
 
       & .hero_description > .text {
-        font-size: clamp(1.125rem, 1.65vw, 1.5rem);
-        line-height: 1.45;
-        opacity: 0.65;
-        text-wrap: balance;
+        opacity: 1;
       }
 
       & .hero_logo {
@@ -314,8 +311,7 @@ const {
         }
 
         & .hero_description > .text {
-          font-size: 1.125rem;
-          max-width: 32ch;
+          max-width: 28ch;
         }
 
         & .hero_description br {

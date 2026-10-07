@@ -139,9 +139,12 @@ const lanes = [
             >
               Tell us what you're building
             </Heading>
-            <Paragraph variant="main-xl" class="cta-project_lead" maxWidth={50}>
-              Share a brief or an early idea. We’ll reply with a clear next
-              step.
+            <Paragraph
+              variant="large"
+              class="section-heading-support cta-project_lead"
+            >
+              Share a brief or an early idea.<br />
+              We’ll reply with a clear next step.
             </Paragraph>
             <div class="cta-project_field">
               <input
@@ -800,14 +803,10 @@ const lanes = [
       padding: 10rem 1.25rem 0;
     }
     .cta-project_lead {
-      margin-top: var(--space-24);
-      font-size: clamp(1.125rem, 1.65vw, 1.5rem);
-      line-height: 1.5;
-      max-width: 42ch;
-      letter-spacing: var(--letter-spacing-normal);
-      text-wrap: balance;
-      text-align: center;
-      color: var(--text-2);
+      margin-top: var(--space-32);
+      @media (width < 48rem) {
+        margin-top: var(--space-24);
+      }
     }
     .cta-project_heading {
       margin: 0;

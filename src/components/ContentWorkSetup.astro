@@ -43,7 +43,7 @@ const cards = [
 {
   render && (
     <div class:list={["work-setup_wrap", className]} data-work-setup {...rest}>
-      <ContentWrapper centered>
+      <ContentWrapper centered class="work-setup_intro">
         <Heading
           id="work-setup-title"
           tag="h2"
@@ -52,9 +52,13 @@ const cards = [
         >
           Three ways to work together
         </Heading>
-        <Paragraph variant="large" maxWidth={48} class="work-setup_lead">
-          Tell us where the project stands. We'll agree on the scope, team and
-          terms before work begins.
+        <Paragraph
+          variant="large"
+          class="section-heading-support work-setup_lead"
+        >
+          Tell us where the project stands.
+          <br />
+          We'll agree on the scope, team and terms before work begins.
         </Paragraph>
       </ContentWrapper>
 
@@ -114,7 +118,7 @@ const cards = [
       display: flex;
       flex-direction: column;
       margin-top: var(--space-24);
-      gap: var(--space-88);
+      gap: var(--space-64);
     }
 
     .work-setup_layout.grid {
@@ -130,7 +134,9 @@ const cards = [
 
           & .pricing-card_body {
             aspect-ratio: auto;
-            gap: var(--space-64);
+          }
+          & .pricing-card_heading {
+            min-height: 0;
           }
         }
       }
@@ -143,11 +149,18 @@ const cards = [
     .work-setup_heading {
       align-self: center;
     }
-    .work-setup_lead {
-      font-size: clamp(1.125rem, 1.65vw, 1.5rem);
-      line-height: 1.5;
-      color: var(--text-2);
-      text-wrap: balance;
+    .work-setup_intro.layout > :first-child {
+      gap: var(--space-32);
+    }
+    .work-setup_wrap {
+      @media (width < 48rem) {
+        & .work-setup_intro.layout > :first-child {
+          gap: var(--space-24);
+        }
+        & .work-setup_lead {
+          max-width: 34ch;
+        }
+      }
     }
   }
 </style>
