@@ -105,6 +105,17 @@ try {
   assert.equal(await evaluate("heroClock.callbacks.size"), 0);
 
   await load(1440);
+  assert.equal(
+    await evaluate(`(() => {
+    const canvas = document.querySelector('.pointillist_light');
+    const top = canvas.getContext('2d').getImageData(0, 0, canvas.width, 1).data;
+    const bounds = canvas.getBoundingClientRect();
+    const hero = document.querySelector('.pointillist_wrap').getBoundingClientRect();
+    return bounds.top === hero.top && bounds.bottom === hero.bottom && top.some((value, i) => i % 4 === 3 && value > 0);
+  })()`),
+    true,
+    "Desktop lighting must fill the hero including its top edge",
+  );
   const desktop = await sample();
   await evaluate(
     "document.dispatchEvent(new PointerEvent('pointermove',{pointerType:'mouse',clientX:1100,clientY:400}))",

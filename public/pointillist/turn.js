@@ -49,7 +49,29 @@
         canvas.height = mobile.matches ? 2191 : 1231;
         context.imageSmoothingEnabled = false;
         context.clearRect(0, 0, canvas.width, canvas.height);
-        context.drawImage(original, 0, 0, canvas.width, canvas.height);
+        if (mobile.matches)
+          context.drawImage(original, 0, 0, canvas.width, canvas.height);
+        else {
+          height = 206;
+          count = width * height;
+          sourceHeight = 1231;
+          grid = document.createElement("canvas");
+          grid.width = width;
+          grid.height = height;
+          gridContext = grid.getContext("2d");
+          gridContext.imageSmoothingEnabled = false;
+          gridContext.drawImage(original, 0, 0, width, height);
+          const staticPixels = gridContext.getImageData(0, 0, width, height);
+          const source = Float32Array.from(
+            { length: count },
+            (_, i) => staticPixels.data[i * 4 + 3] / 255,
+          );
+          const sculpted = sculptLighting(source);
+          for (let i = 0; i < count; i++)
+            staticPixels.data[i * 4 + 3] = Math.round(sculpted[i] * 255);
+          gridContext.putImageData(staticPixels, 0, 0);
+          paintGrid();
+        }
         if (!canvas.isConnected) surface.append(canvas);
         canvas.style.visibility = "visible";
         original.style.visibility = "hidden";
@@ -78,6 +100,10 @@
         data.subarray(count, count * 2),
         data.subarray(count * 2),
       ];
+      if (!portrait) {
+        maps[0] = sculptLighting(maps[0]);
+        maps[1] = sculptLighting(maps[1]);
+      }
       canvas.height = sourceHeight;
       context.imageSmoothingEnabled = false;
       grid = document.createElement("canvas");
@@ -99,6 +125,43 @@
     }
   }
 
+  function sculptLighting(source) {
+    const result = new Float32Array(count);
+    const radius = 9;
+    const horizontal = new Float32Array(count);
+    for (let y = 0; y < height; y++) {
+      let sum = 0;
+      for (let x = -radius; x <= radius; x++)
+        sum += source[y * width + Math.max(0, Math.min(width - 1, x))];
+      for (let x = 0; x < width; x++) {
+        horizontal[y * width + x] = sum / (radius * 2 + 1);
+        sum +=
+          source[y * width + Math.min(width - 1, x + radius + 1)] -
+          source[y * width + Math.max(0, x - radius)];
+      }
+    }
+    for (let x = 0; x < width; x++) {
+      let sum = 0;
+      for (let y = -radius; y <= radius; y++)
+        sum += horizontal[Math.max(0, Math.min(height - 1, y)) * width + x];
+      for (let y = 0; y < height; y++) {
+        const i = y * width + x;
+        const nx = (x / width - 0.51) / 0.19;
+        const ny = (y / height - 0.31) / 0.24;
+        const mask = Math.exp(-2 * (nx * nx + ny * ny));
+        const detail = source[i] - sum / (radius * 2 + 1);
+        result[i] = Math.max(
+          0,
+          Math.min(0.99, source[i] + detail * mask * 1.4),
+        );
+        sum +=
+          horizontal[Math.min(height - 1, y + radius + 1) * width + x] -
+          horizontal[Math.max(0, y - radius) * width + x];
+      }
+    }
+    return result;
+  }
+
   function draw() {
     if (!maps || !pixels) return;
     const t = current * current * (3 - 2 * current);
@@ -115,8 +178,15 @@
       bytes[i * 4 + 3] = Math.round(shade * 255);
     }
     gridContext.putImageData(pixels, 0, 0);
+    paintGrid();
+  }
+
+  function paintGrid() {
     context.clearRect(0, 0, 2048, sourceHeight);
-    context.drawImage(grid, 0, 0, width * 6, height * 6);
+    const faceOffset = mobile.matches ? 0 : 36;
+    if (faceOffset)
+      context.drawImage(grid, 0, 0, width, 1, 0, 0, width * 6, faceOffset);
+    context.drawImage(grid, 0, faceOffset, width * 6, height * 6);
   }
 
   function tick(time) {
