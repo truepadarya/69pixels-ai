@@ -9,19 +9,7 @@
   const reduced = matchMedia("(prefers-reduced-motion: reduce)");
   const mobile = matchMedia("(width < 48rem)");
   const touchLayout = matchMedia("(width < 64rem)");
-  const sensorLayout = matchMedia(
-    "(width < 48rem), (width < 64rem) and (pointer: coarse)",
-  );
-  const control = interaction.querySelector(".pointillist_control");
-  const orientation = window.DeviceOrientationEvent;
-  const sensorAvailable = window.isSecureContext && !!orientation;
-  let sensorPermission =
-    typeof orientation?.requestPermission === "function" ? "prompt" : "granted";
-  let sensorListening = false,
-    sensorReady = false,
-    sensorOrigin = null,
-    permissionPending = false,
-    focused = true,
+  let focused = true,
     disposed = false;
   const width = 342;
   let height, count, sourceHeight, maps, pixels, grid, gridContext;
@@ -36,7 +24,10 @@
     autoElapsed = 0,
     autoLastTime = 0,
     autoLastDraw = 0;
-  const autoDuration = 10000;
+  const autoDuration = 60000;
+  let scrollBoost = 0,
+    autoSpeed = 1,
+    lastScrollY = window.scrollY;
   const canvas = document.createElement("canvas");
   canvas.width = 2048;
   canvas.className = "pointillist_light";
@@ -132,9 +123,7 @@
     const seconds = Math.min(0.05, Math.max(0.001, (time - lastTime) / 1000));
     lastTime = time;
     const blend =
-      reduced.matches || (touchLayout.matches && !sensorReady)
-        ? 1
-        : 1 - Math.exp(-(sensorReady ? 8 : 5.5) * seconds);
+      reduced.matches || touchLayout.matches ? 1 : 1 - Math.exp(-5.5 * seconds);
     current += (target - current) * blend;
     currentY += (targetY - currentY) * blend;
     draw();
@@ -156,9 +145,14 @@
     autoRaf = 0;
     autoLastTime = 0;
     autoLastDraw = 0;
+    scrollBoost = 0;
+    autoSpeed = 1;
   }
   function autoTick(time) {
-    if (autoLastTime) autoElapsed += Math.min(time - autoLastTime, 100);
+    const delta = autoLastTime ? Math.min(time - autoLastTime, 100) : 0;
+    scrollBoost *= Math.exp(-delta / 900);
+    autoSpeed += (1 + scrollBoost - autoSpeed) * (1 - Math.exp(-delta / 180));
+    autoElapsed = (autoElapsed + delta * autoSpeed) % autoDuration;
     autoLastTime = time;
     if (time - autoLastDraw >= 1000 / 30) {
       current = (1 - Math.cos((2 * Math.PI * autoElapsed) / autoDuration)) / 2;
@@ -180,81 +174,15 @@
       !disposed
     );
   }
-  function stopSensor() {
-    if (sensorListening)
-      window.removeEventListener("deviceorientation", onOrientation);
-    sensorListening = false;
-    sensorReady = false;
-    sensorOrigin = null;
-  }
   function syncAuto() {
     const visible = isActive();
-    const sensorActive = sensorAvailable && sensorLayout.matches && visible;
-    if (control) {
-      control.hidden = !sensorActive || sensorPermission !== "prompt";
-      control.disabled = permissionPending;
-    }
-    if (sensorActive && sensorPermission === "granted") {
-      if (!sensorListening) {
-        window.addEventListener("deviceorientation", onOrientation, {
-          passive: true,
-        });
-        sensorListening = true;
-      }
-    } else stopSensor();
     if (!visible && raf) {
       cancelAnimationFrame(raf);
       raf = 0;
     }
-    const active = mobile.matches && visible && !sensorReady;
+    const active = mobile.matches && visible;
     if (active && !autoRaf) autoRaf = requestAnimationFrame(autoTick);
     else if (!active) stopAuto();
-  }
-  function angleDelta(value, origin) {
-    return ((((value - origin + 180) % 360) + 360) % 360) - 180;
-  }
-  function onOrientation(event) {
-    if (
-      !sensorListening ||
-      !isActive() ||
-      !Number.isFinite(event.beta) ||
-      !Number.isFinite(event.gamma)
-    )
-      return;
-    if (!sensorOrigin) {
-      sensorOrigin = { beta: event.beta, gamma: event.gamma };
-      sensorReady = true;
-      stopAuto();
-    }
-    const radians =
-      ((screen.orientation?.angle ??
-        (Number(Reflect.get(window, "orientation")) || 0)) *
-        Math.PI) /
-      180;
-    const beta = angleDelta(event.beta, sensorOrigin.beta);
-    const gamma = angleDelta(event.gamma, sensorOrigin.gamma);
-    const horizontal = gamma * Math.cos(radians) + beta * Math.sin(radians);
-    const vertical = beta * Math.cos(radians) - gamma * Math.sin(radians);
-    target = Math.max(0, Math.min(1, 0.5 + horizontal / 60));
-    targetY = Math.max(0, Math.min(1, 0.5 + vertical / 60));
-    animate();
-  }
-  async function requestSensor() {
-    if (permissionPending || disposed || !sensorLayout.matches || !isActive())
-      return;
-    permissionPending = true;
-    if (control) control.disabled = true;
-    try {
-      sensorPermission = await orientation.requestPermission();
-    } catch {
-      sensorPermission = "denied";
-    } finally {
-      permissionPending = false;
-      if (!disposed) syncAuto();
-    }
-  }
-  function onOrientationChange() {
-    sensorOrigin = null;
   }
   function onPointerMove(event) {
     if (
@@ -281,11 +209,17 @@
     animate();
   }
   function onScroll() {
-    if (sensorLayout.matches) syncAuto();
+    const delta = window.scrollY - lastScrollY;
+    lastScrollY = window.scrollY;
+    if (touchLayout.matches) syncAuto();
     if (mobile.matches) {
+      if (delta > 0 && isActive())
+        scrollBoost = Math.min(
+          7,
+          scrollBoost + (delta / Math.max(window.innerHeight, 1)) * 24,
+        );
       return;
     }
-    if (sensorReady) return;
     if (!touchLayout.matches || reduced.matches) return;
     target = Math.max(
       0,
@@ -296,10 +230,10 @@
   }
   function onModeChange() {
     stopAuto();
-    stopSensor();
     if (raf) cancelAnimationFrame(raf);
     raf = 0;
     autoElapsed = 0;
+    lastScrollY = window.scrollY;
     target = 0;
     current = 0;
     targetY = 0.5;
@@ -311,9 +245,7 @@
   function onBlur() {
     focused = false;
     syncAuto();
-    if (sensorLayout.matches) {
-      return;
-    }
+    if (touchLayout.matches) return;
     target = 0;
     targetY = 0.5;
     animate();
@@ -335,13 +267,9 @@
   window.addEventListener("scroll", onScroll, { passive: true });
   window.addEventListener("blur", onBlur);
   window.addEventListener("focus", onFocus);
-  window.addEventListener("orientationchange", onOrientationChange);
-  screen.orientation?.addEventListener("change", onOrientationChange);
-  control?.addEventListener("click", requestSensor);
   document.addEventListener("visibilitychange", syncAuto);
   touchLayout.addEventListener("change", onModeChange);
   reduced.addEventListener("change", onReducedChange);
-  sensorLayout.addEventListener("change", onModeChange);
   document.addEventListener(
     "astro:before-swap",
     () => {
@@ -350,18 +278,13 @@
       window.removeEventListener("scroll", onScroll);
       window.removeEventListener("blur", onBlur);
       window.removeEventListener("focus", onFocus);
-      window.removeEventListener("orientationchange", onOrientationChange);
-      screen.orientation?.removeEventListener("change", onOrientationChange);
-      control?.removeEventListener("click", requestSensor);
       document.removeEventListener("visibilitychange", syncAuto);
       touchLayout.removeEventListener("change", onModeChange);
       reduced.removeEventListener("change", onReducedChange);
-      sensorLayout.removeEventListener("change", onModeChange);
       mobile.removeEventListener("change", onMobileChange);
       requestId++;
       if (raf) cancelAnimationFrame(raf);
       stopAuto();
-      stopSensor();
     },
     { once: true },
   );

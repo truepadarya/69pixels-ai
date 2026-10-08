@@ -1,6 +1,5 @@
 ---
 import type { HTMLAttributes } from "astro/types";
-import Button from "@/components/Button.astro";
 
 interface Props extends HTMLAttributes<"div"> {
   /** Set to `false` to skip rendering this component and its children. */
@@ -33,7 +32,10 @@ const { render = true, class: className, ...rest } = Astro.props;
             srcset={`${pointillistPath}/silhouette-mobile.webp`}
             type="image/webp"
           />
-          <source srcset={`${pointillistPath}/silhouette.webp`} type="image/webp" />
+          <source
+            srcset={`${pointillistPath}/silhouette.webp`}
+            type="image/webp"
+          />
           <source
             media="(width < 48rem)"
             srcset={`${pointillistPath}/silhouette-mobile.svg`}
@@ -47,14 +49,6 @@ const { render = true, class: className, ...rest } = Astro.props;
           />
         </picture>
       </div>
-      <Button
-        class="pointillist_control"
-        variant="link"
-        hidden
-        aria-label="Enable tilt motion"
-      >
-        Enable tilt motion
-      </Button>
       <script is:inline src={`${pointillistPath}/turn.js`} defer />
     </Fragment>
   )
@@ -94,22 +88,7 @@ const { render = true, class: className, ...rest } = Astro.props;
       z-index: 1;
       image-rendering: pixelated;
     }
-    .pointillist_control.button_wrap {
-      position: absolute;
-      z-index: 4;
-      top: var(--nav-height);
-      right: var(--site-margin);
-      display: none;
-      min-height: max(2.75rem, var(--space-48));
-      padding-inline: var(--space-16);
-      font-size: var(--text-small);
-    }
     .pointillist_wrap {
-      @media (width < 48rem), (width < 64rem) and (pointer: coarse) {
-        & + .pointillist_control:not([hidden]) {
-          display: inline-flex;
-        }
-      }
       @media (width < 48rem) {
         --hero-face-scale: 1.15;
         --hero-face-y: -10%;
