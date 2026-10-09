@@ -1,4 +1,5 @@
 ---
+import { Image } from "astro:assets";
 import Heading from "@/components/Typography/Heading.astro";
 import Paragraph from "@/components/Typography/Paragraph.astro";
 import Button from "@/components/Button.astro";
@@ -66,9 +67,16 @@ const cards = [
               )}
               <div class="rebuilding_illustration" aria-hidden="true">
                 {card.tone === "gray" && (
-                  <img
+                  <Image
                     class="rebuilding_experience"
-                    src={experienceStrip.src}
+                    src={experienceStrip}
+                    format="webp"
+                    quality={80}
+                    widths={[240, 320, 480, 640, experienceStrip.width]}
+                    sizes="(min-width: 64rem) min(17.6vw, 15.95rem), (min-width: 48rem) 20.9vw, 39.6vw"
+                    loading="eager"
+                    fetchpriority="high"
+                    decoding="async"
                     width={experienceStrip.width}
                     height={experienceStrip.height}
                     alt=""
@@ -104,9 +112,16 @@ const cards = [
                   </div>
                 )}
                 {card.tone === "dark" && (
-                  <img
+                  <Image
                     class="rebuilding_tools"
-                    src={toolsDock.src}
+                    src={toolsDock}
+                    format="webp"
+                    quality={80}
+                    widths={[240, 320, 480, 640, toolsDock.width]}
+                    sizes="(min-width: 64rem) min(22.4vw, 20.3rem), (min-width: 48rem) 26.6vw, 50.4vw"
+                    loading="eager"
+                    fetchpriority="high"
+                    decoding="async"
                     width={toolsDock.width}
                     height={toolsDock.height}
                     alt=""
