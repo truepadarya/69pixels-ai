@@ -1,13 +1,11 @@
 ---
 import type { HTMLAttributes } from "astro/types";
+import { keepShortWordsTogether } from "@/utils/text";
 import Card from "@/components/Item/Card.astro";
-import Eyebrow from "@/components/Typography/Eyebrow.astro";
-import Heading from "@/components/Typography/Heading.astro";
-import Paragraph from "@/components/Typography/Paragraph.astro";
+import ContentCaseSummary from "@/components/ContentCaseSummary.astro";
 import ContentWrapper from "@/components/Wrapper/ContentWrapper.astro";
 import Grid from "@/components/Wrapper/Grid.astro";
 import Section from "@/components/Wrapper/Section.astro";
-import TagWrapper from "@/components/Wrapper/TagWrapper.astro";
 import healthcareVideo1 from "@/assets/graphics/cases/healthcare-1.mp4";
 import healthcareVideo2 from "@/assets/graphics/cases/healthcare-2.mp4";
 import healthcareVideo3 from "@/assets/graphics/cases/healthcare-3.mp4";
@@ -27,6 +25,8 @@ interface Props extends HTMLAttributes<"section"> {
 type CaseStudy = {
   title: string;
   description: string;
+  highlights: Array<{ label: string; text: string }>;
+  note: string;
   tags: string[];
   cards: Array<{
     heading: string;
@@ -39,10 +39,19 @@ type CaseStudy = {
 
 const cases: CaseStudy[] = [
   {
-    title: "Four healthcare app prototypes tested in 7 days",
+    title: "Four healthcare app prototypes ready for testing",
     description:
-      "Across four clickable prototypes, our designers mapped around a dozen user journeys, from hospital workflows to care at home. Figma Make generated the code. INI Hannover tested the concepts and used the feedback to refine the flows before development.",
-    tags: [],
+      "Our designers built the prototypes in 7 days. Previously, the process took 2 months.",
+    highlights: [
+      { label: "100+ screens", text: "Across four clickable prototypes." },
+      {
+        label: "User journeys",
+        text: "Hospital workflows and care at home.",
+      },
+      { label: "Figma Make", text: "Generated the code for the prototypes." },
+    ],
+    note: "INI Hannover tested the concepts to choose what to develop based on user needs and business value. The feedback helped refine the flows before development.",
+    tags: ["7 days", "4 clickable prototypes", "Concept testing"],
     cards: [
       {
         heading: "From hospital workflows to care at home",
@@ -62,10 +71,25 @@ const cases: CaseStudy[] = [
     ],
   },
   {
-    title: "A handoff developers can work from",
+    title: "Developer handoff ready in a couple of hours",
     description:
-      "Our designers documented screens, components and interactions in Figma with help from AI agents. Developers can inspect how each feature should work before implementation.",
-    tags: [],
+      "Our team uses an in-house tool to turn designs into specifications and developer handoff materials.",
+    highlights: [
+      {
+        label: "Automation",
+        text: "Designs become handoff materials automatically.",
+      },
+      {
+        label: "Specifications",
+        text: "How screens, components and interactions work.",
+      },
+      {
+        label: "Android",
+        text: "Automated screen creation, adaptation and UI kits.",
+      },
+    ],
+    note: "Developers can inspect how each feature should work before implementation.",
+    tags: ["~2-hour handoff", "In-house tool"],
     cards: [
       {
         heading: "The planner’s Android UI kit",
@@ -80,20 +104,31 @@ const cases: CaseStudy[] = [
     ],
   },
   {
-    title: "A 1,000-image brief became a custom tool",
+    title: "A custom tool for producing 1,000 images",
     description:
-      "The client asked for 1,000 images. We built a generative tool around its visual rules so designers could produce consistent card artwork.",
-    tags: [],
+      "The client needed 1,000 images following its visual rules. We built a generative tool to process image sets in batches, replacing manual work on each image.",
+    highlights: [
+      {
+        label: "Visual rules",
+        text: "Consistent artwork across the image set.",
+      },
+      {
+        label: "Batch processing",
+        text: "Image sets processed automatically.",
+      },
+    ],
+    note: "The work took 10 days instead of an estimated three months. The visuals shown here are workflow samples.",
+    tags: ["Generative AI", "Custom tool"],
     cards: [
       {
-        heading: "Tool demonstration with sample product artwork",
+        heading: "The tool in action with sample artwork",
         text: "",
         image: marketplaceCardToolImage,
         imageAlt:
           "Tool demonstration using a sample power bank card; not artwork from the client brief.",
       },
       {
-        heading: "Sample visuals demonstrating the workflow",
+        heading: "Sample artwork before and after",
         text: "",
         image: marketplaceCardExamplesImage,
         imageAlt:
@@ -102,10 +137,16 @@ const cases: CaseStudy[] = [
     ],
   },
   {
-    title: "From a high-level brief to screen-level PRDs in weeks",
+    title: "Detailed product research, delivered faster",
     description:
-      "SwapSquad began with a high-level fantasy sports PRD. Our researchers used AI to map competitors, personas, features, edge cases and user journeys, then checked the findings. Those artifacts became focused PRDs detailing the content, functionality and mechanics of each section and screen.",
-    tags: [],
+      "We built an AI analyst trained on 10+ years of studio work to make detailed research faster and more accessible.",
+    highlights: [
+      { label: "Research", text: "Competitors, personas and features." },
+      { label: "Scenarios", text: "Edge cases and user journeys." },
+      { label: "Senior review", text: "Our researchers validate the findings." },
+    ],
+    note: "For SwapSquad, we condensed two months of research into one week. The high-level fantasy sports PRD became screen-level PRDs covering content, functionality and mechanics of each section and screen.",
+    tags: ["AI-assisted research", "Screen-level PRDs"],
     cards: [
       {
         heading: "Research that guides each screen",
@@ -145,17 +186,7 @@ const { render = true, class: className, ...rest } = Astro.props;
                 data-case-copy={index}
                 aria-hidden={index === 0 ? "false" : "true"}
               >
-                <Heading tag="h2" variant="h4">
-                  {caseStudy.title}
-                </Heading>
-                <Paragraph variant="main">{caseStudy.description}</Paragraph>
-                <TagWrapper marginTop="0">
-                  {caseStudy.tags.map((tag) => (
-                    <Eyebrow tag="span" variant="tag">
-                      {tag}
-                    </Eyebrow>
-                  ))}
-                </TagWrapper>
+                <ContentCaseSummary {...caseStudy} />
               </div>
             ))}
           </div>
@@ -180,17 +211,7 @@ const { render = true, class: className, ...rest } = Astro.props;
               data-case-group={caseIndex}
             >
               <ContentWrapper class="cases_header">
-                <Heading tag="h2" variant="h4">
-                  {caseStudy.title}
-                </Heading>
-                <Paragraph variant="main">{caseStudy.description}</Paragraph>
-                <TagWrapper marginTop="0">
-                  {caseStudy.tags.map((tag) => (
-                    <Eyebrow tag="span" variant="tag">
-                      {tag}
-                    </Eyebrow>
-                  ))}
-                </TagWrapper>
+                <ContentCaseSummary {...caseStudy} />
               </ContentWrapper>
               <Grid
                 class="cases_cards"
@@ -201,7 +222,7 @@ const { render = true, class: className, ...rest } = Astro.props;
                 {caseStudy.cards.map((card) => (
                   <Card
                     variant="case"
-                    heading={card.heading}
+                    heading={keepShortWordsTogether(card.heading)}
                     headingTag="h3"
                     text={card.text}
                     video={card.video}
@@ -502,10 +523,6 @@ const { render = true, class: className, ...rest } = Astro.props;
       display: none;
     }
 
-    .cases_header .text {
-      color: var(--text-2);
-    }
-
     .cases_cards {
       --_gap-size: var(--space-72);
     }
@@ -594,7 +611,6 @@ const { render = true, class: className, ...rest } = Astro.props;
         }
 
         & .cases_header > :first-child {
-          gap: var(--space-24);
           align-self: start;
         }
 

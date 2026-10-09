@@ -2,12 +2,6 @@
 import Heading from "@/components/Typography/Heading.astro";
 import Img from "@/components/Media/Img.astro";
 import Video from "@/components/Media/Video.astro";
-import concepts1 from "@/assets/graphics/second/Concepts_1.webp";
-import concepts2 from "@/assets/graphics/second/Concepts_2.webp";
-import concepts3 from "@/assets/graphics/second/Concepts_3.webp";
-import concepts4 from "@/assets/graphics/second/Concepts_4.mp4";
-import concepts5 from "@/assets/graphics/second/Concepts_5.webp";
-import concepts6 from "@/assets/graphics/second/Concepts_6.mp4";
 import dev1 from "@/assets/graphics/second/dev_1.webp";
 import dev2 from "@/assets/graphics/second/dev_2.mp4";
 import dev3 from "@/assets/graphics/second/dev_3.webp";
@@ -65,7 +59,7 @@ type Card = CardBase &
   );
 
 type Theme = {
-  id: "visual" | "product" | "rapid";
+  id: "visual" | "product";
   title: string;
   cards: Card[];
 };
@@ -73,7 +67,7 @@ type Theme = {
 const themes: Theme[] = [
   {
     id: "visual",
-    title: "Brand & Creative",
+    title: "Visuals & Creative",
     cards: [
       {
         kind: "video",
@@ -383,83 +377,6 @@ const themes: Theme[] = [
       },
     ],
   },
-  {
-    id: "rapid",
-    title: "Prototypes & Tools",
-    cards: [
-      {
-        kind: "image",
-        src: concepts1,
-        x: 2,
-        width: 20,
-        entry: 0.76,
-        duration: 0.2,
-        drift: 5,
-        mobileEntry: 0.69,
-      },
-      {
-        kind: "image",
-        src: concepts2,
-        x: 29,
-        width: 21,
-        entry: 0.84,
-        duration: 0.18,
-        drift: -4,
-        mobileX: 12,
-        mobileWidth: 24.5,
-        mobileEntry: 0.81,
-      },
-      {
-        kind: "image",
-        src: concepts3,
-        x: 79,
-        width: 21,
-        entry: 0.74,
-        duration: 0.24,
-        drift: -5,
-        mobileX: 52,
-        mobileWidth: 22.5,
-        mobileEntry: 0.73,
-      },
-      {
-        kind: "video",
-        src: concepts4,
-        ratio: "1302 / 706",
-        x: -2,
-        width: 30,
-        entry: 0.88,
-        duration: 0.19,
-        drift: 4,
-        mobileX: 0,
-        mobileWidth: 36,
-        mobileEntry: 0.9,
-      },
-      {
-        kind: "image",
-        src: concepts5,
-        x: 68,
-        width: 20,
-        entry: 0.87,
-        duration: 0.15,
-        drift: -4,
-        mobileX: 44,
-        mobileWidth: 25,
-      },
-      {
-        kind: "video",
-        src: concepts6,
-        ratio: "1280 / 720",
-        x: 73,
-        width: 27,
-        entry: 0.945,
-        duration: 0.14,
-        drift: -5,
-        mobileX: 30,
-        mobileWidth: 33,
-        mobileEntry: 0.965,
-      },
-    ],
-  },
 ];
 
 const desktopWidth = (card: Card) => {
@@ -516,10 +433,18 @@ const { render = true, class: className, ...rest } = Astro.props;
             {theme.id === "visual" && (
               <div class="capabilities_title" data-capabilities-branding>
                 <Heading tag="h2" variant="h2">
-                  Branding
+                  Branding & Identity
                 </Heading>
               </div>
             )}
+            {theme.id === "product" &&
+              ["Rapid Prototypes", "Design to Development"].map((title) => (
+                <div class="capabilities_title" data-capabilities-extra-title>
+                  <Heading tag="h2" variant="h2">
+                    {title}
+                  </Heading>
+                </div>
+              ))}
             <div class="capabilities_media" aria-hidden="true">
               {theme.cards.map((card) => (
                 <div
@@ -584,9 +509,9 @@ const { render = true, class: className, ...rest } = Astro.props;
   gsap.registerPlugin(ScrollTrigger);
 
   const MOBILE_MEDIA_QUERY = "(width < 48rem)";
-  const THEME_TOTAL = 3;
+  const THEME_TOTAL = 2;
   const VISUAL_THEME_INDEX = 0;
-  const RAPID_THEME_INDEX = 2;
+  const PRODUCT_THEME_INDEX = 1;
   const MOBILE_VISUAL_ANCHOR_PROGRESS = 0.4;
   const DESKTOP_SCROLL_SCALE = 0.875;
   const DESKTOP_SCROLL_REMOVED = 1 - DESKTOP_SCROLL_SCALE;
@@ -645,6 +570,10 @@ const { render = true, class: className, ...rest } = Astro.props;
 
     root.dataset.enhanced = "true";
 
+    const flowEndProgress = parseFloat(
+      getComputedStyle(root).getPropertyValue("--capabilities-flow-end"),
+    );
+
     const scrollDistance = () =>
       Math.max(root.offsetHeight - stage.clientHeight, 0);
 
@@ -659,7 +588,7 @@ const { render = true, class: className, ...rest } = Astro.props;
             : isMobile
               ? 0.7
               : 0.79;
-      if (themeIndex === RAPID_THEME_INDEX) return 1;
+      if (themeIndex === PRODUCT_THEME_INDEX) return 1;
       if (progress <= transitionAt - 0.03) return 1;
 
       return gsap.utils.interpolate(
@@ -733,10 +662,7 @@ const { render = true, class: className, ...rest } = Astro.props;
     const renderIntro = (progress: number) => {
       const reveal = (start: number, end: number) =>
         smoothstep(clampProgress((progress - start) / (end - start)));
-      const headingReveal = reveal(
-        isMobile ? 0.33 : 0.3,
-        isMobile ? 0.72 : 0.68,
-      );
+      const headingReveal = reveal(isMobile ? 0.72 : 0.68, isMobile ? 1 : 0.96);
       setHeadingOpacity(headingReveal);
       setHeadingY((1 - headingReveal) * 12);
       flowCards[0].setRevealOpacity(reveal(0, isMobile ? 0.4 : 0.36));
@@ -746,11 +672,20 @@ const { render = true, class: className, ...rest } = Astro.props;
     };
 
     const renderFlow = (progress: number) => {
+      progress *= flowEndProgress;
       const viewportHeight = mediaViewport.clientHeight;
-      const travelDistance = isMobile ? scrollDistance() : 0;
+      const travelDistance = isMobile ? scrollDistance() / flowEndProgress : 0;
       const timelineProgress =
         progress * (isDesktop ? DESKTOP_SCROLL_SCALE : 1);
       let visualBottom = 0;
+      let productTop = viewportHeight * 1.12;
+      let hasVisibleVisual = false;
+      const productPositions: Array<{
+        setY: (value: number) => void;
+        setOpacity: (value: number) => void;
+        y: number;
+        height: number;
+      }> = [];
 
       flowCards.forEach(
         ({
@@ -791,16 +726,25 @@ const { render = true, class: className, ...rest } = Astro.props;
               ? smoothstep(clampProgress((timelineProgress - 0.27) / 0.055)) *
                 0.2
               : 0;
-          const rawLocalProgress = gsap.utils.interpolate(
-            clampProgress(
-              (timelineProgress - resolvedEntry) / resolvedDuration,
-            ),
-            1,
-            departureProgress,
-          );
+          const unclampedProgress =
+            (timelineProgress - resolvedEntry) / resolvedDuration;
+          const rawLocalProgress =
+            isDesktop &&
+            themeIndex === PRODUCT_THEME_INDEX &&
+            unclampedProgress < 0
+              ? unclampedProgress
+              : gsap.utils.interpolate(
+                  clampProgress(
+                    (timelineProgress - resolvedEntry) / resolvedDuration,
+                  ),
+                  1,
+                  departureProgress,
+                );
           const localProgress =
-            rawLocalProgress +
-            (Math.sin(Math.PI * rawLocalProgress) / Math.PI) * 0.3;
+            rawLocalProgress < 0
+              ? rawLocalProgress * 1.3
+              : rawLocalProgress +
+                (Math.sin(Math.PI * rawLocalProgress) / Math.PI) * 0.3;
           const startY = viewportHeight * 1.12;
           const mediaHeight = media.offsetHeight || element.offsetHeight;
           const endY = -mediaHeight - viewportHeight * 0.14;
@@ -810,16 +754,19 @@ const { render = true, class: className, ...rest } = Astro.props;
                 (progress - mobileScrollAt) * travelDistance * mobileScrollSpeed
               : gsap.utils.interpolate(startY, endY, localProgress) +
                 (isMobile ? viewportHeight * mobileYOffset : 0);
-          if (isDesktop && themeIndex === 1 && visualBottom > 0) {
-            y = Math.max(y, visualBottom + viewportHeight * 0.18);
-          }
           const exitOpacity = viewportExitOpacity(
             y,
             mediaHeight,
             viewportHeight,
           );
 
-          setX(gsap.utils.interpolate(drift * -0.35, drift, localProgress));
+          setX(
+            gsap.utils.interpolate(
+              drift * -0.35,
+              drift,
+              Math.max(0, localProgress),
+            ),
+          );
           setY(y);
           setOpacity(themeOpacity(themeIndex, timelineProgress) * exitOpacity);
           if (
@@ -828,10 +775,33 @@ const { render = true, class: className, ...rest } = Astro.props;
             exitOpacity > 0.01 &&
             y < viewportHeight
           ) {
+            hasVisibleVisual = true;
             visualBottom = Math.max(visualBottom, y + mediaHeight);
+          }
+          if (themeIndex === PRODUCT_THEME_INDEX) {
+            productTop = Math.min(productTop, y);
+            productPositions.push({
+              setY: (value) => setY(value),
+              setOpacity: (value) => setOpacity(value),
+              y,
+              height: mediaHeight,
+            });
           }
         },
       );
+      if (isDesktop) {
+        const enter = smoothstep(clampProgress((progress - 0.33) / 0.04));
+        const leave = 1 - smoothstep(clampProgress((progress - 0.5) / 0.12));
+        const desiredShift = viewportHeight * 0.55 * enter * leave;
+        const safeShift = hasVisibleVisual
+          ? Math.max(0, productTop - visualBottom - viewportHeight * 0.055)
+          : desiredShift;
+        const shift = Math.min(desiredShift, safeShift);
+        productPositions.forEach(({ setY, setOpacity, y, height }) => {
+          setY(y - shift);
+          setOpacity(viewportExitOpacity(y - shift, height, viewportHeight));
+        });
+      }
     };
 
     const introTrigger = ScrollTrigger.create({
@@ -861,58 +831,35 @@ const { render = true, class: className, ...rest } = Astro.props;
         trigger: root,
         start: "top top",
         end: () => `+=${scrollDistance()}`,
-        scrub: 0.45,
+        scrub: 0.25,
         invalidateOnRefresh: true,
       },
     });
 
-    const swapTitle = (
-      index: number,
-      start: number,
-      nextIndex = index + 1,
-      scrollDuration = 0.07,
-    ) => {
-      const duration = scrollDuration / (isDesktop ? DESKTOP_SCROLL_SCALE : 1);
+    const titleInterval = 1 / titles.length;
+    const transitionDuration = 0.025;
+    titles.slice(1).forEach((title, index) => {
+      const start = (index + 1) * titleInterval - transitionDuration / 2;
       titleTimeline.to(
         titles[index],
-        { autoAlpha: 0, duration: duration * (0.12 / 0.36) },
+        { autoAlpha: 0, duration: transitionDuration * 0.4 },
         start,
       );
       titleTimeline.to(
-        titles[nextIndex],
-        { autoAlpha: 1, duration: duration * (0.14 / 0.36) },
-        start + duration * (0.22 / 0.36),
+        title,
+        { autoAlpha: 1, duration: transitionDuration * 0.6 },
+        start + transitionDuration * 0.4,
       );
-    };
-    const desktopTitleTime = (position: number) =>
-      (position - DESKTOP_SCROLL_REMOVED) / DESKTOP_SCROLL_SCALE;
-    if (isDesktop) {
-      swapTitle(0, 0.325 / DESKTOP_SCROLL_SCALE, 2, 0.035);
-      swapTitle(2, desktopTitleTime(0.77));
-    } else {
-      swapTitle(0, 0.23);
-      swapTitle(1, 0.48);
-      swapTitle(2, isMobile ? 0.68 : 0.77);
-    }
-    titleTimeline.to(
-      {},
-      {
-        duration: isDesktop
-          ? 0.21 / DESKTOP_SCROLL_SCALE
-          : isMobile
-            ? 0.3
-            : 0.21,
-      },
-      isDesktop ? desktopTitleTime(0.79) : isMobile ? 0.7 : 0.79,
-    );
+    });
+    titleTimeline.to({}, { duration: titleInterval }, 1 - titleInterval);
     const setStageOpacity = gsap.quickSetter(stage, "opacity");
     const renderViewportExit = ({ progress }: { progress: number }) => {
       setStageOpacity(1 - smoothstep(progress));
     };
     const exitTrigger = ScrollTrigger.create({
       trigger: root,
-      start: "bottom 120%",
-      end: "bottom 65%",
+      start: "bottom 190%",
+      end: "bottom 155%",
       invalidateOnRefresh: true,
       onEnter: renderViewportExit,
       onUpdate: renderViewportExit,
@@ -981,18 +928,17 @@ const { render = true, class: className, ...rest } = Astro.props;
 <style is:global>
   @layer components {
     .capabilities_wrap {
-      height: 1100svh;
+      --capabilities-flow-end: 0.86;
+      height: calc(100svh + 1000svh * var(--capabilities-flow-end));
       position: relative;
+      margin-bottom: -100svh;
       overflow: clip;
       background: var(--dark-900);
       color: var(--light-100);
 
       @media (width >= 64rem) {
-        height: 975svh;
-
-        & [data-capabilities-branding] {
-          display: none;
-        }
+        --capabilities-flow-end: 0.83;
+        height: calc(100svh + 875svh * var(--capabilities-flow-end));
       }
     }
 
@@ -1039,7 +985,7 @@ const { render = true, class: className, ...rest } = Astro.props;
     }
 
     .capabilities_wrap:not([data-enhanced="true"])
-      [data-capabilities-branding] {
+      :is([data-capabilities-branding], [data-capabilities-extra-title]) {
       display: none;
     }
 
@@ -1179,7 +1125,9 @@ const { render = true, class: className, ...rest } = Astro.props;
     .capabilities_wrap {
       @media (width < 48rem) {
         & {
-          height: calc(1000svh + 100lvh);
+          --capabilities-flow-end: 0.82;
+          height: calc(1000svh * var(--capabilities-flow-end) + 100lvh);
+          margin-bottom: -100lvh;
         }
 
         :where(&) .capabilities_stage,
@@ -1279,6 +1227,7 @@ const { render = true, class: className, ...rest } = Astro.props;
 
         & {
           height: auto;
+          margin-bottom: 0;
         }
 
         :where(&) .capabilities_stage {

@@ -1,0 +1,190 @@
+---
+import { keepShortWordsTogether } from "@/utils/text";
+import Heading from "@/components/Typography/Heading.astro";
+import Paragraph from "@/components/Typography/Paragraph.astro";
+import Eyebrow from "@/components/Typography/Eyebrow.astro";
+import TagWrapper from "@/components/Wrapper/TagWrapper.astro";
+
+interface Props {
+  /** Set to `false` to skip rendering this component and its children. */
+  render?: boolean;
+  /** The case study title. */
+  title: string;
+  /** A short introduction to the project. */
+  description: string;
+  /** The key points, in reading order. */
+  highlights: Array<{ label: string; text: string }>;
+  /** Additional context below the key points. */
+  note: string;
+  /** Project facts shown below the summary. */
+  tags: string[];
+  class?: string;
+}
+
+const {
+  render = true,
+  title,
+  description,
+  highlights,
+  note,
+  tags,
+  class: className,
+} = Astro.props;
+---
+
+{
+  render && title && (
+    <div class:list={["case-summary_wrap", className]}>
+      <Heading tag="h2" variant="h4" class="case-summary_title">
+        {keepShortWordsTogether(title)}
+      </Heading>
+      <Paragraph variant="main" class="case-summary_intro">
+        {keepShortWordsTogether(description)}
+      </Paragraph>
+      <ul class="case-summary_list">
+        {highlights.map((point, index) => (
+          <li class="case-summary_point">
+            <span class:list={["case-summary_label", `tone-${index % 3}`]}>
+              {point.label}
+            </span>
+            <Paragraph tag="span" variant="main" class="case-summary_detail">
+              {keepShortWordsTogether(point.text)}
+            </Paragraph>
+          </li>
+        ))}
+      </ul>
+      <Paragraph variant="main" class="case-summary_note">
+        {keepShortWordsTogether(note)}
+      </Paragraph>
+      <TagWrapper class="case-summary_facts">
+        {tags.map((tag) => (
+          <Eyebrow tag="span" variant="tag" class="case-summary_fact">
+            {tag}
+          </Eyebrow>
+        ))}
+      </TagWrapper>
+    </div>
+  )
+}
+
+<style is:global>
+  @layer components {
+    .case-summary_wrap {
+      --_summary-font-size: calc(var(--text-main-min) / 16 * 1rem);
+      --_summary-gap-content: 1.9rem;
+      --_summary-gap-outer: 2.375rem;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 0;
+    }
+    .case-summary_title {
+      margin: 0;
+      max-width: 24ch;
+    }
+    .case-summary_intro,
+    .case-summary_note {
+      margin: 0;
+      max-width: 54ch;
+      color: var(--gray-400);
+      font-size: var(--_summary-font-size);
+      line-height: 1.6;
+      text-box-trim: none;
+    }
+    .case-summary_intro {
+      margin-top: calc(var(--_summary-gap-outer) + 0.375rem);
+    }
+    .case-summary_note {
+      margin-top: var(--_summary-gap-content);
+    }
+    .case-summary_list {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-12);
+      margin: calc(var(--_summary-gap-content) + 0.125rem) 0 0;
+      padding: 0;
+      list-style: none;
+      width: 100%;
+    }
+    .case-summary_point {
+      display: grid;
+      grid-template-columns: max-content minmax(0, 1fr);
+      align-items: baseline;
+      column-gap: 0.625rem;
+      font-size: var(--_summary-font-size);
+      line-height: var(--text-main-line-height);
+    }
+    .case-summary_label,
+    .case-summary_fact.eyebrow_wrap.tag {
+      padding: 0.3125rem 0.75rem;
+      border-radius: var(--radius-round);
+      font-weight: var(--primary-regular);
+    }
+    .case-summary_label {
+      display: inline-block;
+      color: var(--_label-color);
+      background: color-mix(in srgb, var(--_label-color) 14%, transparent);
+      font-size: 0.9375rem;
+      line-height: 1.35;
+      font-weight: var(--primary-regular);
+      white-space: nowrap;
+
+      &.tone-0 {
+        --_label-color: #c2fa69;
+      }
+      &.tone-1 {
+        --_label-color: #c6a3ff;
+      }
+      &.tone-2 {
+        --_label-color: #7bdbff;
+      }
+    }
+    .case-summary_detail {
+      display: block;
+      min-width: 0;
+      margin: 0;
+      color: var(--light-250);
+      font-size: var(--_summary-font-size);
+      line-height: var(--text-main-line-height);
+      text-box-trim: none;
+
+      &::before,
+      &::after {
+        content: none;
+      }
+    }
+    .case-summary_facts.tag-wrapper {
+      width: 100%;
+      gap: var(--space-12);
+      margin-top: calc(var(--_summary-gap-outer) + 0.125rem);
+    }
+    .case-summary_fact.eyebrow_wrap.tag {
+      background: color-mix(in srgb, var(--light-100) 7%, transparent);
+      color: var(--gray-300);
+
+      & .eyebrow_text {
+        margin: 0;
+        font-size: 0.9375rem;
+        line-height: 1.35;
+        font-weight: inherit;
+        text-box-trim: none;
+
+        &::before,
+        &::after {
+          content: none;
+        }
+      }
+    }
+    .case-summary_wrap {
+      @media (width < 48rem) {
+        & .case-summary_intro {
+          margin-top: calc(var(--_summary-gap-outer) + 0.3125rem);
+        }
+        & .case-summary_note {
+          margin-top: calc(var(--_summary-gap-content) - 0.25rem);
+        }
+      }
+    }
+  }
+</style>

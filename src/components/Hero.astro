@@ -17,8 +17,9 @@ interface Props extends HTMLAttributes<"section"> {
    *
    * - `split` — heading and description side by side (default)
    * - `centered` — heading and description in a centered stack
+   * - `editorial` — heading and description stacked at the lower left
    */
-  variant?: "split" | "centered";
+  variant?: "split" | "centered" | "editorial";
 }
 
 const {
@@ -44,13 +45,9 @@ const {
             <div class="hero_primary">
               <div class="hero_heading" data-reveal>
                 <Heading tag="h1" variant="display">
-                  AI expands what we can try
+                  AI-powered design
                   <br />
-                  <strong>
-                    Senior creators decide
-                    <br />
-                    what's worth shipping
-                  </strong>
+                  Led by senior creatives
                 </Heading>
               </div>
             </div>
@@ -58,7 +55,8 @@ const {
               <div class="hero_content">
                 <div class="hero_description" data-reveal>
                   <Paragraph variant="large" class="section-heading-support">
-                    Creative studio for brands, products and campaigns
+                    We build identities, design digital experiences and create
+                    <br /> campaign assets around your goals.
                   </Paragraph>
                 </div>
               </div>
@@ -235,7 +233,7 @@ const {
       opacity: 0.35;
     }
 
-    .hero_wrap.centered {
+    .hero_wrap:is(.centered, .editorial) {
       & .hero_main {
         padding-block: var(--nav-height) var(--space-32);
       }
@@ -243,8 +241,8 @@ const {
       & .hero_main_layout {
         flex-direction: column;
         align-items: center;
-        gap: var(--space-40);
-        translate: 0 calc(var(--space-24) * -1);
+        gap: clamp(1.5rem, 2.42425vw, 2.5rem);
+        translate: 0 -1rem;
         text-align: center;
       }
 
@@ -256,13 +254,13 @@ const {
       }
 
       & .hero_heading > .heading {
-        font-size: clamp(2.25rem, min(5.4vw, 9svh), 6rem);
-        max-width: 100%;
+        font-size: clamp(2.25rem, 5.75758vw, 5.9375rem);
+        max-width: 70rem;
         margin-inline: auto;
         text-wrap: balance;
         font-weight: var(--primary-medium);
-        line-height: 1.04;
-        letter-spacing: -0.045em;
+        line-height: 0.87;
+        letter-spacing: -0.05em;
 
         & strong {
           font-weight: inherit;
@@ -270,13 +268,19 @@ const {
       }
 
       & .hero_content {
-        max-width: 47.5rem;
+        max-width: 50rem;
         align-items: center;
         gap: var(--space-56);
       }
 
       & .hero_description > .text {
         opacity: 1;
+        color: #8a8a8a;
+        font-size: clamp(1rem, 1.21213vw, 1.25rem);
+        font-weight: var(--primary-regular);
+        line-height: 1.31;
+        letter-spacing: 0;
+        max-width: 100%;
       }
 
       & .hero_logo {
@@ -289,7 +293,7 @@ const {
         opacity: 0.3;
 
         & > .text {
-          font-size: calc(var(--text-main) * 0.765);
+          font-size: calc(var(--text-main) * 0.9);
         }
       }
 
@@ -299,11 +303,13 @@ const {
         }
 
         & .hero_heading > .heading {
-          font-size: clamp(2rem, min(8.5vw, 6.5svh), 4rem);
+          font-size: clamp(1.75rem, 8.2vw, 3.5rem);
+          line-height: 0.95;
         }
 
         & .hero_main_layout {
-          gap: var(--space-32);
+          gap: 1.5rem;
+          translate: 0 var(--hero-main-offset);
         }
 
         & .hero_content {
@@ -311,11 +317,60 @@ const {
         }
 
         & .hero_description > .text {
-          max-width: 28ch;
+          max-width: 32ch;
+          line-height: 1.4;
         }
 
         & .hero_description br {
           display: none;
+        }
+      }
+    }
+
+    .hero_wrap.editorial {
+      & .hero_main {
+        align-items: flex-end;
+        padding-block: var(--nav-height) clamp(3rem, 11.5svh, 8rem);
+      }
+
+      & .hero_main_layout {
+        align-items: flex-start;
+        translate: none;
+        text-align: left;
+      }
+
+      & .hero_primary,
+      & .hero_secondary {
+        justify-content: flex-start;
+      }
+
+      & .hero_heading > .heading {
+        font-size: clamp(2.25rem, 5.57576vw, 5.75rem);
+        max-width: 100%;
+        margin-inline: 0;
+        text-wrap: wrap;
+      }
+
+      & .hero_content {
+        max-width: 36rem;
+        align-items: flex-start;
+      }
+
+      & .hero_description > .text {
+        text-align: left;
+        text-wrap: pretty;
+      }
+
+      @media (width < 64rem) {
+        & .hero_main {
+          padding-block: var(--nav-height) var(--space-48);
+          align-items: center;
+        }
+      }
+
+      @media (width < 48rem) {
+        & .hero_heading > .heading {
+          font-size: clamp(1.75rem, 8.2vw, 3.5rem);
         }
       }
     }

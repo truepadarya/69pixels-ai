@@ -10,8 +10,9 @@ interface Props {
    *
    * - `split` — heading and description side by side (default)
    * - `centered` — heading and description in a centered stack
+   * - `editorial` — heading and description stacked at the lower left
    */
-  variant?: "split" | "centered";
+  variant?: "split" | "centered" | "editorial";
 }
 
 const { render = true, variant = "split" } = Astro.props;

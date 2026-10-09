@@ -100,5 +100,15 @@ const { render = true, class: className, ...rest } = Astro.props;
         }
       }
     }
+
+    .hero_wrap:is(.centered, .editorial) .pointillist_wrap {
+      @media (width >= 48rem) {
+        & .pointillist_original,
+        & .pointillist_light {
+          transform: scale(1.06, 1.12);
+          transform-origin: center top;
+        }
+      }
+    }
   }
 </style>
