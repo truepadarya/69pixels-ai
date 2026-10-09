@@ -24,11 +24,32 @@ const { render = true } = Astro.props;
           <span class="square-cursor_shape" />
         </span>
       </div>
+      <div class="square-cursor_wrap caption" aria-hidden="true">
+        <span class="square-cursor_caption" data-square-cursor-caption>
+          <span
+            class="square-cursor_background"
+            data-square-cursor-background
+          />
+          <span class="square-cursor_text" data-square-cursor-text />
+        </span>
+      </div>
+      <div class="square-cursor_wrap gallery" aria-hidden="true">
+        <span class="square-cursor_gallery" data-square-cursor-gallery>
+          <img
+            class="square-cursor_gallery-image"
+            data-square-cursor-gallery-image
+            alt=""
+          />
+        </span>
+      </div>
     </Fragment>
   )
 }
 
 <script>
+  import { gsap } from "gsap";
+  import { initCursorGallery } from "@/utils/cursorGallery";
+
   const initSquareCursor = () => {
     const root = document.documentElement;
     const layer = document.querySelector<HTMLElement>(
@@ -37,13 +58,198 @@ const { render = true } = Astro.props;
     const pointers = document.querySelectorAll<HTMLElement>(
       "[data-square-cursor-pointer]",
     );
-    const canUseEffect = window.matchMedia(
+    const caption = document.querySelector<HTMLElement>(
+      "[data-square-cursor-caption]",
+    );
+    const background = document.querySelector<HTMLElement>(
+      "[data-square-cursor-background]",
+    );
+    const text = document.querySelector<HTMLElement>(
+      "[data-square-cursor-text]",
+    );
+    const galleryPreview = document.querySelector<HTMLElement>(
+      "[data-square-cursor-gallery]",
+    );
+    const galleryImage = document.querySelector<HTMLImageElement>(
+      "[data-square-cursor-gallery-image]",
+    );
+    const media = window.matchMedia(
       "(hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference)",
-    ).matches;
+    );
 
-    if (!layer || !pointers.length || !canUseEffect) return;
+    if (
+      !layer ||
+      !pointers.length ||
+      !caption ||
+      !background ||
+      !text ||
+      !galleryPreview ||
+      !galleryImage
+    )
+      return;
 
-    root.classList.add("has-square-cursor");
+    const gallery = initCursorGallery(
+      galleryPreview,
+      galleryImage,
+      (enabled) => {
+        pointers.forEach((pointer) =>
+          pointer.classList.toggle("has-gallery", enabled),
+        );
+      },
+      () => pointers[0].offsetWidth,
+    );
+
+    const events = new AbortController();
+    let activeTarget: HTMLElement | null = null;
+    let animation: gsap.core.Timeline | undefined;
+    let frame = 0;
+    let x = 0;
+    let y = 0;
+    let visible = false;
+    let scrollUntil = 0;
+    let captionWidth = 0;
+    let captionHeight = 0;
+
+    const placeCaption = () => {
+      const left = Math.max(
+        0,
+        Math.min(x, window.innerWidth - captionWidth - 4),
+      );
+      const top = Math.max(
+        0,
+        Math.min(y, window.innerHeight - captionHeight - 4),
+      );
+      caption.style.transform = `translate3d(${left}px, ${top}px, 0)`;
+    };
+
+    const setCaptionMode = (enabled: boolean) => {
+      pointers.forEach((pointer) =>
+        pointer.classList.toggle("has-caption", enabled),
+      );
+      caption.classList.toggle("is-visible", enabled);
+    };
+
+    const setTarget = (target: HTMLElement | null) => {
+      if (target === activeTarget) return;
+      activeTarget = target;
+      animation?.kill();
+      const dot = pointers[0].offsetWidth;
+
+      if (!target) {
+        animation = gsap
+          .timeline()
+          .set(text.children, { opacity: 0 })
+          .to(background, {
+            scaleX: dot / (captionWidth || dot),
+            scaleY: dot / (captionHeight || dot),
+            duration: 0.16,
+            ease: "power2.out",
+            onComplete: () => setCaptionMode(false),
+          });
+        return;
+      }
+
+      const wasOpen = caption.classList.contains("is-visible");
+      const previousWidth = wasOpen
+        ? captionWidth * Number(gsap.getProperty(background, "scaleX"))
+        : dot;
+      const previousHeight = wasOpen
+        ? captionHeight * Number(gsap.getProperty(background, "scaleY"))
+        : dot;
+      const letters = Array.from(target.dataset.cursorLabel ?? "", (letter) => {
+        const span = document.createElement("span");
+        span.textContent = letter;
+        span.style.opacity = "0";
+        return span;
+      });
+      text.replaceChildren(...letters);
+      text.style.removeProperty("width");
+      const textStyle = getComputedStyle(text);
+      const paddingRight = parseFloat(textStyle.paddingRight);
+      const textLeft = text.getBoundingClientRect().left;
+      const contentRight = Math.max(
+        ...letters
+          .filter((letter) => letter.textContent?.trim())
+          .map((letter) => letter.getBoundingClientRect().right - textLeft),
+      );
+      text.style.width = `${Math.ceil(contentRight + paddingRight)}px`;
+      captionWidth = caption.offsetWidth;
+      captionHeight = caption.offsetHeight;
+      const lineHeight = parseFloat(textStyle.lineHeight);
+      const firstLineHeight = Math.min(
+        captionHeight,
+        lineHeight +
+          parseFloat(textStyle.paddingTop) +
+          parseFloat(textStyle.paddingBottom),
+      );
+      const lineStarts: number[] = [];
+      const lineWidths: number[] = [];
+      let previousTop = -Infinity;
+      letters.forEach((letter, index) => {
+        if (!letter.textContent?.trim()) return;
+        const top = letter.offsetTop;
+        if (top > previousTop + 1) {
+          lineStarts.push(index);
+          lineWidths.push(0);
+          previousTop = top;
+        }
+        const line = lineWidths.length - 1;
+        lineWidths[line] = Math.max(
+          lineWidths[line],
+          letter.getBoundingClientRect().right - textLeft + paddingRight,
+        );
+      });
+      const maskText = () => {
+        const width =
+          captionWidth * Number(gsap.getProperty(background, "scaleX"));
+        const height =
+          captionHeight * Number(gsap.getProperty(background, "scaleY"));
+        text.style.clipPath = `inset(0 ${Math.max(0, captionWidth - width)}px ${Math.max(0, captionHeight - height)}px 0)`;
+      };
+      placeCaption();
+      gsap.set(background, {
+        scaleX: previousWidth / captionWidth,
+        scaleY: previousHeight / captionHeight,
+        transformOrigin: "top left",
+      });
+      maskText();
+      setCaptionMode(true);
+      animation = gsap
+        .timeline()
+        .to(background, {
+          scaleX: lineStarts.length > 1 ? lineWidths[0] / captionWidth : 1,
+          scaleY: lineStarts.length > 1 ? firstLineHeight / captionHeight : 1,
+          duration: 0.24,
+          ease: "power3.out",
+          onUpdate: maskText,
+        })
+        .set(letters, { opacity: 1, stagger: 0.035 }, 0.09);
+      lineStarts.slice(1).forEach((index, line) => {
+        animation!.to(
+          background,
+          {
+            scaleX:
+              line === lineStarts.length - 2
+                ? 1
+                : Math.min(
+                    1,
+                    Math.max(...lineWidths.slice(0, line + 2)) / captionWidth,
+                  ),
+            scaleY:
+              line === lineStarts.length - 2
+                ? 1
+                : Math.min(
+                    1,
+                    (firstLineHeight + (line + 1) * lineHeight) / captionHeight,
+                  ),
+            duration: 0.2,
+            ease: "power2.out",
+            onUpdate: maskText,
+          },
+          0.09 + index * 0.035,
+        );
+      });
+    };
 
     const interactiveSelector = [
       "a[href]",
@@ -56,31 +262,146 @@ const { render = true } = Astro.props;
       '[role="link"]',
     ].join(",");
 
-    const handleMove = (event: PointerEvent) => {
-      const isInteractive =
-        event.target instanceof Element &&
-        Boolean(event.target.closest(interactiveSelector));
+    const updateHover = () => {
+      const hit = document.elementFromPoint(x, y);
+      const candidate =
+        hit?.closest<HTMLElement>(
+          "[data-cursor-label], [data-cursor-gallery]",
+        ) ?? null;
+      const target =
+        (candidate?.dataset.cursorLabel?.trim() ||
+          candidate?.dataset.cursorGallery) &&
+        (!candidate.hasAttribute("data-cursor-desktop") ||
+          window.matchMedia("(width >= 64rem)").matches) &&
+        Number(getComputedStyle(candidate).opacity) > 0.08
+          ? candidate
+          : null;
+      if (target?.dataset.cursorGallery) {
+        if (caption.classList.contains("is-visible")) {
+          animation?.kill();
+          activeTarget = null;
+          setCaptionMode(false);
+        }
+        gallery.setTarget(target);
+      } else {
+        if (target) gallery.hide();
+        else gallery.setTarget(null);
+        setTarget(target);
+      }
+      const isInteractive = Boolean(hit?.closest(interactiveSelector));
 
       pointers.forEach((pointer) => {
-        pointer.style.transform = `translate3d(${event.clientX}px, ${event.clientY}px, 0)`;
         pointer.classList.toggle("is-interactive", isInteractive);
+      });
+    };
+
+    const tick = () => {
+      frame = 0;
+      if (!media.matches || !visible) return;
+      updateHover();
+      if (activeTarget || gallery.active || performance.now() < scrollUntil)
+        frame = requestAnimationFrame(tick);
+    };
+
+    const schedule = () => {
+      if (!frame && media.matches && visible)
+        frame = requestAnimationFrame(tick);
+    };
+
+    const handleMove = (event: PointerEvent) => {
+      if (!media.matches || event.pointerType === "touch") return;
+      x = event.clientX;
+      y = event.clientY;
+      if (x >= root.clientWidth || y >= root.clientHeight) {
+        hide();
+        return;
+      }
+      visible = true;
+      pointers.forEach((pointer) => {
+        pointer.style.transform = `translate3d(${x}px, ${y}px, 0)`;
         pointer.classList.add("is-visible");
       });
+      placeCaption();
+      gallery.move(x, y);
+      schedule();
+    };
+
+    const hide = () => {
+      visible = false;
+      activeTarget = null;
+      animation?.kill();
+      gallery.hide();
+      cancelAnimationFrame(frame);
+      frame = 0;
+      setCaptionMode(false);
+      pointers.forEach((pointer) => pointer.classList.remove("is-visible"));
     };
 
     const handleWindowExit = (event: MouseEvent) => {
       if (event.relatedTarget) return;
-      pointers.forEach((pointer) => pointer.classList.remove("is-visible"));
+      hide();
     };
 
-    document.addEventListener("pointermove", handleMove, { passive: true });
-    window.addEventListener("mouseout", handleWindowExit);
-    window.addEventListener("blur", () => {
-      pointers.forEach((pointer) => pointer.classList.remove("is-visible"));
+    const syncMedia = () => {
+      hide();
+      root.classList.toggle("has-square-cursor", media.matches);
+    };
+
+    syncMedia();
+    document.addEventListener("pointermove", handleMove, {
+      passive: true,
+      signal: events.signal,
     });
+    document.addEventListener("pointerover", handleMove, {
+      passive: true,
+      signal: events.signal,
+    });
+    document.addEventListener(
+      "scroll",
+      () => {
+        scrollUntil = performance.now() + 1000;
+        schedule();
+      },
+      { passive: true, capture: true, signal: events.signal },
+    );
+    window.addEventListener("mouseout", handleWindowExit, {
+      signal: events.signal,
+    });
+    window.addEventListener("blur", hide, { signal: events.signal });
+    window.addEventListener(
+      "resize",
+      () => {
+        placeCaption();
+        gallery.resize();
+        schedule();
+      },
+      { passive: true, signal: events.signal },
+    );
+    document.addEventListener(
+      "visibilitychange",
+      () => {
+        if (document.hidden) hide();
+      },
+      { signal: events.signal },
+    );
+    media.addEventListener("change", syncMedia, { signal: events.signal });
+
+    return () => {
+      hide();
+      gallery.destroy();
+      events.abort();
+      root.classList.remove("has-square-cursor");
+    };
   };
 
-  initSquareCursor();
+  let cleanup: (() => void) | undefined;
+  const start = () => {
+    cleanup?.();
+    cleanup = initSquareCursor();
+  };
+  start();
+  document.addEventListener("astro:page-load", start);
+  document.addEventListener("astro:before-swap", () => cleanup?.());
 </script>
 
 <style is:global>
@@ -97,6 +418,77 @@ const { render = true } = Astro.props;
       mix-blend-mode: difference;
     }
 
+    .square-cursor_wrap.caption {
+      mix-blend-mode: normal;
+    }
+
+    .square-cursor_wrap.gallery {
+      mix-blend-mode: normal;
+    }
+
+    .square-cursor_gallery {
+      --_preview-size: clamp(12rem, 17.272725vw, 25.5rem);
+      position: absolute;
+      top: 0;
+      left: 0;
+      display: block;
+      height: var(--_preview-size);
+      width: var(--_preview-size);
+      overflow: hidden;
+      background: var(--dark-1000);
+      opacity: 0;
+      pointer-events: none;
+
+      &.is-visible {
+        opacity: 1;
+      }
+    }
+
+    .square-cursor_gallery-image {
+      display: block;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .square-cursor_caption {
+      position: absolute;
+      top: 0;
+      left: 0;
+      display: block;
+      opacity: 0;
+      pointer-events: none;
+
+      &.is-visible {
+        opacity: 1;
+      }
+    }
+
+    .square-cursor_background {
+      position: absolute;
+      inset: 0;
+      background: var(--dark-1000);
+      transform-origin: top left;
+    }
+
+    .square-cursor_text {
+      position: relative;
+      display: block;
+      width: max-content;
+      max-width: min(28ch, calc(100vw - 0.5rem));
+      padding: 0.125rem 0.25rem;
+      color: var(--light-100);
+      font-family: var(--font-roboto-mono, "Roboto Mono"), monospace;
+      font-size: 0.75rem;
+      font-weight: 400;
+      line-height: 1.4;
+      letter-spacing: 0;
+      white-space: normal;
+      text-align: left;
+      text-wrap: balance;
+      overflow-wrap: anywhere;
+    }
+
     .square-cursor_pointer {
       position: absolute;
       top: 0;
@@ -105,7 +497,7 @@ const { render = true } = Astro.props;
       width: var(--space-16);
       height: var(--space-16);
       opacity: 0;
-      transition: opacity 120ms cubic-bezier(0.16, 1, 0.3, 1);
+      transition: none;
       will-change: transform, opacity;
     }
 
@@ -149,9 +541,19 @@ const { render = true } = Astro.props;
       transform: scale(0.72);
     }
 
+    .square-cursor_wrap:is(.default, .brand)
+      .square-cursor_pointer.is-visible:is(.has-caption, .has-gallery) {
+      opacity: 0;
+      transition: none;
+    }
+
     @media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
-      .has-square-cursor,
-      .has-square-cursor * {
+      .has-square-cursor {
+        cursor: auto;
+      }
+
+      .has-square-cursor body,
+      .has-square-cursor body * {
         cursor: none;
       }
     }

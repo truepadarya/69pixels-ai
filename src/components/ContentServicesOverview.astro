@@ -2,6 +2,8 @@
 import type { HTMLAttributes } from "astro/types";
 import Heading from "@/components/Typography/Heading.astro";
 import Paragraph from "@/components/Typography/Paragraph.astro";
+import { getImage } from "astro:assets";
+import { serviceCursorGalleries } from "@/data/serviceCursorGalleries";
 
 interface Props extends HTMLAttributes<"div"> {
   /** Set to `false` to skip rendering this component and its children. */
@@ -10,28 +12,53 @@ interface Props extends HTMLAttributes<"div"> {
 
 const { render = true, class: className, ...rest } = Astro.props;
 
+// Keep the gallery setup available, without rendering hover zones or loading previews.
+const cursorGalleriesEnabled = false;
+
 const services = [
   {
     title: "Brand & Strategy",
+    gallery: serviceCursorGalleries.brand,
     description:
       "We define the positioning and build an identity your team can use across channels.",
   },
   {
     title: "Digital Products",
+    gallery: serviceCursorGalleries.digital,
     description:
       "We design apps and platforms around the flows people need, then build interfaces and systems your team can keep developing.",
   },
   {
     title: "Creative Production",
+    gallery: serviceCursorGalleries.creative,
     description:
       "We produce commercials, campaigns, motion and 3D assets with art direction that holds across formats.",
   },
   {
     title: "AI Systems & Automation",
+    gallery: serviceCursorGalleries.ai,
     description:
       "We build custom tools for recurring production tasks, including visual assets and detailed UI handoff. Senior creators define the rules and review the output. Your team can produce consistent work as volume grows.",
   },
 ];
+
+const previews = cursorGalleriesEnabled
+  ? await Promise.all(
+      services.map(async (service) =>
+        Promise.all(
+          service.gallery.map(async (src) => {
+            const image = await getImage({
+              src,
+              width: Math.min(src.width, 720),
+              format: "webp",
+              quality: 75,
+            });
+            return { src: image.src };
+          }),
+        ),
+      ),
+    )
+  : [];
 ---
 
 {
@@ -51,7 +78,7 @@ const services = [
       </Heading>
 
       <div class="services-overview_list">
-        {services.map((service) => (
+        {services.map((service, index) => (
           <article class="services-overview_item">
             <Heading tag="h3" variant="h6">
               {service.title}
@@ -59,6 +86,14 @@ const services = [
             <Paragraph variant="main-xl" maxWidth={54}>
               {service.description}
             </Paragraph>
+            {cursorGalleriesEnabled && (
+              <span
+                class="services-overview_hover text-style-main-xl"
+                data-cursor-gallery={JSON.stringify(previews[index])}
+                data-cursor-desktop
+                aria-hidden="true"
+              />
+            )}
           </article>
         ))}
       </div>
@@ -119,12 +154,25 @@ const services = [
     }
 
     .services-overview_item {
+      position: relative;
       display: grid;
       grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
       gap: var(--site-gutter);
       align-items: start;
       min-height: calc(var(--space-96) + var(--space-8));
       padding-block: var(--space-48);
+    }
+
+    .services-overview_hover {
+      position: absolute;
+      inset-block: 0;
+      left: 0;
+      right: max(0rem, calc((100% - var(--site-gutter)) * 7 / 12 - 54ch));
+      z-index: 1;
+
+      @media (width < 64rem) {
+        display: none;
+      }
     }
 
     .services-overview_item:not(:last-child) {

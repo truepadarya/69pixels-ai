@@ -35,7 +35,7 @@ try {
         "parseFloat(getComputedStyle(document.querySelector('[data-capabilities] .capabilities_title .heading')).opacity)>.9",
       ),
     );
-    for (const p of [0.88, 0.9, 0.92, 0.96, 1]) {
+    for (const p of [0.88, 0.92, 0.96, 0.99, 1]) {
       await b.evaluate(
         "window.scrollTo({top:" +
           (range.top + p * range.distance) +
@@ -46,12 +46,13 @@ try {
         "(()=>{const r=document.querySelector('[data-capabilities]');const last=[...r.querySelectorAll('img')].find(i=>decodeURIComponent(i.currentSrc||i.src).includes('dev_5'));const card=last.closest('.capabilities_card').getBoundingClientRect();const n=document.querySelector('[data-rebuilding]');return {stageOpacity:parseFloat(getComputedStyle(r.querySelector('.capabilities_stage')).opacity),stageTop:r.querySelector('.capabilities_stage').getBoundingClientRect().top,title:[...r.querySelectorAll('.capabilities_title')].filter(t=>parseFloat(getComputedStyle(t).opacity)>.5).map(t=>t.textContent.trim()),lastCard:{top:card.top,bottom:card.bottom},nextTop:n.getBoundingClientRect().top,nextHeadingOpacity:parseFloat(getComputedStyle(n.querySelector('.rebuilding_words')).opacity),eco:[...r.querySelectorAll('video')].some(v=>v.src.includes('Concepts_6'))};})()",
       );
       assert.equal(data.eco, false);
-      if (p === 0.9)
+      if (p === 0.92) assert.equal(data.stageOpacity, 1, "Keep the final heading readable before fading");
+      if (p === 0.96)
         assert.ok(
           data.stageOpacity > 0 && data.stageOpacity < 1,
           "Final heading must dissolve gradually",
         );
-      if (p === 0.96) {
+      if (p === 0.99) {
         assert.equal(
           data.stageOpacity,
           0,
@@ -76,7 +77,7 @@ try {
         );
       }
       console.log(JSON.stringify({ width, p, ...data }));
-      if (width === 1440 && p === 0.96) {
+      if (width === 1440 && p === 0.99) {
         const shot = await b.send("Page.captureScreenshot", { format: "png" });
         writeFileSync(
           "audit/capabilities-connected-tail.png",

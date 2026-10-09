@@ -154,7 +154,10 @@ const cases: CaseStudy[] = [
     highlights: [
       { label: "Research", text: "Competitors, personas and features." },
       { label: "Scenarios", text: "Edge cases and user journeys." },
-      { label: "Senior review", text: "Our researchers validate the findings." },
+      {
+        label: "Senior review",
+        text: "Our researchers validate the findings.",
+      },
     ],
     note: "For SwapSquad, we condensed two months of research into one week. The high-level fantasy sports PRD became screen-level PRDs covering content, functionality and mechanics of each section and screen.",
     tags: ["AI-assisted research", "Screen-level PRDs"],
@@ -235,6 +238,8 @@ const { render = true, class: className, ...rest } = Astro.props;
                 {caseStudy.cards.map((card) => (
                   <Card
                     variant="case"
+                    data-cursor-label={card.heading}
+                    data-cursor-desktop
                     heading={keepShortWordsTogether(card.heading)}
                     headingTag="h3"
                     text={card.text}
@@ -492,6 +497,10 @@ const { render = true, class: className, ...rest } = Astro.props;
 
 <style is:global>
   @layer components {
+    .cases_wrap {
+      scroll-margin-block: 2rem;
+    }
+
     .cases_layout > :first-child {
       min-height: calc(100svh - var(--nav-height) - var(--site-margin) * 2);
     }
@@ -589,6 +598,15 @@ const { render = true, class: className, ...rest } = Astro.props;
 
     .cases_wrap {
       @media (width >= 64rem) {
+        .has-square-cursor & .card_wrap.case > .card_content {
+          position: absolute;
+          width: 0.0625rem;
+          height: 0.0625rem;
+          padding: 0;
+          overflow: hidden;
+          clip-path: inset(50%);
+        }
+
         & .card_wrap.case > .card_content {
           padding-left: 0;
         }

@@ -1,7 +1,6 @@
----
+﻿---
 import type { HTMLAttributes } from "astro/types";
 import CardPricing from "@/components/Item/CardPricing.astro";
-import Paragraph from "@/components/Typography/Paragraph.astro";
 import ContentWrapper from "@/components/Wrapper/ContentWrapper.astro";
 import Heading from "@/components/Typography/Heading.astro";
 import Grid from "@/components/Wrapper/Grid.astro";
@@ -23,7 +22,7 @@ const cards = [
   },
   {
     label: "Dedicated subscription",
-    footer: "€6,900 / month",
+    footer: "\u20ac6,900 / month",
     subject: "Project enquiry",
     heading:
       "For ongoing products that need design capacity inside an existing team",
@@ -52,13 +51,6 @@ const cards = [
         >
           Three ways to work together
         </Heading>
-        <Paragraph
-          variant="large"
-          class="section-heading-support work-setup_lead"
-        >
-          Tell us where the project stands. We'll agree on the scope, team and
-          terms before work begins.
-        </Paragraph>
       </ContentWrapper>
 
       <Grid class="work-setup_layout">
@@ -96,15 +88,15 @@ const cards = [
         defaults: { ease: "none" },
         scrollTrigger: {
           trigger: root,
-          start: "top 80%",
-          end: "top 25%",
+          start: "top 90%",
+          end: "top 65%",
           scrub: true,
           invalidateOnRefresh: true,
         },
       });
 
       gsap.set(items, { autoAlpha: 0, y: "var(--reveal-distance-main)" });
-      timeline.to(items, { autoAlpha: 1, y: 0, duration: 1, stagger: 0.18 });
+      timeline.to(items, { autoAlpha: 1, y: 0, duration: 1, stagger: 0.06 });
     });
     return () => media.revert();
   });
@@ -151,16 +143,10 @@ const cards = [
     .work-setup_intro.layout > :first-child {
       gap: var(--space-32);
     }
-    .work-setup_lead {
-      max-width: 100%;
-    }
     .work-setup_wrap {
       @media (width < 48rem) {
         & .work-setup_intro.layout > :first-child {
           gap: var(--space-24);
-        }
-        & .work-setup_lead {
-          max-width: 34ch;
         }
       }
     }

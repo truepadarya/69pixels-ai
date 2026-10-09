@@ -14,7 +14,7 @@ try {
       false,
     );
     const range = await browser.evaluate(
-      "(()=>{const r=document.querySelector('[data-capabilities]');return {top:r.getBoundingClientRect().top+scrollY,distance:(r.offsetHeight-r.querySelector('.capabilities_stage').clientHeight)/parseFloat(getComputedStyle(r).getPropertyValue('--capabilities-flow-end'))};})()",
+      "(()=>{const r=document.querySelector('[data-capabilities]');return {top:r.getBoundingClientRect().top+scrollY,distance:(r.offsetHeight-r.querySelector('.capabilities_stage').clientHeight)/(0.33+(parseFloat(getComputedStyle(r).getPropertyValue('--capabilities-flow-end'))-0.33)*0.82)};})()",
     );
     for (const p of Array.from(
       { length: 31 },
@@ -22,7 +22,7 @@ try {
     ).concat([0.75, 0.8, 0.85, 0.9, 0.95, 0.4, 0.37])) {
       await browser.evaluate(
         "window.scrollTo({top:" +
-          (range.top + p * range.distance) +
+          (range.top + (p <= 0.33 ? p : 0.33 + (p - 0.33) * 0.82) * range.distance) +
           ',behavior:"instant"})',
       );
       await browser.wait(100);

@@ -31,13 +31,23 @@ const { theme = "inherit", ...seo } = Astro.props;
     <PagePreloader />
 
     <script>
-      import Lenis from "lenis";
-      import "lenis/dist/lenis.css";
+      import { initSmoothScroll } from "@/utils/motion/smoothScroll";
 
-      new Lenis({
-        autoRaf: true,
-        anchors: true,
-      });
+      let cleanupScroll = initSmoothScroll();
+      const startScroll = () => {
+        cleanupScroll();
+        cleanupScroll = initSmoothScroll();
+      };
+      document.addEventListener("astro:page-load", startScroll);
+      const stopScroll = () => cleanupScroll();
+      document.addEventListener("astro:before-swap", stopScroll);
+      if (import.meta.hot) {
+        import.meta.hot.dispose(() => {
+          cleanupScroll();
+          document.removeEventListener("astro:page-load", startScroll);
+          document.removeEventListener("astro:before-swap", stopScroll);
+        });
+      }
     </script>
     <script>
       import { initMotion } from "@/utils/motion";

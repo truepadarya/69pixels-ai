@@ -20,6 +20,22 @@ export default defineConfig({
   ],
   fonts: [
     {
+      name: "Roboto Mono",
+      cssVariable: "--font-roboto-mono",
+      provider: fontProviders.local(),
+      weights: [400],
+      styles: ["normal"],
+      options: {
+        variants: [
+          {
+            weight: 400,
+            style: "normal",
+            src: ["./src/assets/fonts/roboto-mono-regular.woff2"],
+          },
+        ],
+      },
+    },
+    {
       name: "Suisse Intl",
       cssVariable: "--font-suisse-intl",
       provider: fontProviders.local(),

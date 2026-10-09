@@ -6,9 +6,8 @@ export const SITE_DESCRIPTION =
 /** Canonical origin. Resolves canonical URLs, social images, and the sitemap. */
 export { SITE_URL, SITE_IS_PUBLIC } from "../site.config.mjs";
 /** Default image and accessible description for social previews. */
-export const SITE_IMAGE = "/og-image.jpg";
-export const SITE_IMAGE_ALT =
-  "69pixels — From first idea to launch. Brand identities, websites and digital products.";
+export const SITE_IMAGE = "/og-image.png";
+export const SITE_IMAGE_ALT = "69pixels logo on an orange background.";
 /** BCP 47 locale tag used to format dates and numbers. */
 export const SITE_LOCALE = "en-US";
 /**

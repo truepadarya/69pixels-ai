@@ -33,6 +33,7 @@ interface Props extends HTMLAttributes<"section"> {
 
 type CardBase = {
   id?: string;
+  label: string;
   x: number;
   width: number;
   entry: number;
@@ -72,6 +73,7 @@ const themes: Theme[] = [
       {
         kind: "video",
         src: visualsOldWoman,
+        label: "INI Hannover",
         ratio: "1176 / 1764",
         x: 2,
         width: 22,
@@ -87,6 +89,7 @@ const themes: Theme[] = [
         kind: "image",
         id: "visual-guy",
         src: visualsGuy,
+        label: "Mockups",
         x: 31,
         width: 17,
         entry: -0.09,
@@ -101,6 +104,7 @@ const themes: Theme[] = [
         kind: "video",
         id: "visual-logo",
         src: visualsLogoSharp,
+        label: "A-players",
         ratio: "830 / 1108",
         x: 58,
         width: 18,
@@ -114,6 +118,7 @@ const themes: Theme[] = [
         kind: "image",
         id: "visual-girl",
         src: visualsGirl,
+        label: "Lifestyle photography",
         x: 84,
         width: 17,
         entry: 0.07,
@@ -126,6 +131,7 @@ const themes: Theme[] = [
         kind: "video",
         id: "visual-qualle",
         src: visualsLogo2,
+        label: "Qualle",
         ratio: "560 / 752",
         x: 24,
         width: 14,
@@ -139,6 +145,7 @@ const themes: Theme[] = [
       {
         kind: "image",
         src: visualsTeachly,
+        label: "Teachly posters",
         x: 73,
         width: 22,
         entry: 0.18,
@@ -151,6 +158,7 @@ const themes: Theme[] = [
         kind: "image",
         id: "visual-guy-two",
         src: visualsGuy2,
+        label: "Realistic photo",
         x: -2,
         width: 14,
         entry: 0.22,
@@ -164,6 +172,7 @@ const themes: Theme[] = [
         kind: "video",
         id: "visual-package",
         src: visualsPackage,
+        label: "Wanty package",
         ratio: "834 / 1112",
         x: 11,
         width: 18,
@@ -176,6 +185,7 @@ const themes: Theme[] = [
       {
         kind: "image",
         src: visualsClock,
+        label: "Watch UI",
         x: 56,
         width: 16,
         entry: 0.28,
@@ -188,6 +198,7 @@ const themes: Theme[] = [
       {
         kind: "video",
         src: visualsMetro,
+        label: "Transit campaign",
         ratio: "832 / 1104",
         x: 85,
         width: 18,
@@ -202,6 +213,7 @@ const themes: Theme[] = [
       {
         kind: "video",
         src: visualsGirlAndHorse,
+        label: "Inst creatives",
         ratio: "720 / 1280",
         x: 77,
         width: 17,
@@ -216,6 +228,7 @@ const themes: Theme[] = [
       {
         kind: "video",
         src: visualsMockup,
+        label: "Sunniest HQ",
         ratio: "1066 / 600",
         x: 17,
         width: 30,
@@ -231,6 +244,7 @@ const themes: Theme[] = [
         kind: "image",
         id: "visual-01",
         src: visualsLvscp,
+        label: "Logo",
         x: 72,
         width: 16,
         entry: -0.12,
@@ -246,6 +260,7 @@ const themes: Theme[] = [
         kind: "image",
         id: "visual-02",
         src: visualsTeachlyNecklace,
+        label: "Merch",
         x: 69,
         width: 29,
         entry: -0.055,
@@ -261,6 +276,7 @@ const themes: Theme[] = [
         kind: "video",
         id: "visual-03",
         src: visualsPremiumCard,
+        label: "Key visuals",
         ratio: "834 / 1112",
         x: 6,
         width: 19.5,
@@ -278,11 +294,12 @@ const themes: Theme[] = [
   },
   {
     id: "product",
-    title: "Digital Products",
+    title: "Rapid Prototypes",
     cards: [
       {
         kind: "image",
         src: dev1,
+        label: "AB Testing",
         x: 5,
         width: 30,
         entry: 0.44,
@@ -295,6 +312,7 @@ const themes: Theme[] = [
       {
         kind: "video",
         src: dev2,
+        label: "Live prototype",
         ratio: "1104.878 / 600",
         x: 64,
         width: 36,
@@ -308,9 +326,10 @@ const themes: Theme[] = [
       {
         kind: "image",
         src: dev4,
+        label: "Performance audit",
         x: 56,
         width: 33,
-        entry: 0.56,
+        entry: 0.575,
         duration: 0.2,
         drift: 4,
         mobileX: 3,
@@ -320,6 +339,7 @@ const themes: Theme[] = [
       {
         kind: "image",
         src: dev3,
+        label: "Astro Dev",
         x: 13,
         width: 29,
         entry: 0.63,
@@ -332,6 +352,7 @@ const themes: Theme[] = [
       {
         kind: "image",
         src: dev5,
+        label: "UI Kit",
         x: 62,
         width: 37,
         entry: 0.68,
@@ -345,6 +366,7 @@ const themes: Theme[] = [
         kind: "video",
         id: "product-01",
         src: devOrbit,
+        label: "Bold concepts",
         ratio: "5 / 4",
         x: 65,
         width: 26,
@@ -362,6 +384,7 @@ const themes: Theme[] = [
         kind: "video",
         id: "product-02",
         src: devProductMotion,
+        label: "Fast layout",
         ratio: "1504 / 1024",
         x: 22,
         width: 27,
@@ -438,7 +461,7 @@ const { render = true, class: className, ...rest } = Astro.props;
               </div>
             )}
             {theme.id === "product" &&
-              ["Rapid Prototypes", "Design to Development"].map((title) => (
+              ["Digital Products", "Design to Development"].map((title) => (
                 <div class="capabilities_title" data-capabilities-extra-title>
                   <Heading tag="h2" variant="h2">
                     {title}
@@ -450,6 +473,7 @@ const { render = true, class: className, ...rest } = Astro.props;
                 <div
                   class="capabilities_card"
                   data-card-id={card.id}
+                  data-cursor-label={card.label}
                   data-kind={card.kind}
                   data-depth={card.depth ?? "near"}
                   data-hide-mobile={card.hideMobile ? "true" : undefined}
@@ -574,6 +598,15 @@ const { render = true, class: className, ...rest } = Astro.props;
       getComputedStyle(root).getPropertyValue("--capabilities-flow-end"),
     );
 
+    const compactStart = isDesktop ? 0.33 : 0.42;
+    const compactScale = 0.82;
+    const physicalFlowEnd =
+      compactStart + (flowEndProgress - compactStart) * compactScale;
+    const toPhysicalProgress = (progress: number) =>
+      progress <= compactStart
+        ? progress
+        : compactStart + (progress - compactStart) * compactScale;
+
     const scrollDistance = () =>
       Math.max(root.offsetHeight - stage.clientHeight, 0);
 
@@ -672,9 +705,11 @@ const { render = true, class: className, ...rest } = Astro.props;
     };
 
     const renderFlow = (progress: number) => {
-      progress *= flowEndProgress;
+      progress *= physicalFlowEnd;
+      if (progress > compactStart)
+        progress = compactStart + (progress - compactStart) / compactScale;
       const viewportHeight = mediaViewport.clientHeight;
-      const travelDistance = isMobile ? scrollDistance() / flowEndProgress : 0;
+      const travelDistance = isMobile ? scrollDistance() / physicalFlowEnd : 0;
       const timelineProgress =
         progress * (isDesktop ? DESKTOP_SCROLL_SCALE : 1);
       let visualBottom = 0;
@@ -839,7 +874,10 @@ const { render = true, class: className, ...rest } = Astro.props;
     const titleInterval = 1 / titles.length;
     const transitionDuration = 0.025;
     titles.slice(1).forEach((title, index) => {
-      const start = (index + 1) * titleInterval - transitionDuration / 2;
+      const start =
+        toPhysicalProgress((index + 1) * titleInterval * flowEndProgress) /
+          physicalFlowEnd -
+        transitionDuration / 2;
       titleTimeline.to(
         titles[index],
         { autoAlpha: 0, duration: transitionDuration * 0.4 },
@@ -858,8 +896,8 @@ const { render = true, class: className, ...rest } = Astro.props;
     };
     const exitTrigger = ScrollTrigger.create({
       trigger: root,
-      start: "bottom 190%",
-      end: "bottom 155%",
+      start: "bottom 145%",
+      end: "bottom 115%",
       invalidateOnRefresh: true,
       onEnter: renderViewportExit,
       onUpdate: renderViewportExit,
@@ -929,7 +967,9 @@ const { render = true, class: className, ...rest } = Astro.props;
   @layer components {
     .capabilities_wrap {
       --capabilities-flow-end: 0.86;
-      height: calc(100svh + 1000svh * var(--capabilities-flow-end));
+      height: calc(
+        100svh + 1000svh * (0.42 + (var(--capabilities-flow-end) - 0.42) * 0.82)
+      );
       position: relative;
       margin-bottom: -100svh;
       overflow: clip;
@@ -938,7 +978,10 @@ const { render = true, class: className, ...rest } = Astro.props;
 
       @media (width >= 64rem) {
         --capabilities-flow-end: 0.83;
-        height: calc(100svh + 875svh * var(--capabilities-flow-end));
+        height: calc(
+          100svh + 875svh *
+            (0.33 + (var(--capabilities-flow-end) - 0.33) * 0.82)
+        );
       }
     }
 
@@ -1108,6 +1151,10 @@ const { render = true, class: className, ...rest } = Astro.props;
 
     .capabilities_wrap {
       @media (width < 64rem) {
+        :where(&) .capabilities_card[data-card-id="product-02"] {
+          display: none;
+        }
+
         :where(&) .capabilities_title {
           width: calc(100% - var(--site-margin) * 2);
 
@@ -1126,7 +1173,10 @@ const { render = true, class: className, ...rest } = Astro.props;
       @media (width < 48rem) {
         & {
           --capabilities-flow-end: 0.82;
-          height: calc(1000svh * var(--capabilities-flow-end) + 100lvh);
+          height: calc(
+            1000svh * (0.42 + (var(--capabilities-flow-end) - 0.42) * 0.82) +
+              100lvh
+          );
           margin-bottom: -100lvh;
         }
 

@@ -553,6 +553,30 @@ const cards = [
             x: (i) => stage.clientWidth * [-0.012, 0.008, 0.012][i],
             rotation: (i) => [-1.4, 1.2, -0.9][i],
           });
+          let sceneEnd = Infinity;
+          const renderTitle = () => {
+            if (window.scrollY >= sceneEnd) {
+              setTitleOpacity(0);
+              return;
+            }
+            const y = Number(gsap.getProperty(cards[0], "y"));
+            const overlap = gsap.utils.clamp(
+              0,
+              1,
+              (contactY - y) / fadeDistance,
+            );
+            const fade = overlap * overlap * (3 - 2 * overlap);
+            const lastCardY = Number(gsap.getProperty(cards[2], "y"));
+            const exitProgress = gsap.utils.clamp(
+              0,
+              1,
+              (stage.clientHeight * 0.03 - lastCardY) /
+                (stage.clientHeight * 0.25),
+            );
+            const exitFade =
+              exitProgress * exitProgress * (3 - 2 * exitProgress);
+            setTitleOpacity((1 - 0.9 * fade) * (1 - exitFade));
+          };
           const timeline = gsap.timeline({
             scrollTrigger: {
               trigger: section,
@@ -564,30 +588,14 @@ const cards = [
               invalidateOnRefresh: true,
               onRefreshInit: measureOverlap,
               onRefresh: (self) => {
+                sceneEnd = self.end;
+                renderTitle();
                 gsap.set(cue, {
                   top: self.end - self.start + stage.clientHeight * 0.3,
                 });
               },
             },
-            onUpdate: () => {
-              const y = Number(gsap.getProperty(cards[0], "y"));
-              const overlap = gsap.utils.clamp(
-                0,
-                1,
-                (contactY - y) / fadeDistance,
-              );
-              const fade = overlap * overlap * (3 - 2 * overlap);
-              const lastCardY = Number(gsap.getProperty(cards[2], "y"));
-              const exitProgress = gsap.utils.clamp(
-                0,
-                1,
-                (stage.clientHeight * 0.03 - lastCardY) /
-                  (stage.clientHeight * 0.25),
-              );
-              const exitFade =
-                exitProgress * exitProgress * (3 - 2 * exitProgress);
-              setTitleOpacity((1 - 0.9 * fade) * (1 - exitFade));
-            },
+            onUpdate: renderTitle,
           });
           const flights = [
             {
@@ -654,6 +662,8 @@ const cards = [
             );
           });
           const pin = timeline.scrollTrigger!;
+          sceneEnd = pin.end;
+          renderTitle();
           gsap.set(cue, {
             top: pin.end - pin.start + stage.clientHeight * 0.3,
           });

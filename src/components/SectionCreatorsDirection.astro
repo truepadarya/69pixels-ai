@@ -21,16 +21,16 @@ interface Props extends HTMLAttributes<"section"> {
 const { render = true, class: className, ...rest } = Astro.props;
 
 const photos = [
-  { name: "lesha-one", src: leshaOne, width: 653, height: 775 },
-  { name: "maks", src: maks, width: 688, height: 816 },
-  { name: "julia", src: julia, width: 688, height: 816 },
-  { name: "dima", src: dima, width: 688, height: 816 },
-  { name: "lesha-two", src: leshaTwo, width: 688, height: 816 },
-  { name: "n-one", src: nOne, width: 688, height: 816 },
-  { name: "ruslan", src: ruslan, width: 688, height: 816 },
-  { name: "ivan", src: ivan, width: 688, height: 816 },
-  { name: "darya", src: darya, width: 688, height: 816 },
-  { name: "n-two", src: nTwo, width: 688, height: 816 },
+  { name: "lesha-one", label: "Alex", src: leshaOne, width: 653, height: 775 },
+  { name: "maks", label: "Maks", src: maks, width: 688, height: 816 },
+  { name: "julia", label: "Julia", src: julia, width: 688, height: 816 },
+  { name: "dima", label: "Dima", src: dima, width: 688, height: 816 },
+  { name: "lesha-two", label: "Alex", src: leshaTwo, width: 688, height: 816 },
+  { name: "n-one", label: "Pavel", src: nOne, width: 688, height: 816 },
+  { name: "ruslan", label: "Ruslan", src: ruslan, width: 688, height: 816 },
+  { name: "ivan", label: "Ivan", src: ivan, width: 688, height: 816 },
+  { name: "darya", label: "Darya", src: darya, width: 688, height: 816 },
+  { name: "n-two", label: "Ilona", src: nTwo, width: 688, height: 816 },
 ];
 ---
 
@@ -73,6 +73,7 @@ const photos = [
                     `creators-direction_photo-${photo.name}`,
                   ]}
                   data-photo={photo.name}
+                  data-cursor-label={photo.label}
                 >
                   <Img
                     src={photo.src}
@@ -651,6 +652,7 @@ const photos = [
       left: 0;
       width: 44.5cqw;
       aspect-ratio: 688 / 816;
+      pointer-events: auto;
       will-change: transform, opacity;
 
       & .image {
