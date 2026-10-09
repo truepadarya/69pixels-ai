@@ -279,7 +279,13 @@ if (import.meta.env.DEV && render) {
             {video ? (
               <Video src={video} poster={videoPoster} variant="auto" />
             ) : (
-              <Img src={image!} alt={imageAlt} />
+              <Img
+                src={image!}
+                alt={imageAlt}
+                variant="constrained"
+                sizes="(min-width: 64rem) 45vw, (min-width: 48rem) 80vw, 88vw"
+                class="case_image"
+              />
             )}
           </div>
           <div class="card_content margin-trim">
@@ -331,8 +337,32 @@ if (import.meta.env.DEV && render) {
   )
 }
 
+<script>
+  for (const image of document.querySelectorAll<HTMLImageElement>(".case_image")) {
+    if (image.complete) continue;
+    image.classList.add("is-loading");
+    const reveal = () => {
+      void image.decode().catch(() => {}).finally(() => image.classList.remove("is-loading"));
+    };
+    image.addEventListener("load", reveal, { once: true });
+    image.addEventListener("error", () => image.classList.remove("is-loading"), { once: true });
+  }
+</script>
+
 <style is:global>
   @layer components {
+    .case_image {
+      transition: opacity 250ms ease;
+
+      &.is-loading {
+        opacity: 0;
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        transition: none;
+      }
+    }
+
     .card_wrap {
       --_padding: var(--space-40);
       --_min-height: 20rem;

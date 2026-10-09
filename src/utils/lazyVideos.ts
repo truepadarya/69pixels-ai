@@ -36,7 +36,7 @@ export function initializeLazyVideos() {
         synchronize(video);
       }
     },
-    { rootMargin: "400px 0px" },
+    { rootMargin: "1000px 0px" },
   );
   const visibility = new IntersectionObserver((entries) => {
     for (const entry of entries) {

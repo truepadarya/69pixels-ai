@@ -15,6 +15,12 @@ import discoveryScenariosVideo from "@/assets/graphics/cases/swapsquad-scenarios
 import discoveryPersonasVideo from "@/assets/graphics/cases/swapsquad-personas.mp4";
 import marketplaceCardToolImage from "@/assets/graphics/cases/marketplace-card-tool.png";
 import marketplaceCardExamplesImage from "@/assets/graphics/cases/marketplace-card-before-after.png";
+import healthcare1Poster from "@/assets/graphics/cases/healthcare-1-poster.webp";
+import healthcare2Poster from "@/assets/graphics/cases/healthcare-2-poster.webp";
+import healthcare3Poster from "@/assets/graphics/cases/healthcare-3-poster.webp";
+import androidUiKitPoster from "@/assets/graphics/cases/android-ui-kit-poster.webp";
+import swapsquadScenariosPoster from "@/assets/graphics/cases/swapsquad-scenarios-poster.webp";
+import swapsquadPersonasPoster from "@/assets/graphics/cases/swapsquad-personas-poster.webp";
 import mediaPlaceholder from "@/assets/graphics/media-placeholder.svg";
 
 interface Props extends HTMLAttributes<"section"> {
@@ -34,6 +40,7 @@ type CaseStudy = {
     image?: ImageMetadata;
     imageAlt?: string;
     video?: string;
+    videoPoster?: string;
   }>;
 };
 
@@ -57,16 +64,19 @@ const cases: CaseStudy[] = [
         heading: "From hospital workflows to care at home",
         text: "",
         video: healthcareVideo1,
+        videoPoster: healthcare1Poster.src,
       },
       {
         heading: "NurseCopilot, ready to test",
         text: "",
         video: healthcareVideo2,
+        videoPoster: healthcare2Poster.src,
       },
       {
         heading: "The app and the generated code",
         text: "",
         video: healthcareVideo3,
+        videoPoster: healthcare3Poster.src,
       },
     ],
   },
@@ -100,6 +110,7 @@ const cases: CaseStudy[] = [
         heading: "From design to handoff",
         text: "",
         video: androidUiKitVideo,
+        videoPoster: androidUiKitPoster.src,
       },
     ],
   },
@@ -152,11 +163,13 @@ const cases: CaseStudy[] = [
         heading: "Research that guides each screen",
         text: "",
         video: discoveryScenariosVideo,
+        videoPoster: swapsquadScenariosPoster.src,
       },
       {
         heading: "Personas that inform the product",
         text: "",
         video: discoveryPersonasVideo,
+        videoPoster: swapsquadPersonasPoster.src,
       },
     ],
   },
@@ -226,6 +239,7 @@ const { render = true, class: className, ...rest } = Astro.props;
                     headingTag="h3"
                     text={card.text}
                     video={card.video}
+                    videoPoster={card.videoPoster}
                     image={card.image ?? mediaPlaceholder}
                     imageAlt={card.imageAlt ?? ""}
                   />
