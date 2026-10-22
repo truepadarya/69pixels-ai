@@ -248,11 +248,11 @@ const lanes = [
     const media = gsap.matchMedia();
     media.add(
       {
-        desktop: "(width >= 64rem)",
+        desktop: "(width >= 64rem) and (pointer: fine)",
         motion: "(prefers-reduced-motion: no-preference)",
       },
       (context) => {
-        if (!context.conditions?.motion) return;
+        if (!context.conditions?.motion || !context.conditions.desktop) return;
         const content = root.querySelector<HTMLElement>(".cta-project_content");
         const stage = root.querySelector<HTMLElement>(
           "[data-cta-project-stage]",
@@ -570,7 +570,7 @@ const lanes = [
   @layer components {
     .site-credits_wrap {
       display: none;
-      @media (width >= 64rem) {
+      @media (width >= 64rem) and (pointer: fine) {
         display: block;
         position: relative;
         background: var(--dark-900);
@@ -649,10 +649,32 @@ const lanes = [
       height: 420svh;
       background-color: var(--dark-900);
 
-      @media (width < 64rem) {
-        height: 300svh;
+      @media (width < 64rem), (pointer: coarse) {
+        height: auto;
+        margin-top: 0;
+
+        & .cta-project-stage_wrap {
+          display: none;
+        }
+        & .cta-project-section_wrap.section {
+          position: relative;
+        }
+        & .cta-project_content {
+          padding-top: var(--space-96);
+        }
+        & .cta-project_gallery {
+          margin-top: var(--space-48);
+          padding-bottom: var(--space-64);
+          mask-image: linear-gradient(
+            to right,
+            transparent,
+            black 10%,
+            black 90%,
+            transparent
+          );
+        }
       }
-      @media (width >= 64rem) {
+      @media (width >= 64rem) and (pointer: fine) {
         height: auto;
         & .cta-project-stage_wrap {
           position: relative;
@@ -776,7 +798,7 @@ const lanes = [
           }
         }
         & .cta-project_gallery {
-          margin-top: -6rem;
+          margin-top: var(--space-40);
           padding-bottom: 4rem;
         }
       }
@@ -912,7 +934,7 @@ const lanes = [
       --button-background-hover: var(--brand-500);
       --button-border-hover: var(--brand-500);
       --button-text-hover: var(--light-100);
-      min-height: var(--space-56);
+      min-height: max(2.75rem, var(--space-56));
       padding-inline: var(--space-32);
       border-radius: 0;
       font-family: var(--text-mono-font-family);

@@ -400,6 +400,8 @@ const hasContent = !!(
       }
 
       @media (width < 64rem) {
+        aspect-ratio: auto;
+
         .pricing-card_body {
           gap: var(--space-24);
         }
@@ -418,9 +420,10 @@ const hasContent = !!(
       }
 
       @media (width < 48rem) {
+        --_card-padding: var(--space-24);
         height: auto;
         min-height: 0;
-        aspect-ratio: 1;
+        aspect-ratio: auto;
 
         .pricing-card_content {
           margin-top: 0;

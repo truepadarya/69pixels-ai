@@ -327,7 +327,6 @@ const cases = [
               <div
                 class="centered-cases_gallery"
                 data-centered-gallery
-                data-lenis-prevent
                 role="region"
                 aria-label={`${item.context}: project gallery. Use arrow keys to browse.`}
                 tabindex="0"
@@ -349,6 +348,10 @@ const cases = [
                         { unframed: "unframed" in media && media.unframed },
                         { "product-studio": "cropProductStudio" in media },
                         { "research-cropped": "cropResearch" in media },
+                        {
+                          "story-workflow":
+                            "story" in media && media.story === "workflow",
+                        },
                       ]}
                       data-cursor-label={
                         "film" in media
@@ -443,6 +446,7 @@ const cases = [
     .centered-cases_wrap {
       --_case-background: #0d0d0d;
       --_tag-color: #a9c9df;
+      container-type: inline-size;
       scroll-margin-top: 0;
     }
     .centered-cases_content {
@@ -517,8 +521,8 @@ const cases = [
       height: 48.523svh;
       max-height: 100%;
       min-height: 0;
-      width: 100vw;
-      margin-inline: calc(50% - 50vw);
+      width: 100cqw;
+      margin-inline: calc(50% - 50cqw);
       overflow-x: auto;
       overflow-y: hidden;
       overscroll-behavior-x: contain;
@@ -605,13 +609,70 @@ const cases = [
       }
     }
     .centered-cases_wrap {
-      @media (width < 64rem) {
+      @media (width < 64rem), (pointer: coarse) {
+        --_touch-media-height: min(26rem, 60svh);
+
         & .centered-cases_stage {
           height: auto;
-          min-height: 100svh;
+          min-height: 0;
+          grid-template-rows: auto auto;
+          gap: var(--space-32);
+          padding-block: calc(var(--nav-height) + var(--space-24))
+            var(--space-64);
+        }
+        & .centered-cases_header {
+          width: calc(100% - var(--site-margin) * 2);
+        }
+        & .centered-cases_title,
+        & .visual-production .centered-cases_title {
+          font-size: clamp(2rem, 5vw, 3.25rem);
+          line-height: 1.05;
+        }
+        & .centered-cases_summary {
+          margin-top: var(--space-24);
+        }
+        & .centered-cases_tags {
+          margin-top: var(--space-20);
         }
         & .centered-cases_gallery {
-          height: 22rem;
+          height: auto;
+          max-height: none;
+          scroll-snap-type: x proximity;
+          scroll-padding-inline: var(--site-margin);
+        }
+        & .centered-cases_media {
+          height: auto;
+        }
+        & .centered-cases_figure {
+          width: min(
+            calc(100cqw - var(--site-margin) * 2),
+            calc(
+              var(--_touch-media-height) *
+                var(--_media-touch-ratio, var(--_media-ratio))
+            )
+          );
+          height: auto;
+          scroll-snap-align: start;
+        }
+        & .centered-cases_frame {
+          height: auto;
+          aspect-ratio: var(--_media-touch-ratio, var(--_media-ratio));
+        }
+        & .centered-cases_figure.story-workflow {
+          --_media-touch-ratio: 0.78;
+        }
+        & .centered-cases_frame > * {
+          position: absolute;
+          inset: 0;
+          width: 100%;
+          height: 100%;
+        }
+        & .centered-cases_caption {
+          min-width: 0;
+          max-width: 100%;
+          margin-top: var(--space-16);
+          font-size: 1rem;
+          overflow-wrap: anywhere;
         }
       }
     }
@@ -621,7 +682,10 @@ const cases = [
 <script>
   import { gsap } from "gsap";
   import { ScrollTrigger } from "gsap/ScrollTrigger";
-  import { mountScrollScene } from "@/utils/motion/scrollScene";
+  import {
+    mountScrollScene,
+    refreshScrollLayout,
+  } from "@/utils/motion/scrollScene";
 
   gsap.registerPlugin(ScrollTrigger);
   mountScrollScene("[data-centered-case]", (article) => {
@@ -635,7 +699,12 @@ const cases = [
     const last = track.lastElementChild as HTMLElement | null;
     if (!first || !last) return;
     const updateSpacing = () => {
-      const start = `${Math.max(0, (gallery.clientWidth - first.offsetWidth) / 2)}px`;
+      const isPinned = window.matchMedia(
+        "(width >= 64rem) and (pointer: fine) and (prefers-reduced-motion: no-preference)",
+      ).matches;
+      const start = isPinned
+        ? `${Math.max(0, (gallery.clientWidth - first.offsetWidth) / 2)}px`
+        : "var(--site-margin)";
       const end = "var(--site-margin)";
       if (
         track.style.getPropertyValue("--_gallery-start") === start &&
@@ -647,19 +716,22 @@ const cases = [
       return true;
     };
     updateSpacing();
+    let measureFrame = 0;
     const observer = new ResizeObserver(() => {
-      if (updateSpacing()) ScrollTrigger.refresh();
+      cancelAnimationFrame(measureFrame);
+      measureFrame = requestAnimationFrame(() => {
+        if (updateSpacing()) refreshScrollLayout();
+      });
     });
     observer.observe(gallery);
     observer.observe(first);
     observer.observe(last);
     const media = gsap.matchMedia();
     media.add(
-      "(width >= 64rem) and (prefers-reduced-motion: no-preference)",
+      "(width >= 64rem) and (pointer: fine) and (prefers-reduced-motion: no-preference)",
       () => {
         gallery.scrollLeft = 0;
         gallery.classList.add("is-pinned");
-        gallery.removeAttribute("data-lenis-prevent");
         const center = (item: HTMLElement) =>
           item.offsetLeft + item.offsetWidth / 2;
         const startX = () => gallery.clientWidth / 2 - center(first);
@@ -771,7 +843,6 @@ const cases = [
           const position = gsap.utils.clamp(firstPosition, lastPosition, next);
           window.scrollTo({ top: position, behavior: "instant" });
           ScrollTrigger.update();
-          trigger.getTween()?.progress(1);
           tween.progress(
             gsap.utils.clamp(
               0,
@@ -784,11 +855,11 @@ const cases = [
         return () => {
           gallery.removeEventListener("keydown", onKey);
           gallery.classList.remove("is-pinned");
-          gallery.setAttribute("data-lenis-prevent", "");
         };
       },
     );
     return () => {
+      cancelAnimationFrame(measureFrame);
       observer.disconnect();
       media.revert();
       track.style.removeProperty("--_gallery-start");

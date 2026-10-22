@@ -318,5 +318,43 @@ const steps = [
       letter-spacing: var(--letter-spacing-normal);
       color: rgb(255 255 255 / 50%);
     }
+
+    .lynq-story_wrap.workflow {
+      @media (width < 64rem), (pointer: coarse) {
+        & .lynq-story_title {
+          top: 9%;
+          left: 8%;
+          width: 84%;
+          font-size: max(1.125rem, 5.5cqw);
+          line-height: 1.15;
+        }
+        & .lynq-story_steps {
+          top: 30%;
+          bottom: 10%;
+          left: 8%;
+          width: 84%;
+          grid-template-columns: 1fr;
+          grid-template-rows: none;
+          grid-auto-flow: row;
+          align-content: space-between;
+          gap: 0;
+        }
+        & .lynq-story_step {
+          gap: 1.5cqw;
+        }
+        & .lynq-story_step-title,
+        & .lynq-story_step-description {
+          white-space: normal;
+          line-height: 1.3;
+        }
+        & .lynq-story_step-title {
+          font-size: max(1rem, 4.5cqw);
+        }
+        & .lynq-story_step-description {
+          font-size: max(0.8125rem, 3.8cqw);
+          color: rgb(255 255 255 / 65%);
+        }
+      }
+    }
   }
 </style>
