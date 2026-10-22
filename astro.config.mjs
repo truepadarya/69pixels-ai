@@ -20,8 +20,8 @@ export default defineConfig({
   ],
   fonts: [
     {
-      name: "Roboto Mono",
-      cssVariable: "--font-roboto-mono",
+      name: "IBM Plex Mono",
+      cssVariable: "--font-ibm-plex-mono",
       provider: fontProviders.local(),
       weights: [400],
       styles: ["normal"],
@@ -30,7 +30,7 @@ export default defineConfig({
           {
             weight: 400,
             style: "normal",
-            src: ["./src/assets/fonts/roboto-mono-regular.woff2"],
+            src: ["./src/assets/fonts/ibm-plex-mono-regular.ttf"],
           },
         ],
       },

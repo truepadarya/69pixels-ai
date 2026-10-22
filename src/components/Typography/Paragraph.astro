@@ -15,7 +15,8 @@ type ParagraphStyle =
   | "large"
   | "main-xl"
   | "main"
-  | "small";
+  | "small"
+  | "mono";
 
 interface Props extends HTMLAttributes<"p"> {
   /** Set to `false` to skip rendering this component and its children. */
@@ -27,6 +28,7 @@ interface Props extends HTMLAttributes<"p"> {
    *
    * - `display`, `h1`–`h6` — the heading sizes
    * - `large`, `main-xl`, `main`, `small` — the body sizes
+   * - `mono` — monospace captions
    * - `inherit` — take the style from its surroundings (default)
    */
   variant?: ParagraphStyle;

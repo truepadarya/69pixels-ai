@@ -1467,6 +1467,14 @@
 }
 
 /* Background & radius */
+.u-text-label {
+  padding: 0.125rem 0.25rem;
+  background: var(--dark-1000);
+  color: var(--light-100);
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
+}
+
 .background-transparent {
   background-color: transparent;
 }

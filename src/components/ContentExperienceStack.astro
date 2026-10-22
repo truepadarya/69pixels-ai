@@ -1,0 +1,229 @@
+---
+import { Image } from "astro:assets";
+import first from "@/assets/graphics/experience-stack/creator-1.png";
+import second from "@/assets/graphics/experience-stack/creator-portrait.jpg";
+import m from "@/assets/graphics/experience-stack/m.svg";
+import openai from "@/assets/graphics/experience-stack/openai.svg";
+
+interface Props {
+  /** Set to `false` to skip rendering this component and its children. */
+  render?: boolean;
+  class?: string;
+}
+const { render = true, class: className } = Astro.props;
+const items = [
+  { name: "mark", image: m, photo: false, angle: 4.89 },
+  { name: "first", image: first, photo: true, angle: 0 },
+  { name: "openai", image: openai, photo: false, angle: -3.98 },
+  { name: "second", image: second, photo: true, angle: 2.4 },
+];
+---
+
+{
+  render && (
+    <div
+      class:list={["experience-stack_wrap", className]}
+      data-experience-stack
+      aria-hidden="true"
+    >
+      {items.map(({ name, image, photo, angle }) => (
+        <div
+          class:list={["experience-stack_slot", name]}
+          style={`--_angle: ${angle}deg`}
+        >
+          <div class:list={["experience-stack_item", { photo }]}>
+            {photo ? (
+              <Image
+                class="experience-stack_photo"
+                src={image}
+                alt=""
+                format="webp"
+                quality={90}
+                widths={[128, 192, 256, 320]}
+                sizes="(min-width: 64rem) 6vw, (min-width: 48rem) 7vw, 15vw"
+                width={image.width}
+                height={image.height}
+                loading="eager"
+                decoding="async"
+              />
+            ) : (
+              <img
+                class="experience-stack_icon"
+                src={image.src}
+                width={image.width}
+                height={image.height}
+                alt=""
+                loading="eager"
+                decoding="async"
+              />
+            )}
+          </div>
+        </div>
+      ))}
+    </div>
+  )
+}
+
+<style is:global>
+  @layer components {
+    .experience-stack_wrap {
+      position: relative;
+      width: 69%;
+      aspect-ratio: 354 / 104.697;
+      container-type: inline-size;
+      pointer-events: none;
+    }
+    .experience-stack_slot {
+      position: absolute;
+      width: var(--_size);
+      height: var(--_size);
+      rotate: var(--_angle);
+    }
+    .experience-stack_slot.first {
+      --_size: 29.0466cqw;
+      left: 22.7119cqw;
+      top: -0.0339cqw;
+    }
+    .experience-stack_slot.mark {
+      --_size: 23.5867cqw;
+      left: 0.9619cqw;
+      top: 2.5862cqw;
+    }
+    .experience-stack_slot.second {
+      --_size: 26.5274cqw;
+      left: 72.9291cqw;
+      top: 1.1099cqw;
+    }
+    .experience-stack_slot.openai {
+      --_size: 25.5941cqw;
+      left: 48.9062cqw;
+      top: 1.4345cqw;
+    }
+    .experience-stack_item {
+      position: relative;
+      width: 100%;
+      height: 100%;
+    }
+    .experience-stack_item.photo {
+      overflow: clip;
+      border-radius: 50%;
+      background: var(--dark-900);
+    }
+    .experience-stack_photo {
+      display: block;
+      width: 100%;
+      height: 100%;
+      max-width: none;
+      object-fit: cover;
+    }
+    .experience-stack_slot.second .experience-stack_photo {
+      transform: scale(1.45);
+      transform-origin: 55% 66%;
+    }
+    .experience-stack_icon {
+      display: block;
+      width: var(--_size);
+      height: auto;
+      max-width: none;
+    }
+  }
+</style>
+
+<script>
+  import { gsap } from "gsap";
+
+  const instances = new Map<HTMLElement, () => void>();
+  function cleanup() {
+    instances.forEach((dispose) => dispose());
+    instances.clear();
+  }
+  function initialize() {
+    document
+      .querySelectorAll<HTMLElement>("[data-experience-stack]")
+      .forEach((graphic) => {
+        if (instances.has(graphic)) return;
+        const media = gsap.matchMedia();
+        media.add("(prefers-reduced-motion: no-preference)", () => {
+          const items = graphic.querySelectorAll<HTMLElement>(
+            ".experience-stack_item",
+          );
+          const timeline = gsap.timeline({ paused: true });
+          items.forEach((item, i) => {
+            const start = i * 0.105;
+            timeline.fromTo(
+              item,
+              { yPercent: 28, xPercent: -8, rotation: -8, scale: 0.9 },
+              {
+                yPercent: 0,
+                xPercent: 0,
+                rotation: 0,
+                scale: 1,
+                duration: 0.6,
+                ease: "back.out(1.15)",
+              },
+              start,
+            );
+            timeline.fromTo(
+              item,
+              { opacity: 0 },
+              { opacity: 1, duration: 0.2, ease: "power2.out" },
+              start,
+            );
+            timeline.fromTo(
+              item,
+              { filter: "blur(0.4cqw)" },
+              { filter: "blur(0cqw)", duration: 0.32, ease: "power2.out" },
+              start,
+            );
+          });
+          let active = true;
+          let ready = false;
+          let inside = false;
+          let entered = false;
+          const play = () => {
+            if (!active || !ready || !inside || entered) return;
+            entered = true;
+            timeline.play();
+          };
+          const observer = new IntersectionObserver(
+            ([entry]) => {
+              inside = entry.isIntersecting && entry.intersectionRatio >= 0.65;
+              if (inside) play();
+              else if (
+                !entry.isIntersecting &&
+                entry.boundingClientRect.top >= innerHeight
+              ) {
+                entered = false;
+                timeline.pause(0);
+              }
+            },
+            { threshold: [0, 0.65] },
+          );
+          observer.observe(graphic);
+          void Promise.all([
+            document.fonts.ready,
+            ...Array.from(graphic.querySelectorAll("img"), (img) =>
+              img.decode().catch(() => {}),
+            ),
+          ]).then(() => {
+            ready = true;
+            play();
+          });
+          return () => {
+            active = false;
+            observer.disconnect();
+          };
+        });
+        instances.set(graphic, () => media.revert());
+      });
+  }
+  initialize();
+  document.addEventListener("astro:page-load", initialize);
+  document.addEventListener("astro:before-swap", cleanup);
+  if (import.meta.hot)
+    import.meta.hot.dispose(() => {
+      cleanup();
+      document.removeEventListener("astro:page-load", initialize);
+      document.removeEventListener("astro:before-swap", cleanup);
+    });
+</script>

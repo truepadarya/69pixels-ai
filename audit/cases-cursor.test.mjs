@@ -15,7 +15,7 @@ try {
   const labels = await b.evaluate(
     `Array.from(document.querySelectorAll('[data-cases] [data-cursor-label]'), e => e.dataset.cursorLabel)`,
   );
-  assert.equal(labels.length, 9);
+  assert.equal(labels.length, 11);
   for (let index = 0; index < labels.length; index++) {
     await b.evaluate(`(() => {
       const e = document.querySelectorAll('[data-cases] [data-cursor-label]')[${index}];
@@ -136,7 +136,7 @@ try {
   const mobile = await b.evaluate(
     `Array.from(document.querySelectorAll('[data-cases] .card_content'), e => ({ clip: getComputedStyle(e).clipPath, height: e.getBoundingClientRect().height }))`,
   );
-  assert.equal(mobile.length, 9);
+  assert.equal(mobile.length, labels.length);
   assert.ok(
     mobile.every((e) => e.clip === "none" && e.height > 20),
     "All mobile captions remain below cards",

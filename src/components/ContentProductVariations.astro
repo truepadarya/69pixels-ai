@@ -1,0 +1,307 @@
+﻿---
+import Img from "@/components/Media/Img.astro";
+import Button from "@/components/Button.astro";
+import CaseArrow from "@/assets/icons/case-arrow.svg";
+import originalPhoto from "@/assets/graphics/cases/candle-generations/original-photo.png";
+import pink from "@/assets/graphics/cases/candle-generations/problems.png";
+import vanilla from "@/assets/graphics/cases/candle-generations/problems-1.png";
+import warm from "@/assets/graphics/cases/candle-generations/problems-2.png";
+import soft from "@/assets/graphics/cases/candle-generations/problems-3.png";
+interface Props {
+  /** Set to `false` to skip rendering this component and its children. */
+  render?: boolean;
+  /** Additional CSS classes. */
+  class?: string;
+}
+const { render = true, class: className } = Astro.props;
+const variants = [
+  {
+    image: vanilla,
+    alt: "Cherry Vanilla candle with cherries and vanilla flowers.",
+  },
+  { image: pink, alt: "Cherry Vanilla candle with bold lettering on pink." },
+  { image: warm, alt: "Cherry Vanilla candle in a warm candlelit setting." },
+  {
+    image: soft,
+    alt: "Cherry Vanilla candle with soft sunlight and cream fabric.",
+  },
+];
+---
+
+{
+  render && (
+    <div
+      class:list={["product-variations_wrap", className]}
+      data-product-variations
+    >
+      <div class="product-variations_labels">
+        <>
+          <span>Original photo</span>
+          <span>4 creative directions</span>
+        </>
+      </div>
+      <Img
+        class="product-variations_source"
+        src={originalPhoto}
+        alt="The original Cherry Vanilla candle product photo"
+        variant="constrained"
+        quality="max"
+        sizes="(min-width: 64rem) 25vw, 12rem"
+      />
+      <Button
+        class="product-variations_arrow"
+        aria-label="Next creative direction"
+        data-cursor-native
+      >
+        <CaseArrow aria-hidden="true" />
+      </Button>
+      <div
+        class="product-variations_stack"
+        tabindex="0"
+        role="button"
+        aria-label="Next artwork. Click, drag or use the arrow keys to browse."
+        data-cursor-native
+      >
+        {variants.map(({ image, alt }, index) => (
+          <Img
+            src={image}
+            alt={alt}
+            variant="constrained"
+            transparent
+            sizes="25vw"
+            class="product-variations_card"
+            style={`--_depth:${index}`}
+          />
+        ))}
+      </div>
+      <span class="sr-only" data-variations-count aria-live="polite">
+        Artwork 1 of 4
+      </span>
+    </div>
+  )
+}
+<style is:global>
+  @layer components {
+    .product-variations_wrap {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      aspect-ratio: 1.5;
+      container-type: inline-size;
+      overflow: clip;
+      background: transparent;
+      color: var(--light-100);
+    }
+    .product-variations_labels {
+      position: absolute;
+      bottom: 12%;
+      left: 8.8%;
+      width: 79%;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      column-gap: 9cqw;
+      text-align: center;
+      font-family: var(--text-mono-font-family);
+      font-size: calc(2.75cqw / 1.5);
+      font-weight: var(--primary-regular);
+      line-height: 1.5;
+      letter-spacing: var(--letter-spacing-normal);
+      color: var(--gray-400);
+    }
+    .product-variations_source {
+      position: absolute;
+      left: 8.8%;
+      top: 12%;
+      width: 35%;
+      height: 64%;
+      border-radius: 1.4cqw;
+      overflow: hidden;
+      object-fit: cover;
+    }
+    .product-variations_stack {
+      position: absolute;
+      left: 52.8%;
+      top: 12%;
+      width: 35%;
+      height: 64%;
+      cursor: pointer;
+      touch-action: pan-y;
+      &:focus-visible {
+        outline: 0.2cqw solid #bbb;
+        outline-offset: 1.5cqw;
+      }
+    }
+    .product-variations_card {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      z-index: calc(4 - var(--_depth));
+      transform-origin: 50% 75%;
+      pointer-events: none;
+      user-select: none;
+    }
+    .product-variations_arrow.button_wrap.main {
+      --button-background: transparent;
+      --button-background-hover: transparent;
+      --button-text: var(--gray-400);
+      --button-text-hover: var(--light-100);
+      position: absolute;
+      left: 45.9%;
+      top: 44%;
+      width: 4.8cqw;
+      height: 4.8cqw;
+      min-height: 0;
+      padding: 0;
+      translate: 0 -50%;
+      border: 0;
+      border-radius: 50%;
+      & svg {
+        display: block;
+        width: 3.75cqw;
+        height: 3.75cqw;
+        flex: none;
+      }
+    }
+    .has-square-cursor body .product-variations_stack[data-cursor-native],
+    .has-square-cursor body .product-variations_stack[data-cursor-native] * {
+      cursor: pointer;
+    }
+  }
+</style>
+<script>
+  import { gsap } from "gsap";
+  import { mountScrollScene } from "@/utils/motion/scrollScene";
+  mountScrollScene("[data-product-variations]", (root) => {
+    const cards = [
+      ...root.querySelectorAll<HTMLElement>(".product-variations_card"),
+    ];
+    const stack = root.querySelector<HTMLElement>(".product-variations_stack")!;
+    const nextButton = root.querySelector<HTMLButtonElement>(
+      ".product-variations_arrow",
+    )!;
+    const count = root.querySelector<HTMLElement>("[data-variations-count]")!;
+    const reduced = matchMedia("(prefers-reduced-motion: reduce)");
+    let index = 0,
+      busy = false;
+    let origin: number | undefined;
+    let animation: gsap.core.Timeline | undefined;
+    const position = (i: number) => {
+      const depth = (i - index + cards.length) % cards.length;
+      return {
+        xPercent: depth * 2.4,
+        yPercent: depth * -1.4,
+        rotation: depth * 1.7,
+        opacity: 1,
+        zIndex: 4 - depth,
+      };
+    };
+    const place = () => cards.forEach((card, i) => gsap.set(card, position(i)));
+    const advance = (step: number, instant = false) => {
+      if (busy) return;
+      const outgoing = cards[index];
+      index = (index + step + cards.length) % cards.length;
+      count.textContent = `Artwork ${index + 1} of ${cards.length}`;
+      root.dataset.variationIndex = String(index);
+      if (reduced.matches || instant) {
+        place();
+        return;
+      }
+      busy = true;
+      animation = gsap.timeline({
+        onComplete: () => {
+          busy = false;
+          place();
+        },
+      });
+      if (step > 0) {
+        animation.to(outgoing, {
+          xPercent: -45,
+          yPercent: 4,
+          rotation: -8,
+          opacity: 0,
+          duration: 0.3,
+          ease: "power2.inOut",
+        });
+        cards.forEach((card, i) => {
+          if (card !== outgoing)
+            animation!.to(
+              card,
+              { ...position(i), duration: 0.35, ease: "power2.inOut" },
+              0.08,
+            );
+        });
+        animation.set(outgoing, position(cards.indexOf(outgoing)), 0.4);
+      } else {
+        gsap.set(cards[index], {
+          xPercent: -40,
+          yPercent: 4,
+          rotation: -8,
+          opacity: 0,
+          zIndex: 5,
+        });
+        cards.forEach((card, i) =>
+          animation!.to(
+            card,
+            { ...position(i), duration: 0.35, ease: "power2.out" },
+            0,
+          ),
+        );
+      }
+    };
+    const onKey = (event: KeyboardEvent) => {
+      if (!["ArrowLeft", "ArrowRight", "Enter", " "].includes(event.key))
+        return;
+      event.preventDefault();
+      event.stopPropagation();
+      advance(event.key === "ArrowLeft" ? -1 : 1, true);
+    };
+    const onDown = (event: PointerEvent) => {
+      if (busy || event.button !== 0) return;
+      origin = event.clientX;
+      stack.setPointerCapture(event.pointerId);
+    };
+    const onMove = (event: PointerEvent) => {
+      if (origin === undefined) return;
+      gsap.set(cards[index], {
+        xPercent: ((event.clientX - origin) / stack.clientWidth) * 100,
+        rotation: (event.clientX - origin) / 20,
+      });
+    };
+    const onUp = (event: PointerEvent) => {
+      if (origin === undefined) return;
+      const delta = event.clientX - origin;
+      origin = undefined;
+      if (Math.abs(delta) > 30) advance(delta < 0 ? 1 : -1);
+      else if (Math.abs(delta) < 6) advance(1);
+      else
+        gsap.to(cards[index], {
+          ...position(index),
+          duration: reduced.matches ? 0 : 0.2,
+          ease: "power2.out",
+        });
+    };
+    const onCancel = () => {
+      origin = undefined;
+      place();
+    };
+    place();
+    const onNext = (event: MouseEvent) => advance(1, event.detail === 0);
+    nextButton.addEventListener("click", onNext);
+    stack.addEventListener("keydown", onKey);
+    stack.addEventListener("pointerdown", onDown);
+    stack.addEventListener("pointermove", onMove);
+    stack.addEventListener("pointerup", onUp);
+    stack.addEventListener("pointercancel", onCancel);
+    return () => {
+      animation?.kill();
+      nextButton.removeEventListener("click", onNext);
+      stack.removeEventListener("keydown", onKey);
+      stack.removeEventListener("pointerdown", onDown);
+      stack.removeEventListener("pointermove", onMove);
+      stack.removeEventListener("pointerup", onUp);
+      stack.removeEventListener("pointercancel", onCancel);
+    };
+  });
+</script>

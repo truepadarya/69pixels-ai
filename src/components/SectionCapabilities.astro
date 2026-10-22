@@ -1,5 +1,6 @@
 ---
 import Heading from "@/components/Typography/Heading.astro";
+import Paragraph from "@/components/Typography/Paragraph.astro";
 import Img from "@/components/Media/Img.astro";
 import Video from "@/components/Media/Video.astro";
 import dev1 from "@/assets/graphics/second/dev_1.webp";
@@ -61,14 +62,28 @@ type Card = CardBase &
 
 type Theme = {
   id: "visual" | "product";
-  title: string;
+  titles: Array<{
+    title: string;
+    description: string;
+    kind?: "branding" | "extra";
+  }>;
   cards: Card[];
 };
 
 const themes: Theme[] = [
   {
     id: "visual",
-    title: "Visuals & Creative",
+    titles: [
+      {
+        title: "Visuals & Creative",
+        description: "One idea, visuals for the whole campaign",
+      },
+      {
+        title: "Branding & Identity",
+        description: "More ideas with AI, one distinct identity",
+        kind: "branding",
+      },
+    ],
     cards: [
       {
         kind: "video",
@@ -294,7 +309,22 @@ const themes: Theme[] = [
   },
   {
     id: "product",
-    title: "Rapid Prototypes",
+    titles: [
+      {
+        title: "Rapid Prototypes",
+        description: "Click through your idea before you build",
+      },
+      {
+        title: "Digital Products",
+        description: "Apps shaped around real user workflows",
+        kind: "extra",
+      },
+      {
+        title: "Design to Development",
+        description: "AI writes code, we get it ready to ship",
+        kind: "extra",
+      },
+    ],
     cards: [
       {
         kind: "image",
@@ -448,26 +478,24 @@ const { render = true, class: className, ...rest } = Astro.props;
             class="capabilities_theme"
             data-capabilities-theme={theme.id}
           >
-            <div class="capabilities_title">
-              <Heading tag="h2" variant="h2">
-                {theme.title}
-              </Heading>
-            </div>
-            {theme.id === "visual" && (
-              <div class="capabilities_title" data-capabilities-branding>
+            {theme.titles.map(({ title, description, kind }) => (
+              <div
+                class="capabilities_title"
+                data-capabilities-branding={
+                  kind === "branding" ? true : undefined
+                }
+                data-capabilities-extra-title={
+                  kind === "extra" ? true : undefined
+                }
+              >
                 <Heading tag="h2" variant="h2">
-                  Branding & Identity
+                  {title}
                 </Heading>
+                <Paragraph variant="mono" class="capabilities_description">
+                  <span class="u-text-label">{description}</span>
+                </Paragraph>
               </div>
-            )}
-            {theme.id === "product" &&
-              ["Digital Products", "Design to Development"].map((title) => (
-                <div class="capabilities_title" data-capabilities-extra-title>
-                  <Heading tag="h2" variant="h2">
-                    {title}
-                  </Heading>
-                </div>
-              ))}
+            ))}
             <div class="capabilities_media" aria-hidden="true">
               {theme.cards.map((card) => (
                 <div
@@ -529,6 +557,7 @@ const { render = true, class: className, ...rest } = Astro.props;
 <script>
   import { gsap } from "gsap";
   import { ScrollTrigger } from "gsap/ScrollTrigger";
+  import { mountScrollScene } from "@/utils/motion/scrollScene";
 
   gsap.registerPlugin(ScrollTrigger);
 
@@ -633,9 +662,13 @@ const { render = true, class: className, ...rest } = Astro.props;
 
     gsap.set(titles, { autoAlpha: 0, yPercent: 0, filter: "blur(0rem)" });
     gsap.set(titles[0], { autoAlpha: 1, yPercent: 0, filter: "blur(0rem)" });
-    gsap.set(visualHeading, { opacity: 0, y: 12 });
-    const setHeadingOpacity = gsap.quickSetter(visualHeading, "opacity");
-    const setHeadingY = gsap.quickSetter(visualHeading, "y", "px");
+    const visualIntro = [
+      visualHeading,
+      ...titles[0].querySelectorAll<HTMLElement>(".capabilities_description"),
+    ];
+    gsap.set(visualIntro, { opacity: 0, y: 12 });
+    const setHeadingOpacity = gsap.quickSetter(visualIntro, "opacity");
+    const setHeadingY = gsap.quickSetter(visualIntro, "y", "px");
 
     const flowCards = cards.flatMap((group, themeIndex) =>
       group.map((element, cardIndex) => {
@@ -927,40 +960,33 @@ const { render = true, class: className, ...rest } = Astro.props;
     };
   };
 
-  const roots = gsap.utils.toArray<HTMLElement>("[data-capabilities]");
-  const mount = () =>
-    roots
-      .map(initCapabilities)
-      .filter((cleanup): cleanup is () => void => Boolean(cleanup));
-  let cleanups = mount();
-  let resizeFrame = 0;
-  const breakpoints = [
-    window.matchMedia(MOBILE_MEDIA_QUERY),
-    window.matchMedia("(width >= 64rem)"),
-  ];
-  const onBreakpointChange = () => {
-    cancelAnimationFrame(resizeFrame);
-    resizeFrame = requestAnimationFrame(() => {
-      cleanups.forEach((cleanup) => cleanup());
-      cleanups = mount();
-      ScrollTrigger.refresh();
-    });
-  };
-  breakpoints.forEach((query) =>
-    query.addEventListener("change", onBreakpointChange),
-  );
+  mountScrollScene("[data-capabilities]", (root) => {
+    let cleanup = initCapabilities(root);
+    let resizeFrame = 0;
+    const breakpoints = [
+      window.matchMedia(MOBILE_MEDIA_QUERY),
+      window.matchMedia("(width >= 64rem)"),
+    ];
+    const onBreakpointChange = () => {
+      cancelAnimationFrame(resizeFrame);
+      resizeFrame = requestAnimationFrame(() => {
+        cleanup?.();
+        cleanup = initCapabilities(root);
+        ScrollTrigger.refresh();
+      });
+    };
+    breakpoints.forEach((query) =>
+      query.addEventListener("change", onBreakpointChange),
+    );
 
-  document.addEventListener(
-    "astro:before-swap",
-    () => {
+    return () => {
       cancelAnimationFrame(resizeFrame);
       breakpoints.forEach((query) =>
         query.removeEventListener("change", onBreakpointChange),
       );
-      cleanups.forEach((cleanup) => cleanup());
-    },
-    { once: true },
-  );
+      cleanup?.();
+    };
+  });
 </script>
 
 <style is:global>
@@ -1018,8 +1044,19 @@ const { render = true, class: className, ...rest } = Astro.props;
       & > .heading {
         font-size: clamp(3rem, 5.1cqw, 5rem);
         line-height: var(--line-height-compact);
+        text-shadow: var(--text-shadow-main);
         text-wrap: balance;
       }
+    }
+
+    .capabilities_description {
+      position: absolute;
+      top: 100%;
+      left: 50%;
+      translate: -50% 0;
+      width: max-content;
+      max-width: 100%;
+      margin-top: 1.75rem;
     }
 
     .capabilities_wrap:not([data-enhanced="true"])

@@ -1,12 +1,12 @@
 ---
-import { Image } from "astro:assets";
 import Heading from "@/components/Typography/Heading.astro";
 import Paragraph from "@/components/Typography/Paragraph.astro";
 import Button from "@/components/Button.astro";
 import ContentWrapper from "@/components/Wrapper/ContentWrapper.astro";
 import casesScroll from "@/assets/icons/cases-scroll.svg";
-import experienceStrip from "@/assets/graphics/work-ai-experience-strip-reference.png";
-import toolsDock from "@/assets/graphics/work-ai-tools-dock.png";
+import ContentToolsDock from "@/components/ContentToolsDock.astro";
+import ContentMonthsDays from "@/components/ContentMonthsDays.astro";
+import ContentExperienceStack from "@/components/ContentExperienceStack.astro";
 
 interface Props {
   /** Set to `false` to skip rendering this component and its children. */
@@ -21,9 +21,22 @@ const {
   class: className = "",
 } = Astro.props;
 const cards = [
-  { title: "Build the tools", tone: "dark" },
-  { title: "Months become days", tone: "light" },
-  { title: "Experience sparks action", tone: "gray" },
+  {
+    title: "Build the tools",
+    tone: "dark",
+    caption:
+      "We learn from building client tools and create our own to speed up our work.",
+  },
+  {
+    title: "Months become days",
+    tone: "light",
+    caption: "Compressing time from ideas to launch.",
+  },
+  {
+    title: "Experience sparks action",
+    tone: "gray",
+    caption: "Our experience turns AI output into work ready to launch.",
+  },
 ];
 ---
 
@@ -59,75 +72,19 @@ const cards = [
                   card.title
                 )}
               </Heading>
-              {card.tone === "gray" && (
-                <Paragraph variant="main" class="rebuilding_card-text">
-                  Our senior creators decide what to explore, challenge what the
-                  tools produce and refine the work until it is ready to launch.
-                </Paragraph>
-              )}
+
               <div class="rebuilding_illustration" aria-hidden="true">
-                {card.tone === "gray" && (
-                  <Image
-                    class="rebuilding_experience"
-                    src={experienceStrip}
-                    format="webp"
-                    quality={80}
-                    widths={[240, 320, 480, 640, experienceStrip.width]}
-                    sizes="(min-width: 64rem) min(17.6vw, 15.95rem), (min-width: 48rem) 20.9vw, 39.6vw"
-                    loading="eager"
-                    fetchpriority="high"
-                    decoding="async"
-                    width={experienceStrip.width}
-                    height={experienceStrip.height}
-                    alt=""
-                  />
-                )}
-                {card.tone === "light" && (
-                  <div class="rebuilding-months_wrap" aria-hidden="true">
-                    <div class="rebuilding-months_layout">
-                      <div class="rebuilding-months_days">
-                        <span class="rebuilding-months_label">days</span>
-                        <span class="rebuilding-months_handle top-left" />
-                        <span class="rebuilding-months_handle top-right" />
-                        <span class="rebuilding-months_handle bottom-left" />
-                        <span class="rebuilding-months_handle bottom-right" />
-                        <svg
-                          class="rebuilding-months_cursor"
-                          viewBox="0 0 18 24"
-                          fill="none"
-                        >
-                          <path
-                            d="M1 1L16 15L9 15L12 22L8 23L5 16L1 20V1Z"
-                            fill="black"
-                            stroke="white"
-                            stroke-width="1.2"
-                            stroke-linejoin="round"
-                          />
-                        </svg>
-                      </div>
-                      <div class="rebuilding-months_months">
-                        <span class="rebuilding-months_label">months</span>
-                      </div>
-                    </div>
-                  </div>
-                )}
+                {card.tone === "gray" && <ContentExperienceStack />}
+                {card.tone === "light" && <ContentMonthsDays />}
                 {card.tone === "dark" && (
-                  <Image
-                    class="rebuilding_tools"
-                    src={toolsDock}
-                    format="webp"
-                    quality={80}
-                    widths={[240, 320, 480, 640, toolsDock.width]}
-                    sizes="(min-width: 64rem) min(22.4vw, 20.3rem), (min-width: 48rem) 26.6vw, 50.4vw"
-                    loading="eager"
-                    fetchpriority="high"
-                    decoding="async"
-                    width={toolsDock.width}
-                    height={toolsDock.height}
-                    alt=""
-                  />
+                  <ContentToolsDock class="rebuilding_tools" />
                 )}
               </div>
+              {card.caption && (
+                <Paragraph variant="mono" class="rebuilding_card-caption">
+                  {card.caption}
+                </Paragraph>
+              )}
             </article>
           ))}
         </div>
@@ -220,6 +177,10 @@ const cards = [
       background: var(--light-100);
       color: var(--dark-900);
     }
+    .rebuilding_card:is(.dark, .light, .gray) {
+      gap: 0;
+      padding-bottom: var(--_card-padding-top);
+    }
     .rebuilding_card.gray {
       background: var(--light-225);
       color: var(--dark-900);
@@ -231,149 +192,44 @@ const cards = [
     .rebuilding_card-title-line {
       white-space: nowrap;
     }
-    .rebuilding_card.gray {
-      --_card-padding-inline: clamp(1.5rem, 2.8vw, 2.5rem);
-      padding-bottom: clamp(1.5rem, 2.4vw, 2.25rem);
-      gap: 0;
-    }
-    .rebuilding_card-text {
-      font-size: clamp(0.875rem, 1.2vw, 1.125rem);
-      line-height: 1.35;
-      width: 100%;
-      margin: auto 0;
-      color: color-mix(in srgb, var(--dark-900) 70%, transparent);
-      text-align: center;
-
-      & > span {
-        display: block;
-      }
-    }
-    .rebuilding_card.gray .rebuilding_illustration {
+    .rebuilding_card-caption {
       flex: none;
-      display: flex;
-      justify-content: center;
-      background: transparent;
+      width: 100%;
+      max-width: 34ch;
+      margin: 0 auto;
+      font-size: 0.875rem;
+      line-height: 1.25;
+      color: color-mix(in srgb, var(--light-100) 58%, transparent);
     }
-    .rebuilding_experience {
-      display: block;
-      width: 55%;
-      height: auto;
+    .rebuilding_card.gray .rebuilding_card-caption {
+      color: color-mix(in srgb, var(--dark-825) 58%, transparent);
+    }
+    .rebuilding_card.light .rebuilding_card-caption {
+      max-width: none;
+      color: color-mix(in srgb, var(--dark-825) 58%, transparent);
     }
     .rebuilding_illustration {
       flex: 1;
       width: 100%;
       min-height: 0;
-      background: #ff80c0;
+      background: transparent;
     }
-    .rebuilding_card.dark .rebuilding_illustration {
+    .rebuilding_card:is(.dark, .gray) .rebuilding_illustration {
       background: transparent;
       display: flex;
       align-items: center;
       justify-content: center;
     }
-    .rebuilding_card.light .rebuilding_illustration {
+    .rebuilding_card:is(.light, .gray) .rebuilding_illustration {
       background: transparent;
-      position: static;
-    }
-
-    .rebuilding-months_wrap {
-      position: absolute;
-      inset: 0;
-      top: 2rem;
-      container-type: inline-size;
-      aspect-ratio: 494 / 470;
-      pointer-events: none;
-    }
-
-    .rebuilding-months_layout {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      translate: -50% -50%;
-      display: flex;
-      align-items: stretch;
-      width: 76cqw;
-      height: 13.2cqw;
-      font-size: 11.3cqw;
-      font-weight: var(--primary-semibold);
-      line-height: 1;
-      letter-spacing: -0.06em;
-    }
-
-    .rebuilding-months_days,
-    .rebuilding-months_months {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding-bottom: 0.6cqw;
-    }
-
-    .rebuilding-months_label {
-      display: block;
-      line-height: 1;
-      text-box-trim: trim-both;
-      text-box-edge: cap alphabetic;
-    }
-
-    .rebuilding-months_days {
       position: relative;
-      z-index: 1;
-      width: 30cqw;
-      flex: none;
-      border: 0.4cqw solid var(--graphic-accent);
-      color: var(--dark-1000);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: calc(100% + 2 * var(--_card-padding-inline));
+      margin-inline: calc(-1 * var(--_card-padding-inline));
     }
 
-    .rebuilding-months_months {
-      flex: 1;
-      border: 0.4cqw dashed var(--gray-300);
-      border-left: 0;
-      color: var(--gray-300);
-    }
-
-    .rebuilding-months_handle {
-      position: absolute;
-      width: 1.7cqw;
-      height: 1.7cqw;
-      background: var(--light-100);
-      border: 0.35cqw solid var(--graphic-accent);
-      translate: -50% -50%;
-
-      &.top-left {
-        top: 0;
-        left: 0;
-      }
-      &.top-right {
-        top: 0;
-        left: 100%;
-      }
-      &.bottom-left {
-        top: 100%;
-        left: 0;
-      }
-      &.bottom-right {
-        top: 100%;
-        left: 100%;
-      }
-    }
-
-    .rebuilding-months_cursor {
-      position: absolute;
-      top: 100%;
-      left: 100%;
-      width: 3.65cqw;
-      height: 4.85cqw;
-      translate: 0.2cqw 0.2cqw;
-    }
-
-    .rebuilding_tools {
-      display: block;
-      width: 70%;
-      height: auto;
-      max-height: 100%;
-      object-fit: contain;
-      translate: 0 -12%;
-    }
     .rebuilding_wrap.is-animated .rebuilding_stage {
       height: 100svh;
     }
@@ -460,16 +316,8 @@ const cards = [
           flex: auto;
         }
 
-        & .rebuilding_card.gray {
-          gap: var(--space-24);
-        }
-
         & .rebuilding_card-title-line {
           white-space: normal;
-        }
-
-        & .rebuilding_card-text > span {
-          display: inline;
         }
       }
       @media (width < 48rem) {
@@ -498,212 +346,185 @@ const cards = [
 <script>
   import { gsap } from "gsap";
   import { ScrollTrigger } from "gsap/ScrollTrigger";
+  import { mountScrollScene } from "@/utils/motion/scrollScene";
   gsap.registerPlugin(ScrollTrigger);
-  const instances = new Map<HTMLElement, ReturnType<typeof gsap.matchMedia>>();
-  let generation = 0;
-  function cleanup() {
-    generation++;
-    instances.forEach((media) => media.revert());
-    instances.clear();
-  }
-  async function initialize() {
-    const current = ++generation;
-    await document.fonts.ready;
-    if (current !== generation) return;
-    document
-      .querySelectorAll<HTMLElement>("[data-rebuilding]")
-      .forEach((section) => {
-        if (instances.has(section)) return;
-        const media = gsap.matchMedia();
-        instances.set(section, media);
-        media.add("(prefers-reduced-motion: no-preference)", () => {
-          section.classList.add("is-animated");
-          const stage =
-            section.querySelector<HTMLElement>(".rebuilding_stage")!;
-          const title =
-            section.querySelector<HTMLElement>(".rebuilding_title")!;
-          const words = section.querySelectorAll(".rebuilding_words");
-          const cue = section.querySelector<HTMLElement>(".rebuilding_cue")!;
-          const cards =
-            section.querySelectorAll<HTMLElement>(".rebuilding_card");
-          gsap.set(words, { yPercent: 110, opacity: 0 });
-          gsap.to(words, {
-            yPercent: 0,
-            opacity: 1,
-            stagger: 0.24,
-            duration: 0.55,
-            ease: "power2.out",
-            scrollTrigger: {
-              trigger: section,
-              start: "top 25%",
-              end: () => `+=${stage.clientHeight * 0.55}`,
-              scrub: 0.25,
-              invalidateOnRefresh: true,
-            },
-          });
-          const travel = (card: HTMLElement) =>
-            stage.clientHeight / 2 + card.offsetHeight * 0.65;
-          let contactY = 0;
-          let fadeDistance = 1;
-          const measureOverlap = () => {
-            contactY =
-              title.offsetTop +
-              title.offsetHeight -
-              stage.clientHeight / 2 +
-              cards[0].offsetHeight / 2;
-            fadeDistance = Math.max(
-              title.offsetHeight * 1.15,
-              cards[0].offsetHeight * 0.85,
-              1,
-            );
-          };
-          measureOverlap();
-          gsap.set(title, { opacity: 1 });
-          gsap.set(cue, { autoAlpha: 0, xPercent: -50, yPercent: -50 });
-          const setTitleOpacity = gsap.quickSetter(title, "opacity");
-          gsap.set(cards, {
-            xPercent: -50,
-            yPercent: -50,
-            y: (i) => travel(cards[i]),
-            x: (i) => stage.clientWidth * [-0.012, 0.008, 0.012][i],
-            rotation: (i) => [-1.4, 1.2, -0.9][i],
-          });
-          let sceneEnd = Infinity;
-          const renderTitle = () => {
-            if (window.scrollY >= sceneEnd) {
-              setTitleOpacity(0);
-              return;
-            }
-            const y = Number(gsap.getProperty(cards[0], "y"));
-            const overlap = gsap.utils.clamp(
-              0,
-              1,
-              (contactY - y) / fadeDistance,
-            );
-            const fade = overlap * overlap * (3 - 2 * overlap);
-            const lastCardY = Number(gsap.getProperty(cards[2], "y"));
-            const exitProgress = gsap.utils.clamp(
-              0,
-              1,
-              (stage.clientHeight * 0.03 - lastCardY) /
-                (stage.clientHeight * 0.25),
-            );
-            const exitFade =
-              exitProgress * exitProgress * (3 - 2 * exitProgress);
-            setTitleOpacity((1 - 0.9 * fade) * (1 - exitFade));
-          };
-          const timeline = gsap.timeline({
-            scrollTrigger: {
-              trigger: section,
-              start: "top top",
-              end: () =>
-                `+=${stage.clientHeight * Number(getComputedStyle(section).getPropertyValue("--_scroll-length"))}`,
-              pin: stage,
-              scrub: 0.35,
-              invalidateOnRefresh: true,
-              onRefreshInit: measureOverlap,
-              onRefresh: (self) => {
-                sceneEnd = self.end;
-                renderTitle();
-                gsap.set(cue, {
-                  top: self.end - self.start + stage.clientHeight * 0.3,
-                });
-              },
-            },
-            onUpdate: renderTitle,
-          });
-          const flights = [
-            {
-              start: 1.0,
-              duration: 3.2,
-              drift: -0.02,
-              rotation: 0.7,
-              exitRotation: -0.6,
-            },
-            {
-              start: 1.7,
-              duration: 3.28,
-              drift: -0.006,
-              rotation: -0.6,
-              exitRotation: 0.8,
-            },
-            {
-              start: 2.4,
-              duration: 3.24,
-              drift: 0.02,
-              rotation: 0.6,
-              exitRotation: -0.4,
-            },
-          ];
-          cards.forEach((card, index) => {
-            const flight = flights[index];
-            timeline.fromTo(
-              card,
-              { y: () => travel(card) },
-              {
-                y: () => -travel(card),
-                duration: flight.duration,
-                ease: (progress: number) =>
-                  progress + 0.1 * Math.sin(2 * Math.PI * progress),
-              },
-              flight.start,
-            );
-            timeline.to(
-              card,
-              {
-                x: () => stage.clientWidth * flight.drift,
-                duration: flight.duration,
-                ease: "none",
-              },
-              flight.start,
-            );
-            timeline.to(
-              card,
-              {
-                rotation: flight.rotation,
-                duration: flight.duration * 0.52,
-                ease: "sine.inOut",
-              },
-              flight.start,
-            );
-            timeline.to(
-              card,
-              {
-                rotation: flight.exitRotation,
-                duration: flight.duration * 0.48,
-                ease: "sine.inOut",
-              },
-              flight.start + flight.duration * 0.52,
-            );
-          });
-          const pin = timeline.scrollTrigger!;
-          sceneEnd = pin.end;
-          renderTitle();
-          gsap.set(cue, {
-            top: pin.end - pin.start + stage.clientHeight * 0.3,
-          });
-          gsap.to(cue, {
-            autoAlpha: 1,
-            duration: 0.45,
-            ease: "power2.out",
-            scrollTrigger: {
-              trigger: cue,
-              start: "center 70%",
-              toggleActions: "play none none reverse",
-            },
-          });
-          return () => {
-            section.classList.remove("is-animated");
-            title.style.removeProperty("opacity");
-            gsap.set(cue, {
-              clearProps: "transform,translate,opacity,visibility,top",
-            });
-          };
-        });
+  mountScrollScene("[data-rebuilding]", (section) => {
+    const media = gsap.matchMedia();
+    media.add("(prefers-reduced-motion: no-preference)", () => {
+      section.classList.add("is-animated");
+      const stage = section.querySelector<HTMLElement>(".rebuilding_stage")!;
+      const title = section.querySelector<HTMLElement>(".rebuilding_title")!;
+      const words = section.querySelectorAll(".rebuilding_words");
+      const cue = section.querySelector<HTMLElement>(".rebuilding_cue")!;
+      const cards = section.querySelectorAll<HTMLElement>(".rebuilding_card");
+      gsap.set(words, { yPercent: 110, opacity: 0 });
+      gsap.to(words, {
+        yPercent: 0,
+        opacity: 1,
+        stagger: 0.24,
+        duration: 0.55,
+        ease: "power2.out",
+        scrollTrigger: {
+          trigger: section,
+          start: "top 25%",
+          end: () => `+=${stage.clientHeight * 0.55}`,
+          scrub: 0.25,
+          invalidateOnRefresh: true,
+        },
       });
-    ScrollTrigger.refresh();
-  }
-  initialize();
-  document.addEventListener("astro:page-load", initialize);
-  document.addEventListener("astro:before-swap", cleanup);
+      const travel = (card: HTMLElement) =>
+        stage.clientHeight / 2 + card.offsetHeight * 0.65;
+      let contactY = 0;
+      let fadeDistance = 1;
+      const measureOverlap = () => {
+        contactY =
+          title.offsetTop +
+          title.offsetHeight -
+          stage.clientHeight / 2 +
+          cards[0].offsetHeight / 2;
+        fadeDistance = Math.max(
+          title.offsetHeight * 1.15,
+          cards[0].offsetHeight * 0.85,
+          1,
+        );
+      };
+      measureOverlap();
+      gsap.set(title, { opacity: 1 });
+      gsap.set(cue, { autoAlpha: 0, xPercent: -50, yPercent: -50 });
+      const setTitleOpacity = gsap.quickSetter(title, "opacity");
+      gsap.set(cards, {
+        xPercent: -50,
+        yPercent: -50,
+        y: (i) => travel(cards[i]),
+        x: (i) => stage.clientWidth * [-0.012, 0.008, 0.012][i],
+        rotation: (i) => [-1.4, 1.2, -0.9][i],
+      });
+      let sceneEnd = Infinity;
+      const renderTitle = () => {
+        if (window.scrollY >= sceneEnd) {
+          setTitleOpacity(0);
+          return;
+        }
+        const y = Number(gsap.getProperty(cards[0], "y"));
+        const overlap = gsap.utils.clamp(0, 1, (contactY - y) / fadeDistance);
+        const fade = overlap * overlap * (3 - 2 * overlap);
+        const lastCardY = Number(gsap.getProperty(cards[2], "y"));
+        const exitProgress = gsap.utils.clamp(
+          0,
+          1,
+          (stage.clientHeight * 0.03 - lastCardY) / (stage.clientHeight * 0.25),
+        );
+        const exitFade = exitProgress * exitProgress * (3 - 2 * exitProgress);
+        setTitleOpacity((1 - 0.9 * fade) * (1 - exitFade));
+      };
+      const timeline = gsap.timeline({
+        scrollTrigger: {
+          trigger: section,
+          start: "top top",
+          end: () =>
+            `+=${stage.clientHeight * Number(getComputedStyle(section).getPropertyValue("--_scroll-length"))}`,
+          pin: stage,
+          scrub: 0.35,
+          invalidateOnRefresh: true,
+          onRefreshInit: measureOverlap,
+          onRefresh: (self) => {
+            sceneEnd = self.end;
+            renderTitle();
+            gsap.set(cue, {
+              top: self.end - self.start + stage.clientHeight * 0.3,
+            });
+          },
+        },
+        onUpdate: renderTitle,
+      });
+      const flights = [
+        {
+          start: 1.0,
+          duration: 3.2,
+          drift: -0.02,
+          rotation: 0.7,
+          exitRotation: -0.6,
+        },
+        {
+          start: 1.7,
+          duration: 3.28,
+          drift: -0.006,
+          rotation: -0.6,
+          exitRotation: 0.8,
+        },
+        {
+          start: 2.4,
+          duration: 3.24,
+          drift: 0.02,
+          rotation: 0.6,
+          exitRotation: -0.4,
+        },
+      ];
+      cards.forEach((card, index) => {
+        const flight = flights[index];
+        timeline.fromTo(
+          card,
+          { y: () => travel(card) },
+          {
+            y: () => -travel(card),
+            duration: flight.duration,
+            ease: (progress: number) =>
+              progress + 0.1 * Math.sin(2 * Math.PI * progress),
+          },
+          flight.start,
+        );
+        timeline.to(
+          card,
+          {
+            x: () => stage.clientWidth * flight.drift,
+            duration: flight.duration,
+            ease: "none",
+          },
+          flight.start,
+        );
+        timeline.to(
+          card,
+          {
+            rotation: flight.rotation,
+            duration: flight.duration * 0.52,
+            ease: "sine.inOut",
+          },
+          flight.start,
+        );
+        timeline.to(
+          card,
+          {
+            rotation: flight.exitRotation,
+            duration: flight.duration * 0.48,
+            ease: "sine.inOut",
+          },
+          flight.start + flight.duration * 0.52,
+        );
+      });
+      const pin = timeline.scrollTrigger!;
+      sceneEnd = pin.end;
+      renderTitle();
+      gsap.set(cue, {
+        top: pin.end - pin.start + stage.clientHeight * 0.3,
+      });
+      gsap.to(cue, {
+        autoAlpha: 1,
+        duration: 0.45,
+        ease: "power2.out",
+        scrollTrigger: {
+          trigger: cue,
+          start: "center 70%",
+          toggleActions: "play none none reverse",
+        },
+      });
+      return () => {
+        section.classList.remove("is-animated");
+        title.style.removeProperty("opacity");
+        gsap.set(cue, {
+          clearProps: "transform,translate,opacity,visibility,top",
+        });
+      };
+    });
+    return () => media.revert();
+  });
 </script>

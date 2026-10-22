@@ -22,6 +22,8 @@ import androidUiKitPoster from "@/assets/graphics/cases/android-ui-kit-poster.we
 import swapsquadScenariosPoster from "@/assets/graphics/cases/swapsquad-scenarios-poster.webp";
 import swapsquadPersonasPoster from "@/assets/graphics/cases/swapsquad-personas-poster.webp";
 import mediaPlaceholder from "@/assets/graphics/media-placeholder.svg";
+import lynqResultsImage from "@/assets/graphics/cases/lynq-delivery-results-suisse.svg";
+import lynqWorkflowImage from "@/assets/graphics/cases/lynq-delivery-workflow-suisse.svg";
 
 interface Props extends HTMLAttributes<"section"> {
   /** Set to `false` to skip rendering this component and its children. */
@@ -45,6 +47,34 @@ type CaseStudy = {
 };
 
 const cases: CaseStudy[] = [
+  {
+    title: "Twice the weekly delivery for LYNQ",
+    description:
+      "We rebuilt LYNQ’s delivery process so AI handles routine work from task analysis to post-merge checks. The same team now closes 47 tasks a week instead of 22.",
+    highlights: [
+      { label: "2.1× delivery", text: "22 → 47 tasks closed per week." },
+      { label: "−82% time", text: "5.0 → 0.9 days from task creation to closure, median." },
+      { label: "−70% cost", text: "€217 → €66 per closed task." },
+    ],
+    note: "Measured across 10 sprints, January–October 2026. People approve changes and test on real devices. Tasks also became smaller, contributing to the lower cost per task.",
+    tags: ["LYNQ", "AI-driven delivery"],
+    cards: [
+      {
+        heading: "The same team, more delivered each week",
+        text: "",
+        image: lynqResultsImage,
+        imageAlt:
+          "LYNQ delivery report: 22 to 47 tasks closed per week, median creation-to-closure time from 5.0 to 0.9 days, and cost per closed task from €217 to €66. Before: sprints 1.23–1.27. Now: sprints 1.30–1.32. Smaller tasks also contributed to the lower cost per task.",
+      },
+      {
+        heading: "AI does the routine work, people approve",
+        text: "",
+        image: lynqWorkflowImage,
+        imageAlt:
+          "LYNQ workflow: AI analyses and describes tasks, implements changes in separate merge requests, reviews them before human approval, then re-checks staging after merge. 93% of tasks have full descriptions; 99% of merge requests have structured descriptions. People also test on real devices.",
+      },
+    ],
+  },
   {
     title: "Four healthcare app prototypes ready for testing",
     description:

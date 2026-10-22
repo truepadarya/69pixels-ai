@@ -1,0 +1,583 @@
+---
+import Img from "@/components/Media/Img.astro";
+import Button from "@/components/Button.astro";
+import postImage from "@/assets/graphics/flowup/fyk-post.jpg";
+interface Props {
+  /** Set to `false` to skip rendering this component and its children. */
+  render?: boolean;
+  /** Additional CSS classes. */
+  class?: string;
+}
+const { render = true, class: className } = Astro.props;
+const captions = {
+  "Master copy":
+    "A puddle is a piece of the ocean.\n\nA new visual world for FYK Kombucha, inspired by the small moments of nature we find in city life.\n\nBrand identity, packaging and social content, connected by one idea: every piece matters.\n\n@fyk.kombucha",
+  Instagram:
+    "A puddle is a piece of the ocean.\n\nMeet FYK Kombucha. A little nature in your everyday city life.\n\nBrand identity and packaging by 69pixels.\n\n@fyk.kombucha #BrandIdentity #PackagingDesign",
+  Facebook:
+    "Meet FYK Kombucha.\n\nWe brought the brand’s story to life through a visual identity that connects nature with everyday city living. From the packaging to the social feed, each detail belongs to the same world.\n\nExplore the project with 69pixels.",
+  LinkedIn:
+    "How do you build a recognisable kombucha brand?\n\nFor FYK, we brought the positioning, visual identity and packaging into one system. The idea carries from the product label to social content, giving the team a consistent foundation for launch.\n\nA brand identity project by 69pixels.",
+};
+const menu = [
+  { label: "New post", path: "M15 4l5 5M4 20l4-1L21 6l-5-5L3 14z" },
+  { label: "Drafts", path: "M7 3h10l4 4v14H7zM3 7v14h10M16 3v5h5" },
+  { label: "History", path: "M3 11a9 9 0 1 1 2 7M3 4v7h7M12 7v6l4 2" },
+  { label: "Analytics", path: "M4 20V12M10 20V8M16 20V4M3 8l6-4 6 1 6-4" },
+  {
+    label: "Accounts",
+    path: "M9 15l6-6M8 17l-2 2a4 4 0 0 1-6-6l5-5a4 4 0 0 1 6 0M16 7l2-2a4 4 0 0 1 6 6l-5 5a4 4 0 0 1-6 0",
+  },
+];
+---
+
+{
+  render && (
+    <div class:list={["flowup_wrap", className]} data-flowup>
+      <div class="flowup_layout">
+        <aside class="flowup_sidebar">
+          <strong class="flowup_brand">
+            69 FlowUp<span aria-hidden="true">◫</span>
+          </strong>
+          <ul class="flowup_navigation" aria-label="Workspace">
+            {menu.map((item, i) => (
+              <li class:list={[{ active: i === 0 }]}>
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.6"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  aria-hidden="true"
+                >
+                  <path d={item.path} />
+                </svg>
+                {item.label}
+              </li>
+            ))}
+          </ul>
+          <span class="flowup_workspace">69pixels workspace</span>
+        </aside>
+        <div class="flowup_main">
+          <header class="flowup_header">
+            <>
+              <strong>Post editor</strong>
+              <span>✓ Saved locally</span>
+            </>
+          </header>
+          <div
+            class="flowup_scroll"
+            data-flowup-scroll
+            data-lenis-prevent
+            tabindex="0"
+            aria-label="Post editor content"
+            data-cursor-native
+          >
+            <div class="flowup_content">
+              <span class="flowup_label">Publishing channels</span>
+              <div class="flowup_channels" aria-label="Publishing channels">
+                {["Instagram", "Facebook", "LinkedIn", "X", "Threads"].map(
+                  (channel, i) => (
+                    <button
+                      type="button"
+                      data-flowup-channel
+                      aria-pressed={i < 3}
+                    >
+                      <span aria-hidden="true">{i < 3 ? "✓" : "+"}</span>
+                      {channel}
+                    </button>
+                  ),
+                )}
+              </div>
+              <div
+                class="flowup_tabs"
+                role="tablist"
+                aria-label="Post versions"
+              >
+                {Object.keys(captions).map((channel, i) => (
+                  <button
+                    type="button"
+                    role="tab"
+                    aria-selected={i === 0}
+                    data-flowup-tab={channel}
+                  >
+                    {channel}
+                  </button>
+                ))}
+              </div>
+              <div class="flowup_version">
+                <>
+                  <span data-flowup-version>One draft for all channels</span>
+                  <span class="flowup_draft">Draft</span>
+                </>
+              </div>
+              <p class="flowup_post-title">FYK · Every piece matters</p>
+              <div class="flowup_editor">
+                <label class="sr-only" for="flowup-caption">
+                  Post caption
+                </label>
+                <textarea
+                  id="flowup-caption"
+                  data-flowup-caption
+                  spellcheck="false"
+                >
+                  {captions["Master copy"]}
+                </textarea>
+                <div class="flowup_attachment">
+                  <>
+                    <Img
+                      src={postImage}
+                      alt="Attached visual from the FYK Kombucha studio post."
+                      variant="constrained"
+                      sizes="30vw"
+                      class="flowup_image"
+                    />
+                    <span>
+                      FYK_campaign.jpg <span>Ready to upload</span>
+                    </span>
+                  </>
+                </div>
+                <div class="flowup_editor-status">
+                  <>
+                    <span>1 attachment</span>
+                    <span data-flowup-count>
+                      {captions["Master copy"].length} characters
+                    </span>
+                  </>
+                </div>
+              </div>
+              <section
+                class="flowup_preview"
+                data-flowup-preview
+                aria-label="Post preview"
+              >
+                <span class="flowup_label">Post preview</span>
+                <div class="flowup_preview-head">
+                  <>
+                    <strong>69</strong>
+                    <div>
+                      <>
+                        <b>69pixels.studio</b>
+                        <span>Branding & digital products</span>
+                      </>
+                    </div>
+                    <span>•••</span>
+                  </>
+                </div>
+                <Img
+                  src={postImage}
+                  alt="FYK campaign post preview."
+                  variant="constrained"
+                  sizes="30vw"
+                  class="flowup_preview-image"
+                />
+                <p data-flowup-preview-copy>{captions["Master copy"]}</p>
+              </section>
+            </div>
+          </div>
+          <footer class="flowup_footer">
+            <>
+              <span>Ready for review</span>
+              <Button
+                variant="compact"
+                data-flowup-preview-button
+                class="flowup_preview-button"
+              >
+                Preview post <span aria-hidden="true">↓</span>
+              </Button>
+            </>
+          </footer>
+        </div>
+      </div>
+    </div>
+  )
+}
+<script is:inline define:vars={{ captions }}>
+  (window.flowupCopies ||= new Map()).set("flowup-caption", captions);
+</script>
+<script>
+  import { mountScrollScene } from "@/utils/motion/scrollScene";
+  declare global {
+    interface Window {
+      flowupCopies: Map<string, Record<string, string>>;
+    }
+  }
+  mountScrollScene("[data-flowup]", (root) => {
+    const scroller = root.querySelector<HTMLElement>("[data-flowup-scroll]")!;
+    const input = root.querySelector<HTMLTextAreaElement>(
+      "[data-flowup-caption]",
+    )!;
+    const preview = root.querySelector<HTMLElement>("[data-flowup-preview]")!;
+    const previewButton = root.querySelector<HTMLButtonElement>(
+      "[data-flowup-preview-button]",
+    )!;
+    const tabs = [
+      ...root.querySelectorAll<HTMLButtonElement>("[data-flowup-tab]"),
+    ];
+    const copies = { ...window.flowupCopies.get(input.id) };
+    let active = "Master copy";
+    const update = () => {
+      copies[active] = input.value;
+      root.querySelector<HTMLElement>("[data-flowup-count]")!.textContent =
+        `${input.value.length} characters`;
+      root.querySelector<HTMLElement>(
+        "[data-flowup-preview-copy]",
+      )!.textContent = input.value;
+    };
+    const onClick = (event: MouseEvent) => {
+      const button = (event.target as Element).closest<HTMLButtonElement>(
+        "button",
+      );
+      if (!button) return;
+      if (button.hasAttribute("data-flowup-tab")) {
+        active = button.dataset.flowupTab!;
+        input.value = copies[active] ?? "";
+        tabs.forEach((t) =>
+          t.setAttribute("aria-selected", String(t === button)),
+        );
+        root.querySelector<HTMLElement>("[data-flowup-version]")!.textContent =
+          active === "Master copy"
+            ? "One draft for all channels"
+            : `Custom copy for ${active}`;
+        update();
+      } else if (button.hasAttribute("data-flowup-channel")) {
+        button.setAttribute(
+          "aria-pressed",
+          String(button.getAttribute("aria-pressed") !== "true"),
+        );
+        button.firstElementChild!.textContent =
+          button.getAttribute("aria-pressed") === "true" ? "✓" : "+";
+      }
+    };
+    const onPreview = () => {
+      const top =
+        preview.getBoundingClientRect().top -
+        scroller.getBoundingClientRect().top +
+        scroller.scrollTop;
+      scroller.scrollTo({
+        top: top - 16,
+        behavior: matchMedia("(prefers-reduced-motion: reduce)").matches
+          ? "instant"
+          : "smooth",
+      });
+    };
+    const onKey = (event: KeyboardEvent) => {
+      event.stopPropagation();
+      const button = (event.target as Element).closest<HTMLButtonElement>(
+        "[data-flowup-tab]",
+      );
+      if (!button || !["ArrowLeft", "ArrowRight"].includes(event.key)) return;
+      event.preventDefault();
+      const next =
+        tabs[
+          (tabs.indexOf(button) +
+            (event.key === "ArrowRight" ? 1 : tabs.length - 1)) %
+            tabs.length
+        ];
+      next.click();
+      next.focus();
+    };
+    root.addEventListener("click", onClick);
+    input.addEventListener("input", update);
+    root.addEventListener("keydown", onKey);
+    previewButton.addEventListener("click", onPreview);
+    return () => {
+      root.removeEventListener("click", onClick);
+      input.removeEventListener("input", update);
+      root.removeEventListener("keydown", onKey);
+      previewButton.removeEventListener("click", onPreview);
+    };
+  });
+</script>
+<style is:global>
+  @layer components {
+    .flowup_wrap {
+      width: 100%;
+      height: 100%;
+      aspect-ratio: 1.5;
+      container-type: inline-size;
+      background: #fff;
+      color: #242424;
+      overflow: clip;
+      font: 1.75cqw/1.45 var(--primary-font-family);
+      text-align: left;
+    }
+    .flowup_layout {
+      height: 100%;
+      display: grid;
+      grid-template-columns: 25% minmax(0, 1fr);
+    }
+    .flowup_sidebar {
+      display: flex;
+      flex-direction: column;
+      gap: 4cqw;
+      padding: 3.7cqw 1.3cqw 2cqw;
+      background: #f7f7f7;
+      border-right: 0.1cqw solid #e6e6e6;
+    }
+    .flowup_brand {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 2.8cqw;
+      letter-spacing: -0.06em;
+      line-height: 1;
+      padding-inline: 0.5cqw;
+      span {
+        color: #888;
+        font-size: 2cqw;
+      }
+    }
+    .flowup_navigation {
+      display: grid;
+      gap: 0.7cqw;
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      li {
+        display: flex;
+        align-items: center;
+        gap: 1.3cqw;
+        padding: 1.25cqw 1cqw;
+        border-radius: 1.2cqw;
+      }
+      li.active {
+        background: #eaeaea;
+        font-weight: 500;
+      }
+      svg {
+        width: 2.25cqw;
+        height: 2.25cqw;
+        flex: none;
+      }
+    }
+    .flowup_workspace {
+      margin-top: auto;
+      font-size: 1.4cqw;
+      color: #888;
+      padding-inline: 0.5cqw;
+    }
+    .flowup_main {
+      display: grid;
+      grid-template-rows: 8cqw minmax(0, 1fr) 6.6cqw;
+      min-width: 0;
+      min-height: 0;
+    }
+    .flowup_header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding-inline: 3cqw;
+      border-bottom: 0.1cqw solid #eaeaea;
+      strong {
+        font-weight: 500;
+        font-size: 1.9cqw;
+      }
+      span {
+        font-size: 1.35cqw;
+        color: #888;
+      }
+    }
+    .flowup_scroll {
+      overflow-y: auto;
+      min-height: 0;
+      scrollbar-width: thin;
+      scrollbar-color: #d7d7d7 transparent;
+      scroll-behavior: auto;
+    }
+    .flowup_content {
+      padding: 3cqw;
+    }
+    .flowup_label {
+      display: block;
+      font-size: 1.65cqw;
+      font-weight: 500;
+      margin-bottom: 1.4cqw;
+    }
+    .flowup_channels {
+      display: flex;
+      gap: 0.65cqw;
+      flex-wrap: wrap;
+      margin-bottom: 3cqw;
+      button {
+        display: flex;
+        align-items: center;
+        gap: 0.6cqw;
+        padding: 0.8cqw 1.1cqw;
+        border: 0.1cqw solid #ddd;
+        border-radius: 1.2cqw;
+        background: #fff;
+        color: #777;
+        font-size: 1.45cqw;
+        line-height: 1.3;
+        cursor: pointer;
+      }
+      button[aria-pressed="true"] {
+        background: #f0f0f0;
+        color: #333;
+      }
+    }
+    .flowup_tabs {
+      display: flex;
+      gap: 2cqw;
+      border-bottom: 0.1cqw solid #e5e5e5;
+      margin-bottom: 2cqw;
+      button {
+        flex: none;
+        border: 0;
+        border-bottom: 0.25cqw solid transparent;
+        background: transparent;
+        padding: 0 0 1.3cqw;
+        font-size: 1.45cqw;
+        line-height: 1.3;
+        color: #888;
+        cursor: pointer;
+      }
+      button[aria-selected="true"] {
+        color: #222;
+        border-bottom-color: #222;
+      }
+    }
+    .flowup_version {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 1.35cqw;
+      color: #888;
+      margin-bottom: 2.5cqw;
+    }
+    .flowup_draft {
+      padding: 0.25cqw 0.9cqw;
+      border-radius: 0.6cqw;
+      background: #f1f1f1;
+      color: #777;
+    }
+    .flowup_post-title {
+      margin: 0 0 1.3cqw;
+      font-size: 2.1cqw;
+      font-weight: 500;
+    }
+    .flowup_editor {
+      border: 0.1cqw solid #ddd;
+      border-radius: 2cqw;
+      overflow: hidden;
+      textarea {
+        display: block;
+        width: 100%;
+        height: 25cqw;
+        resize: none;
+        background: #fff;
+        color: #333;
+        border: 0;
+        padding: 2cqw;
+        font: 1.65cqw/1.6 var(--primary-font-family);
+      }
+      textarea:focus {
+        outline: 0;
+        box-shadow: inset 0 0 0 0.2cqw #aaa;
+      }
+    }
+    .flowup_attachment {
+      margin: 1cqw 2cqw 0;
+      padding: 1.3cqw;
+      border: 0.1cqw solid #e7e7e7;
+      border-radius: 1cqw;
+      background: #fafafa;
+      > span {
+        display: flex;
+        justify-content: space-between;
+        font-size: 1.2cqw;
+        margin-top: 1cqw;
+        color: #444;
+        span {
+          color: #999;
+        }
+      }
+    }
+    .flowup_image {
+      display: block;
+      width: 55%;
+      height: auto;
+      margin: auto;
+      border-radius: 0.7cqw;
+    }
+    .flowup_editor-status {
+      display: flex;
+      justify-content: space-between;
+      border-top: 0.1cqw solid #eee;
+      padding: 1.3cqw 2cqw;
+      margin-top: 1.5cqw;
+      font-size: 1.3cqw;
+      color: #999;
+    }
+    .flowup_preview {
+      margin-top: 4cqw;
+      padding-top: 2.5cqw;
+      border-top: 0.1cqw solid #eee;
+    }
+    .flowup_preview-head {
+      display: flex;
+      align-items: center;
+      gap: 1.2cqw;
+      padding-block: 1cqw 1.5cqw;
+      > strong {
+        display: grid;
+        place-items: center;
+        background: #151515;
+        color: white;
+        width: 4cqw;
+        height: 4cqw;
+        border-radius: 50%;
+        font-size: 1.8cqw;
+      }
+      div {
+        display: grid;
+        b {
+          font-size: 1.5cqw;
+        }
+        span {
+          font-size: 1.2cqw;
+          color: #888;
+        }
+      }
+      > span {
+        margin-left: auto;
+      }
+    }
+    .flowup_preview-image {
+      display: block;
+      width: 100%;
+      height: auto;
+      border-radius: 1cqw;
+    }
+    .flowup_preview p {
+      white-space: pre-line;
+      font-size: 1.65cqw;
+      line-height: 1.6;
+      margin: 2cqw 0 0;
+    }
+    .flowup_footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding-inline: 3cqw;
+      border-top: 0.1cqw solid #e5e5e5;
+      background: #fff;
+      > span {
+        font-size: 1.35cqw;
+        color: #888;
+      }
+    }
+    .flowup_preview-button {
+      padding: 0.8cqw 1.4cqw;
+      min-height: 0;
+      font-size: 1.4cqw;
+      line-height: 1.3;
+      border-radius: 0.8cqw;
+      gap: 1cqw;
+      background: #242424;
+      color: white;
+    }
+  }
+</style>

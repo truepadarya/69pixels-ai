@@ -4,6 +4,7 @@ import CardPricing from "@/components/Item/CardPricing.astro";
 import ContentWrapper from "@/components/Wrapper/ContentWrapper.astro";
 import Heading from "@/components/Typography/Heading.astro";
 import Grid from "@/components/Wrapper/Grid.astro";
+import ContentWorkSubscription from "@/components/ContentWorkSubscription.astro";
 
 interface Props extends HTMLAttributes<"div"> {
   /** Set to `false` to skip rendering this component and its children. */
@@ -14,6 +15,7 @@ const { render = true, class: className, ...rest } = Astro.props;
 
 const cards = [
   {
+    id: "fixed-project",
     label: "Fixed project",
     footer: "Quoted by scope",
     subject: "Project enquiry",
@@ -21,14 +23,7 @@ const cards = [
     text: "We join your team for a defined scope and own the agreed deliverables. Milestones, revisions and price are set before work starts.",
   },
   {
-    label: "Dedicated subscription",
-    footer: "\u20ac6,900 / month",
-    subject: "Project enquiry",
-    heading:
-      "For ongoing products that need design capacity inside an existing team",
-    text: "One full-time designer works with part-time art direction and project management. We join your planning and reviews and own quality control. You can add specialists or capacity for an agreed extra fee.",
-  },
-  {
+    id: "custom-partnership",
     label: "Custom partnership",
     footer: "Tailored pricing",
     subject: "Project enquiry",
@@ -46,18 +41,19 @@ const cards = [
         <Heading
           id="work-setup-title"
           tag="h2"
-          variant="h2"
-          class="section-heading-primary work-setup_heading"
+          variant="h3"
+          class="work-setup_heading"
         >
           Three ways to work together
         </Heading>
       </ContentWrapper>
 
-      <Grid class="work-setup_layout">
+      <Grid id="project-partnership" class="work-setup_layout">
         {cards.map((card) => (
           <CardPricing
+            id={card.id}
             class="work-setup_card"
-            variant="setup"
+            variant="engagement"
             label={card.label}
             heading={card.heading}
             text={card.text}
@@ -67,6 +63,10 @@ const cards = [
           />
         ))}
       </Grid>
+      <ContentWorkSubscription
+        id="dedicated-subscription"
+        class="work-setup_card"
+      />
     </div>
   )
 }
@@ -106,42 +106,45 @@ const cards = [
   @layer components {
     .work-setup_wrap {
       width: 100%;
+      max-width: 70rem;
+      margin-inline: auto;
       display: flex;
       flex-direction: column;
       margin-top: var(--space-24);
-      gap: var(--space-64);
+      gap: var(--space-16);
     }
 
     .work-setup_layout.grid {
-      grid-template-columns: repeat(3, minmax(0, 1fr));
+      grid-template-columns: repeat(2, minmax(0, 1fr));
       align-items: stretch;
       gap: var(--space-16);
-
-      @media (width < 64rem) {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-
-        > :last-child:nth-child(odd) {
-          grid-column: 1 / -1;
-
-          & .pricing-card_body {
-            aspect-ratio: auto;
-          }
-          & .pricing-card_heading {
-            min-height: 0;
-          }
-        }
-      }
 
       @media (width < 48rem) {
         grid-template-columns: 1fr;
       }
     }
 
+    .work-setup_layout,
+    .work-setup_card {
+      scroll-margin-top: calc(var(--space-96) + var(--space-32));
+    }
+
+    .work-setup_card.pricing-card_wrap:focus {
+      background-color: var(--light-100);
+      outline: 0.0625rem solid color-mix(in srgb, var(--dark-900) 25%, transparent);
+      outline-offset: -0.0625rem;
+    }
+
     .work-setup_heading {
       align-self: center;
+      width: 100%;
+      text-align: center;
     }
     .work-setup_intro.layout > :first-child {
       gap: var(--space-32);
+    }
+    .work-setup_intro {
+      margin-bottom: var(--space-48);
     }
     .work-setup_wrap {
       @media (width < 48rem) {

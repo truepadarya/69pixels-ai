@@ -1,0 +1,337 @@
+---
+import { Image } from "astro:assets";
+import cursor from "@/assets/graphics/months-cursor.png";
+
+interface Props {
+  /** Set to `false` to skip rendering this component and its children. */
+  render?: boolean;
+  class?: string;
+}
+const { render = true, class: className } = Astro.props;
+---
+
+{
+  render && (
+    <div
+      class:list={["months-days_wrap", className]}
+      data-months-days
+      aria-hidden="true"
+    >
+      <svg class="months-days_frame" viewBox="0 213 493.382 70.782" fill="none">
+        <rect
+          class="months-days_outline"
+          x="196"
+          y="213"
+          width="229.782"
+          height="70.782"
+          stroke="#c3c7ce"
+          stroke-width="1.491"
+          stroke-dasharray="5 5"
+        />
+        <g class="months-days_selection" stroke="#0765fd" stroke-width="1.491">
+          <rect
+            class="months-days_border"
+            x="68"
+            y="213"
+            width="127.854"
+            height="70.782"
+          />
+          {[
+            [68, 213],
+            [195.854, 213],
+            [68, 283.782],
+            [195.854, 283.782],
+          ].map(([x, y]) => (
+            <rect
+              class="months-days_handle"
+              x={x - 4.473}
+              y={y - 4.473}
+              width="8.945"
+              height="8.945"
+              rx="1.491"
+              fill="white"
+            />
+          ))}
+        </g>
+      </svg>
+      <div class="months-days_days">
+        <span class="months-days_word">
+          {Array.from("days").map((letter) => (
+            <span class="months-days_glyph">{letter}</span>
+          ))}
+        </span>
+      </div>
+      <div class="months-days_months">
+        {Array.from("months").map((letter, index) => (
+          <span class="months-days_letter" style={`--_index: ${index}`}>
+            {letter}
+          </span>
+        ))}
+      </div>
+      <Image
+        class="months-days_cursor"
+        src={cursor}
+        alt=""
+        width={24}
+        height={36}
+        format="webp"
+        quality={90}
+        loading="eager"
+      />
+    </div>
+  )
+}
+
+<style is:global>
+  @layer components {
+    .months-days_wrap {
+      position: relative;
+      width: 100%;
+      container-type: inline-size;
+      aspect-ratio: 493.382 / 70.782;
+      pointer-events: none;
+      font-family: var(--primary-family);
+      font-weight: var(--primary-semibold);
+      font-size: inherit;
+      color: #0c0c0c;
+    }
+    .months-days_frame {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: auto;
+      overflow: visible;
+    }
+    .months-days_days,
+    .months-days_months {
+      position: absolute;
+      top: 3.626cqw;
+      height: 7.094cqw;
+      display: flex;
+      align-items: center;
+      font-size: 9.846cqw;
+      line-height: 1;
+      white-space: nowrap;
+    }
+    .months-days_days {
+      left: 16.2cqw;
+      letter-spacing: -0.04em;
+    }
+    .months-days_months {
+      left: 43.352cqw;
+      color: #c3c7ce;
+    }
+    .months-days_word,
+    .months-days_letter {
+      display: block;
+      text-box-trim: trim-both;
+      text-box-edge: cap alphabetic;
+    }
+    .months-days_letter {
+      transform: translateX(calc(var(--_index) * 0.08em));
+    }
+
+    .months-days_cursor {
+      position: absolute;
+      left: 38.712cqw;
+      top: 13.58cqw;
+      width: 4.864cqw;
+      height: 7.296cqw;
+      max-width: none;
+      object-fit: contain;
+      transform-origin: top left;
+    }
+  }
+</style>
+
+<script>
+  import { gsap } from "gsap";
+
+  const instances = new Map<HTMLElement, () => void>();
+  function cleanup() {
+    instances.forEach((dispose) => dispose());
+    instances.clear();
+  }
+  function initialize() {
+    document
+      .querySelectorAll<HTMLElement>("[data-months-days]")
+      .forEach((graphic) => {
+        if (instances.has(graphic)) return;
+        const media = gsap.matchMedia();
+        media.add("(prefers-reduced-motion: no-preference)", () => {
+          const outline = graphic.querySelector<SVGRectElement>(
+            ".months-days_outline",
+          )!;
+          const border = graphic.querySelector<SVGRectElement>(
+            ".months-days_border",
+          )!;
+          const handles = graphic.querySelectorAll<SVGRectElement>(
+            ".months-days_handle",
+          );
+          const selection = graphic.querySelector<SVGGElement>(
+            ".months-days_selection",
+          )!;
+          const days = graphic.querySelector<HTMLElement>(".months-days_days")!;
+          const months = graphic.querySelector<HTMLElement>(
+            ".months-days_months",
+          )!;
+          const letters = graphic.querySelectorAll<HTMLElement>(
+            ".months-days_letter",
+          );
+          const cursor = graphic.querySelector<HTMLElement>(
+            ".months-days_cursor",
+          )!;
+          const glyphs =
+            graphic.querySelectorAll<HTMLElement>(".months-days_glyph");
+          const state = {
+            progress: 0,
+            cursorProgress: 0,
+            handleScale: 0.76,
+            cursorScale: 1,
+          };
+          const render = () => {
+            const unit = graphic.clientWidth / 493.382;
+            const p = state.progress;
+            const monthsX = 141 + 55 * p;
+            const daysX = 141 - 73 * p;
+            const daysWidth = 127.854 * p;
+            outline.setAttribute("x", String(monthsX));
+            outline.setAttribute("width", String(210.782 + 19 * p));
+            border.setAttribute("x", String(daysX));
+            border.setAttribute("width", String(daysWidth));
+            handles.forEach((handle, i) => {
+              const size = 8.945 * state.handleScale;
+              handle.setAttribute(
+                "x",
+                String(daysX + (i % 2 ? daysWidth : 0) - size / 2),
+              );
+              handle.setAttribute(
+                "y",
+                String((i < 2 ? 213 : 283.782) - size / 2),
+              );
+              handle.setAttribute("width", String(size));
+              handle.setAttribute("height", String(size));
+            });
+            days.style.transform = `translateX(${(daysX - 68) * unit}px)`;
+            months.style.transform = `translateX(${(monthsX - 196) * unit}px)`;
+            letters.forEach((letter, i) => {
+              letter.style.transform = `translateX(${i * 0.08 * p * 48.576 * unit}px)`;
+            });
+            const q = state.cursorProgress;
+            const anchorX = monthsX - 5;
+            const cursorX =
+              (1 - q) ** 3 * 233 +
+              3 * (1 - q) ** 2 * q * 211 +
+              3 * (1 - q) * q * q * (anchorX + 9) +
+              q ** 3 * anchorX;
+            const cursorY =
+              (1 - q) ** 3 * 297 +
+              3 * (1 - q) ** 2 * q * 312 +
+              3 * (1 - q) * q * q * 297 +
+              q ** 3 * 280;
+            cursor.style.transform = `translate(${(cursorX - 191) * unit}px, ${(cursorY - 280) * unit}px) scale(${state.cursorScale})`;
+          };
+          const reset = () => {
+            Object.assign(state, {
+              progress: 0,
+              cursorProgress: 0,
+              handleScale: 0.76,
+              cursorScale: 1,
+            });
+            render();
+          };
+          reset();
+          const timeline = gsap.timeline({ paused: true, onUpdate: render });
+          timeline.fromTo(
+            selection,
+            { opacity: 0 },
+            { opacity: 1, duration: 0.14, ease: "power2.out" },
+            0.24,
+          );
+          timeline.fromTo(
+            glyphs,
+            { opacity: 0 },
+            { opacity: 0, duration: 0.01 },
+            0,
+          );
+          timeline.to(
+            state,
+            { progress: 1, duration: 1.1, ease: "power2.out" },
+            0.28,
+          );
+          timeline.to(
+            state,
+            { cursorProgress: 1, duration: 0.24, ease: "power1.inOut" },
+            0,
+          );
+          timeline.to(
+            state,
+            { handleScale: 1, duration: 0.32, ease: "back.out(1.25)" },
+            0.24,
+          );
+          timeline.to(
+            state,
+            { cursorScale: 0.94, duration: 0.08, ease: "power2.out" },
+            0.24,
+          );
+          timeline.to(
+            state,
+            { cursorScale: 1, duration: 0.16, ease: "power2.out" },
+            0.32,
+          );
+
+          [0.46, 0.6, 0.74, 0.98].forEach((at, i) => {
+            timeline.set(glyphs[i], { opacity: 1 }, at);
+          });
+          const observer = new IntersectionObserver(
+            ([entry]) => {
+              if (entry.isIntersecting && entry.intersectionRatio >= 0.6)
+                timeline.play();
+              else if (
+                !entry.isIntersecting &&
+                entry.boundingClientRect.top >= innerHeight
+              ) {
+                timeline.pause(0);
+                reset();
+              }
+            },
+            { threshold: [0, 0.6] },
+          );
+          observer.observe(graphic);
+          const resize = new ResizeObserver(() => {
+            render();
+          });
+          resize.observe(graphic);
+          let active = true;
+          document.fonts.ready.then(() => {
+            if (active) {
+              render();
+            }
+          });
+          return () => {
+            active = false;
+            observer.disconnect();
+            resize.disconnect();
+            Object.assign(state, {
+              progress: 1,
+              cursorProgress: 1,
+              handleScale: 1,
+              cursorScale: 1,
+            });
+            render();
+          };
+        });
+        instances.set(graphic, () => media.revert());
+      });
+  }
+  initialize();
+  document.addEventListener("astro:page-load", initialize);
+  document.addEventListener("astro:before-swap", cleanup);
+  if (import.meta.hot)
+    import.meta.hot.dispose(() => {
+      cleanup();
+      document.removeEventListener("astro:page-load", initialize);
+      document.removeEventListener("astro:before-swap", cleanup);
+    });
+</script>

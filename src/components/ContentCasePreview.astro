@@ -1,0 +1,138 @@
+---
+import type { HTMLAttributes } from "astro/types";
+import Heading from "@/components/Typography/Heading.astro";
+import Paragraph from "@/components/Typography/Paragraph.astro";
+import Video from "@/components/Media/Video.astro";
+import Icon from "@/components/Media/Icon.astro";
+import eyeOff from "@/assets/icons/eye-off.svg";
+
+interface Props extends HTMLAttributes<"div"> {
+  /** Set to `false` to skip rendering this component and its children. */
+  render?: boolean;
+  /** The heading displayed at the top of the card. */
+  heading: string;
+  /** The caption displayed at the bottom of the card. */
+  caption: string;
+  /** Where the link leads. */
+  href: string;
+  /** Video file URL. Nothing is output if it is missing. */
+  src: string;
+  /** Still frame shown before playback starts. */
+  poster?: string;
+}
+
+const {
+  render = true,
+  heading,
+  caption,
+  href,
+  src,
+  poster,
+  class: className,
+  ...rest
+} = Astro.props;
+---
+
+{
+  render && src && heading && caption && href && (
+    <div
+      class:list={["case-preview_wrap", className]}
+      style={poster ? { backgroundImage: `url("${poster}")` } : undefined}
+      {...rest}
+    >
+      <Video
+        src={src}
+        poster={poster}
+        variant="auto"
+        class="case-preview_video"
+        aria-hidden="true"
+        tabindex="-1"
+      />
+      <div class="case-preview_content">
+        <Heading tag="h4" variant="h6" class="case-preview_heading">
+          {heading}
+        </Heading>
+        <Icon src={eyeOff} class="case-preview_icon" />
+        <Paragraph variant="mono" class="case-preview_caption">
+          <a class="case-preview_link" href={href}>
+            {caption}
+          </a>
+        </Paragraph>
+      </div>
+    </div>
+  )
+}
+
+<style is:global>
+  @layer components {
+    .case-preview_wrap {
+      position: relative;
+      isolation: isolate;
+      width: 100%;
+      height: 100%;
+      aspect-ratio: 4 / 3;
+      overflow: clip;
+      background: var(--dark-825);
+      background-size: cover;
+      background-position: center;
+      color: var(--light-100);
+      text-align: center;
+    }
+
+    .case-preview_video {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      pointer-events: none;
+    }
+
+    .case-preview_content {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      align-items: center;
+      padding: var(--space-32);
+    }
+
+    .case-preview_heading {
+      font-weight: var(--primary-medium);
+    }
+
+    .case-preview_icon {
+      --_size: clamp(2.75rem, 5vw, 4rem);
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      color: var(--light-100);
+      pointer-events: none;
+    }
+
+    .case-preview_caption {
+      max-width: 38ch;
+      font-size: 0.75rem;
+      line-height: 1.5;
+      color: var(--light-100);
+    }
+
+    .case-preview_link {
+      color: inherit;
+      text-decoration: none;
+      opacity: 0.7;
+
+      &:is(:hover, :focus-visible) {
+        opacity: 1;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .case-preview_video {
+        display: none;
+      }
+    }
+  }
+</style>

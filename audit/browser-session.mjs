@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 
-export async function browserSession({ baseUrl = 'http://localhost:4321' } = {}) {
-  const tab = await (await fetch('http://localhost:9223/json/new?about:blank', { method: 'PUT' })).json();
+export async function browserSession({ baseUrl = 'http://localhost:4321', debugUrl = 'http://localhost:9223' } = {}) {
+  const tab = await (await fetch(`${debugUrl}/json/new?about:blank`, { method: 'PUT' })).json();
   const ws = new WebSocket(tab.webSocketDebuggerUrl);
   await new Promise(resolve => ws.addEventListener('open', resolve, { once: true }));
   let id = 0;
@@ -38,6 +38,6 @@ export async function browserSession({ baseUrl = 'http://localhost:4321' } = {})
     const closed = new Promise(resolve => ws.addEventListener('close', resolve, { once: true }));
     ws.close();
     await closed;
-    await fetch(`http://localhost:9223/json/close/${tab.id}`);
+    await fetch(`${debugUrl}/json/close/${tab.id}`);
   } };
 }

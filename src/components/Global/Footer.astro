@@ -16,20 +16,18 @@ const homeUrl = `${import.meta.env.BASE_URL.replace(/\/$/, "")}/`;
     <footer class="footer_wrap">
       <div class="footer_inner">
         <div class="footer_top">
-          <a
-            class="footer_logo"
-            href={homeUrl}
-            aria-label={SITE_NAME}
-          >
-            <img
-              src={logo.src}
-              width={logo.width}
-              height={logo.height}
-              alt=""
-              loading="lazy"
-              decoding="async"
-            />
-          </a>
+          <div class="footer_brand">
+            <a class="footer_logo" href={homeUrl} aria-label={SITE_NAME}>
+              <img
+                src={logo.src}
+                width={logo.width}
+                height={logo.height}
+                alt=""
+                loading="lazy"
+                decoding="async"
+              />
+            </a>
+          </div>
           <nav aria-label="Footer">
             <ul class="footer_links">
               <li>
@@ -38,29 +36,57 @@ const homeUrl = `${import.meta.env.BASE_URL.replace(/\/$/, "")}/`;
                 </a>
               </li>
               <li>
-                <a
-                  class="footer_link"
-                  href={`${homeUrl}#cases`}
-                >
+                <a class="footer_link" href={`${homeUrl}#cases`}>
                   Work
+                </a>
+              </li>
+              <li>
+                <a class="footer_link" href="mailto:hello@69pixels.com">
+                  Contact ↗
                 </a>
               </li>
             </ul>
           </nav>
         </div>
         <div class="footer_bottom">
-          <p class="footer_copyright text-style-small">
-            &copy; <span id="year">{new Date().getFullYear()}</span>&#160;
-            {SITE_NAME}
-          </p>
-          <a
-            class="footer_agent footer_link text-style-small"
-            href={`${homeUrl}llms.txt`}
-            aria-label="Are you an agent? Read the 69pixels guide in llms.txt"
-          >
-            <span>// are you an agent?</span>{" "}
-            <span class="footer_agent-file">⎿ llms.txt</span>
-          </a>
+          <div class="footer_details">
+            <p class="footer_copyright">
+              &copy; <span id="year">{new Date().getFullYear()}</span>{" "}
+              {SITE_NAME}
+            </p>
+            <dl class="footer_metadata">
+              <div class="footer_fact">
+                <>
+                  <dt>built</dt>
+                  <dd>with AI</dd>
+                </>
+              </div>
+              <div class="footer_fact">
+                <>
+                  <dt>edited</dt>
+                  <dd>by {SITE_NAME}</dd>
+                </>
+              </div>
+              <div class="footer_fact">
+                <>
+                  <dt>status</dt>
+                  <dd>fully editable</dd>
+                </>
+              </div>
+              <div class="footer_fact">
+                <dt>for agents</dt>
+                <dd>
+                  <a
+                    class="footer_agent footer_link"
+                    href={`${homeUrl}llms.txt`}
+                    aria-label="Are you an agent? Read the 69pixels guide in llms.txt"
+                  >
+                    llms.txt ↗
+                  </a>
+                </dd>
+              </div>
+            </dl>
+          </div>
         </div>
       </div>
     </footer>
@@ -80,11 +106,13 @@ const homeUrl = `${import.meta.env.BASE_URL.replace(/\/$/, "")}/`;
     .footer_wrap {
       display: flex;
       justify-content: center;
-      padding-block: var(--section-space-small);
+      padding-block: var(--space-32);
       padding-inline: var(--site-margin);
       background-color: var(--background);
       color: var(--text);
-      border-top: var(--border-width) solid var(--border);
+      font-family: var(--text-mono-font-family);
+      font-size: var(--text-small);
+      line-height: var(--text-mono-line-height);
     }
 
     .footer_inner {
@@ -92,7 +120,7 @@ const homeUrl = `${import.meta.env.BASE_URL.replace(/\/$/, "")}/`;
       max-width: var(--max-width-main);
       display: flex;
       flex-direction: column;
-      gap: var(--space-40);
+      gap: var(--space-32);
     }
 
     .footer_top {
@@ -103,9 +131,15 @@ const homeUrl = `${import.meta.env.BASE_URL.replace(/\/$/, "")}/`;
       gap: var(--space-24) var(--space-40);
     }
 
+    .footer_brand {
+      display: flex;
+      align-items: center;
+      gap: var(--space-24);
+    }
+
     .footer_logo {
       display: block;
-      height: 2.5rem;
+      height: 2rem;
       max-width: 100%;
       & > img {
         display: block;
@@ -127,8 +161,11 @@ const homeUrl = `${import.meta.env.BASE_URL.replace(/\/$/, "")}/`;
       flex-wrap: wrap;
       align-items: center;
       gap: var(--space-24);
+      font-family: var(--text-mono-font-family);
       font-size: var(--text-small);
-      font-weight: var(--primary-medium);
+      font-weight: var(--primary-regular);
+      list-style: none;
+      padding: 0;
     }
 
     .footer_link {
@@ -143,26 +180,73 @@ const homeUrl = `${import.meta.env.BASE_URL.replace(/\/$/, "")}/`;
     }
 
     .footer_bottom {
-      display: flex;
-      flex-wrap: wrap;
-      align-items: baseline;
-      justify-content: space-between;
-      gap: var(--space-16) var(--space-24);
-      padding-top: var(--space-24);
-      border-top: var(--border-width) solid var(--border);
+      width: 100%;
     }
 
     .footer_copyright {
       color: var(--text-2);
+
+      &::before,
+      &::after {
+        content: none;
+      }
+    }
+
+    .footer_details {
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: var(--space-24);
+      color: var(--text);
+    }
+
+    .footer_metadata {
+      display: contents;
+    }
+
+    .footer_fact {
+      display: flex;
+      align-items: baseline;
+      gap: 0.6em;
+      white-space: nowrap;
+
+      dt {
+        color: var(--text-2);
+      }
+
+      dd {
+        color: inherit;
+        margin: 0;
+      }
     }
 
     .footer_agent {
-      & > span {
-        white-space: nowrap;
+      color: inherit;
+      &:is(:hover, :focus-visible) {
+        color: var(--brand-500);
       }
+    }
 
-      & .footer_agent-file {
-        color: var(--text);
+    .footer_wrap {
+      @media (width < 64rem) {
+        .footer_details {
+          display: grid;
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+          gap: var(--space-24) var(--space-16);
+        }
+
+        .footer_copyright {
+          grid-column: 1 / -1;
+          order: 1;
+        }
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .footer_logo,
+      .footer_link {
+        transition: none;
       }
     }
   }

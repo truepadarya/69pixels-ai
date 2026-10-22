@@ -2,9 +2,6 @@
 import type { ComponentProps } from "astro/types";
 import Section from "@/components/Wrapper/Section.astro";
 import ContentServicesOverview from "@/components/ContentServicesOverview.astro";
-import Img from "@/components/Media/Img.astro";
-import leaves from "@/assets/graphics/services-leaves.png";
-import shadow from "@/assets/graphics/services-shadow.png";
 
 type Props = Pick<
   ComponentProps<typeof Section>,
@@ -27,45 +24,12 @@ const {
       gap="0"
       class="services-overview-section_wrap"
       containerClass="services-overview-section_content"
-      data-botanical-scene
       aria-labelledby="services-overview-title"
     >
-      <div
-        slot="background"
-        class="services-overview-section_decoration"
-        data-botanical-reveal
-        aria-hidden="true"
-      >
-        <Img
-          src={shadow}
-          transparent
-          class="services-overview-section_shadow"
-          data-botanical-shadow
-        />
-      </div>
-      <div
-        slot="background"
-        class="services-overview-section_foreground"
-        data-botanical-reveal
-        aria-hidden="true"
-      >
-        <div class="services-overview-section_foliage">
-          <Img
-            src={leaves}
-            transparent
-            class="services-overview-section_leaves"
-            data-botanical-leaves
-          />
-        </div>
-      </div>
       <ContentServicesOverview />
     </Section>
   )
 }
-
-<script>
-  import "@/utils/motion/botanicalScene";
-</script>
 
 <style is:global>
   @layer components {
@@ -90,77 +54,20 @@ const {
         & .services-overview-section_content {
           width: var(--site-width);
         }
-        & .services-overview-section_content .services-overview_heading {
-          width: 100%;
-          font-size: clamp(2.75rem, 8.5vw, 4.75rem);
-        }
         & .services-overview-section_content .services-overview_item > .text {
           max-width: 54ch;
-        }
-        & .services-overview-section_foliage {
-          width: 100%;
-          height: calc(var(--section-space-large) - var(--space-32));
-        }
-        & .services-overview-section_leaves {
-          width: 38rem;
-        }
-        & .services-overview-section_shadow {
-          width: 60rem;
-          max-width: none;
-          left: auto;
-          right: 0;
         }
       }
     }
     .services-overview-section_content {
       z-index: 1;
-      width: min(88%, var(--max-width-main));
-    }
-    .services-overview-section_content .services-overview_heading {
-      width: 58vw;
-      max-width: 70rem;
-      font-size: clamp(2rem, 4.5vw, 5rem);
+      width: min(96%, var(--max-width-main));
     }
     .services-overview-section_content .services-overview_item > .text {
-      max-width: min(54ch, 33vw);
+      max-width: 54ch;
     }
     .services-overview-section_content .services-overview_item {
       padding-block: var(--space-40);
-    }
-    .services-overview-section_decoration {
-      z-index: 0;
-      overflow: clip;
-      pointer-events: none;
-    }
-    .services-overview-section_foreground {
-      z-index: 2;
-      overflow: clip;
-      pointer-events: none;
-    }
-    .services-overview-section_shadow {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: auto;
-      opacity: 0.36;
-      mask-image: linear-gradient(to bottom, black 30%, transparent 100%);
-    }
-    .services-overview-section_foliage {
-      position: absolute;
-      top: 0;
-      right: 0;
-      width: 20%;
-      height: 100%;
-      overflow: clip;
-    }
-    .services-overview-section_leaves {
-      position: absolute;
-      top: -2rem;
-      right: -2vw;
-      width: 100vw;
-      max-width: none;
-      height: auto;
     }
   }
 </style>

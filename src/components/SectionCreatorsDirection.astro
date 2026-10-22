@@ -63,6 +63,12 @@ const photos = [
               >
                 Creators lead it
               </span>
+              <span
+                class="creators-direction_phrase creators-direction_phrase-time"
+                data-phrase="time"
+              >
+                69pixels compresses time
+              </span>
             </Heading>
 
             <div class="creators-direction_photos" aria-hidden="true">
@@ -310,6 +316,7 @@ const photos = [
   };
 
   const phraseInitial: Record<string, PhraseState> = {
+    time: { x: 50, y: 29, scale: 1, opacity: 0, color: "#000000" },
     ai: { x: 50, y: 27, scale: 1, opacity: 0, color: "#000000" },
     creators: {
       x: 50,
@@ -321,6 +328,7 @@ const photos = [
   };
 
   const compactPhraseInitial: Record<string, PhraseState> = {
+    time: { x: 50, y: 52, scale: 1, opacity: 0, color: "#000000" },
     ai: { x: 50, y: 48, scale: 1, opacity: 0, color: "#000000" },
     creators: {
       x: 50,
@@ -356,7 +364,7 @@ const photos = [
     );
     const square = root.querySelector<HTMLElement>("[data-square]");
 
-    if (!square || phrases.size !== 2 || photos.size !== 10) return;
+    if (!square || phrases.size !== 3 || photos.size !== 10) return;
 
     const media = gsap.matchMedia();
 
@@ -444,8 +452,9 @@ const photos = [
 
       const aiPhrase = phrases.get("ai");
       const creatorsPhrase = phrases.get("creators");
+      const timePhrase = phrases.get("time");
 
-      if (aiPhrase && creatorsPhrase) {
+      if (aiPhrase && creatorsPhrase && timePhrase) {
         contentTimeline
           .to(
             aiPhrase,
@@ -483,19 +492,37 @@ const photos = [
               autoAlpha: 0,
               duration: 0.35,
             },
-            4.95,
+            3.85,
           )
           .to(
             creatorsPhrase,
             {
-              scale: 0.72,
-              autoAlpha: 0.55,
+              y: compact ? "39cqh" : "19.5cqw",
+              scale: compact ? 0.4 : 0.7,
+              autoAlpha: 0.2,
+              duration: 0.3,
+            },
+            3.9,
+          )
+          .to(
+            timePhrase,
+            {
+              y: compact ? "50cqh" : "27.5cqw",
+              autoAlpha: 1,
+              duration: 0.25,
+            },
+            4.05,
+          )
+          .to(
+            creatorsPhrase,
+            {
+              autoAlpha: 0,
               duration: 0.3,
             },
             5.15,
           )
           .to(
-            creatorsPhrase,
+            timePhrase,
             {
               scale: 0.55,
               autoAlpha: 0,
@@ -635,6 +662,7 @@ const photos = [
 
     .creators-direction_phrase-ai,
     .creators-direction_phrase-creators,
+    .creators-direction_phrase-time,
     .creators-direction_photo {
       opacity: 0;
     }
@@ -784,13 +812,20 @@ const photos = [
         :where(&) .creators-direction_phrase-ai {
           left: 50%;
           top: 19.5cqw;
-          opacity: 0.2;
+          opacity: 0;
           transform: translate(-50%, -50%) scale(0.42);
         }
 
         :where(&) .creators-direction_phrase-creators {
           left: 50%;
-          top: 27.7cqw;
+          top: 19.5cqw;
+          opacity: 0.2;
+          transform: translate(-50%, -50%) scale(0.7);
+        }
+
+        :where(&) .creators-direction_phrase-time {
+          left: 50%;
+          top: 27.5cqw;
           opacity: 1;
           transform: translate(-50%, -50%);
         }
@@ -838,6 +873,11 @@ const photos = [
           }
 
           .creators-direction_phrase-creators {
+            top: 39cqh;
+            transform: translate(-50%, -50%) scale(0.4);
+          }
+
+          .creators-direction_phrase-time {
             top: 50cqh;
           }
 

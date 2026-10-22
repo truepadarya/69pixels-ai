@@ -92,7 +92,7 @@
 
   /* Max width */
   --max-width-small: 60rem;
-  --max-width-main: calc(var(--viewport-max) / 16 * 1rem);
+  --max-width-main: max(calc(var(--viewport-max) / 16 * 1rem), calc((200vw + var(--viewport-max) / 16 * 1rem) / 3));
   --max-width-full: 100%;
 
   /* Nav */
@@ -253,10 +253,22 @@
   --text-small-trim-bottom: var(--primary-trim-bottom);
   --text-small-text-wrap: pretty;
 
+  --text-mono: 1rem;
+  --text-mono-line-height: 1.75;
+  --text-mono-letter-spacing: var(--letter-spacing-normal);
+  --text-mono-text-transform: none;
+  --text-mono-margin-top: var(--space-24);
+  --text-mono-margin-bottom: var(--space-24);
+  --text-mono-font-family: var(--font-ibm-plex-mono, "IBM Plex Mono"), monospace;
+  --text-mono-font-weight: var(--primary-regular);
+  --text-mono-trim-top: 0.4em;
+  --text-mono-trim-bottom: 0.38em;
+  --text-mono-text-wrap: balance;
+
   /* Site layout */
   --site-margin: clamp(var(--site-margin-min) / 16 * 1rem, ((var(--site-margin-min) - ((var(--site-margin-max) - var(--site-margin-min)) / (var(--viewport-max) - var(--viewport-min)) * var(--viewport-min))) / 16 * 1rem + ((var(--site-margin-max) - var(--site-margin-min)) / (var(--viewport-max) - var(--viewport-min))) * 100vw), var(--site-margin-max) / 16 * 1rem);
-  --site-margin-min: 16;
-  --site-margin-max: 60;
+  --site-margin-min: calc(16 / 3);
+  --site-margin-max: 20;
 
   --site-gutter: clamp(var(--site-gutter-min) / 16 * 1rem, ((var(--site-gutter-min) - ((var(--site-gutter-max) - var(--site-gutter-min)) / (var(--viewport-max) - var(--viewport-min)) * var(--viewport-min))) / 16 * 1rem + ((var(--site-gutter-max) - var(--site-gutter-min)) / (var(--viewport-max) - var(--viewport-min))) * 100vw), var(--site-gutter-max) / 16 * 1rem);
   --site-gutter-min: 16;
@@ -624,6 +636,20 @@ body,
   --_trim-bottom: var(--text-small-trim-bottom);
   --_margin-top: var(--text-small-margin-top);
   --_margin-bottom: var(--text-small-margin-bottom);
+}
+
+.text-style-mono {
+  font-family: var(--text-mono-font-family);
+  font-size: var(--text-mono);
+  font-weight: var(--text-mono-font-weight);
+  line-height: var(--text-mono-line-height);
+  letter-spacing: var(--text-mono-letter-spacing);
+  text-transform: var(--text-mono-text-transform);
+  text-wrap: var(--text-mono-text-wrap);
+  --_trim-top: var(--text-mono-trim-top);
+  --_trim-bottom: var(--text-mono-trim-bottom);
+  --_margin-top: var(--text-mono-margin-top);
+  --_margin-bottom: var(--text-mono-margin-bottom);
 }
 
 .text-style-large {

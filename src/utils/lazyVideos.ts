@@ -13,7 +13,7 @@ export function initializeLazyVideos() {
   function synchronize(video: HTMLVideoElement) {
     if (!video.hasAttribute("data-video-autoplay")) return;
     if (disposed || document.hidden || !visible.has(video)) video.pause();
-    else if (loaded.has(video)) {
+    else if (loaded.has(video) && (video.loop || !video.ended)) {
       if (video.hasAttribute("muted")) video.muted = true;
       void video
         .play()
@@ -38,14 +38,25 @@ export function initializeLazyVideos() {
     },
     { rootMargin: "1000px 0px" },
   );
-  const visibility = new IntersectionObserver((entries) => {
-    for (const entry of entries) {
-      const video = entry.target as HTMLVideoElement;
-      if (entry.isIntersecting) visible.add(video);
-      else visible.delete(video);
-      synchronize(video);
-    }
-  });
+  const visibility = new IntersectionObserver(
+    (entries) => {
+      for (const entry of entries) {
+        const video = entry.target as HTMLVideoElement;
+        const startRatio = Number(video.dataset.videoStartRatio || 0);
+        if (entry.isIntersecting && entry.intersectionRatio >= startRatio)
+          visible.add(video);
+        else visible.delete(video);
+        synchronize(video);
+        if (
+          !entry.isIntersecting &&
+          video.hasAttribute("data-video-restart-on-exit")
+        ) {
+          video.currentTime = 0;
+        }
+      }
+    },
+    { threshold: [0, 0.35] },
+  );
   const onVisibilityChange = () => videos.forEach(synchronize);
   document.addEventListener("visibilitychange", onVisibilityChange);
   for (const video of videos) {

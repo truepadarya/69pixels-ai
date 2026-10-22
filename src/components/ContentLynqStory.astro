@@ -1,0 +1,322 @@
+---
+import Heading from "@/components/Typography/Heading.astro";
+import Paragraph from "@/components/Typography/Paragraph.astro";
+
+interface Props {
+  /** Whether to render this component. */
+  render?: boolean;
+  /** The part of the delivery story to show. */
+  variant: "overview" | "cost" | "workflow" | "documentation";
+  /** Additional CSS classes. */
+  class?: string;
+}
+
+const { render = true, variant, class: className } = Astro.props;
+const steps = [
+  {
+    title: "Analyse & describe",
+    description: "Goal, problem, expected result, fix plan",
+  },
+  { title: "Implement", description: "Separate branch and merge request" },
+  {
+    title: "Review & approve",
+    description: "Automated review with human sign-off.",
+  },
+  {
+    title: "Verify after merge",
+    description: "Automatic staging checks + real-device QA",
+  },
+];
+---
+
+{
+  render && (
+    <div
+      class:list={["lynq-story_wrap", variant, className]}
+      data-lynq-story={variant}
+    >
+      {variant === "overview" ? (
+        <>
+          <Heading tag="h4" variant="h3" class="lynq-story_title">
+            Deliver more,
+            <br />
+            with shorter
+            <br />
+            delivery cycles.
+          </Heading>
+          <div class="lynq-story_metric delivery">
+            <span>Tasks closed per week</span>
+            <strong>22 → 47</strong>
+          </div>
+          <div class="lynq-story_metric time">
+            <span>Created → closed, median days</span>
+            <strong>5.0 → 0.9</strong>
+          </div>
+        </>
+      ) : variant === "cost" ? (
+        <>
+          <Heading tag="h4" variant="h3" class="lynq-story_title">
+            Cost per
+            <br />
+            closed task
+          </Heading>
+          <div class="lynq-story_before">
+            €217<span>→</span>
+          </div>
+          <div class="lynq-story_after">€66</div>
+          <p class="lynq-story_cost-note">70% lower cost</p>
+        </>
+      ) : variant === "documentation" ? (
+        <>
+          <Heading tag="h4" variant="h3" class="lynq-story_title">
+            From task
+            <br />
+            to merge request.
+          </Heading>
+          <dl class="lynq-story_coverage">
+            <div>
+              <dt>Tasks fully described</dt>
+              <dd>93%</dd>
+            </div>
+            <div>
+              <dt>MRs fully described</dt>
+              <dd>99%</dd>
+            </div>
+          </dl>
+          <Paragraph variant="mono" class="lynq-story_report">
+            LYNQ delivery report · Sprints 1.30–1.32
+          </Paragraph>
+        </>
+      ) : (
+        <>
+          <Heading tag="h4" variant="h3" class="lynq-story_title">
+            AI does the routine.
+            <br />
+            People lead the work.
+          </Heading>
+          <ol class="lynq-story_steps">
+            {steps.map((step, index) => (
+              <li class="lynq-story_step">
+                <Heading tag="h5" variant="small" class="lynq-story_step-title">
+                  {String(index + 1).padStart(2, "0")} — {step.title}
+                </Heading>
+                <Paragraph variant="main" class="lynq-story_step-description">
+                  {step.description}
+                </Paragraph>
+              </li>
+            ))}
+          </ol>
+        </>
+      )}
+    </div>
+  )
+}
+
+<style is:global>
+  @layer components {
+    .lynq-story_wrap {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      aspect-ratio: 1;
+      container-type: inline-size;
+      overflow: clip;
+      background: var(--_case-background, #0d0d0d);
+      color: white;
+      text-align: left;
+      font-weight: 500;
+      &.overview {
+        aspect-ratio: 0.9;
+      }
+      &.workflow {
+        aspect-ratio: 2072 / 1080;
+      }
+      &.documentation {
+        aspect-ratio: 1.1;
+      }
+    }
+    .lynq-story_title {
+      position: absolute;
+      left: 8%;
+      top: 12%;
+      margin: 0;
+      width: 84%;
+      font-size: 7.12cqw;
+      font-weight: 500;
+      line-height: 1.06;
+      letter-spacing: -0.03em;
+    }
+    .lynq-story_wrap.overview .lynq-story_title {
+      left: 13.333%;
+      top: 15.46%;
+      width: 73.334%;
+      font-size: 8.667cqw;
+    }
+    .lynq-story_metric {
+      position: absolute;
+      left: 13.333%;
+      width: 73.334%;
+      display: flex;
+      flex-direction: column;
+      gap: 3.111cqw;
+      &.delivery {
+        top: 45.46%;
+      }
+      &.time {
+        top: 67.5%;
+      }
+      span {
+        color: rgb(255 255 255 / 35%);
+        font-size: 4.778cqw;
+        line-height: 1.06;
+        letter-spacing: -0.03em;
+      }
+      strong {
+        font-size: 11.722cqw;
+        font-weight: 500;
+        line-height: 1.06;
+        letter-spacing: -0.03em;
+      }
+    }
+    .lynq-story_wrap.cost .lynq-story_title {
+      top: 11.204%;
+      left: 27.315%;
+      width: 45.37%;
+      text-align: center;
+      text-box-trim: trim-both;
+      text-box-edge: cap alphabetic;
+    }
+    .lynq-story_before,
+    .lynq-story_after {
+      position: absolute;
+      width: 100%;
+      text-align: center;
+      font-size: 21.326cqw;
+      line-height: 1.06;
+      letter-spacing: -0.03em;
+      text-box-trim: trim-both;
+      text-box-edge: cap alphabetic;
+    }
+    .lynq-story_before {
+      top: 37.222%;
+      color: rgb(255 255 255 / 30%);
+    }
+    .lynq-story_after {
+      top: 56.021%;
+    }
+    .lynq-story_cost-note {
+      position: absolute;
+      top: 87.22%;
+      width: 100%;
+      margin: 0;
+      text-align: center;
+      color: rgb(255 255 255 / 35%);
+      font-size: 3.925cqw;
+      line-height: 1.06;
+      letter-spacing: -0.03em;
+      text-box-trim: trim-both;
+      text-box-edge: cap alphabetic;
+    }
+    .lynq-story_wrap.workflow .lynq-story_title {
+      left: 7.0463%;
+      top: 15.463%;
+      width: 35.28%;
+      font-size: 3.709cqw;
+      text-box-trim: trim-both;
+      text-box-edge: cap alphabetic;
+    }
+    .lynq-story_steps {
+      position: absolute;
+      top: 46.9444%;
+      left: 7.0463%;
+      width: 85.666%;
+      display: grid;
+      grid-template-columns: 746fr 833fr;
+      grid-template-rows: repeat(2, auto);
+      grid-auto-flow: column;
+      column-gap: 9.4595cqw;
+      row-gap: 5.3089cqw;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+    .lynq-story_step {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 1.9788cqw;
+      min-width: 0;
+    }
+    .lynq-story_step-title,
+    .lynq-story_step-description {
+      margin: 0;
+      width: 100%;
+      font-weight: 500;
+      line-height: 1.06;
+      letter-spacing: -0.03em;
+      text-box-trim: trim-both;
+      text-box-edge: cap alphabetic;
+      white-space: nowrap;
+    }
+    .lynq-story_step-title {
+      font-size: 3.0888cqw;
+    }
+    .lynq-story_step-description {
+      font-size: 1.9494cqw;
+      line-height: 1.2;
+      color: rgb(255 255 255 / 50%);
+    }
+    .lynq-story_wrap.documentation .lynq-story_title {
+      left: 12%;
+      width: 76%;
+      font-size: 6.473cqw;
+    }
+    .lynq-story_coverage {
+      position: absolute;
+      top: 38%;
+      left: 12%;
+      width: 76%;
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 0;
+      margin: 0;
+      > div {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+        gap: 3cqw;
+        padding-block: 3.5cqw;
+      }
+      dt {
+        color: rgb(255 255 255 / 50%);
+        font-size: 3.4cqw;
+        max-width: 13ch;
+        line-height: 1.2;
+        letter-spacing: -0.03em;
+        white-space: normal;
+      }
+      dd {
+        margin: 0;
+        font-size: 13cqw;
+        font-weight: 500;
+        line-height: 1;
+        letter-spacing: -0.04em;
+        text-box-trim: trim-both;
+        text-box-edge: cap alphabetic;
+      }
+    }
+    .lynq-story_report {
+      position: absolute;
+      left: 12%;
+      bottom: 12%;
+      margin: 0;
+      width: 76%;
+      font-size: 2.5cqw;
+      font-weight: var(--primary-regular);
+      line-height: 1.5;
+      letter-spacing: var(--letter-spacing-normal);
+      color: rgb(255 255 255 / 50%);
+    }
+  }
+</style>

@@ -1,0 +1,798 @@
+---
+import type { ComponentProps } from "astro/types";
+import Section from "@/components/Wrapper/Section.astro";
+import ContentWrapper from "@/components/Wrapper/ContentWrapper.astro";
+import ContentLynqStory from "@/components/ContentLynqStory.astro";
+import ContentLynqScreens from "@/components/ContentLynqScreens.astro";
+import ContentLynqFilm from "@/components/ContentLynqFilm.astro";
+import ContentProductionStory from "@/components/ContentProductionStory.astro";
+import ContentProductVariations from "@/components/ContentProductVariations.astro";
+import ContentCasePreview from "@/components/ContentCasePreview.astro";
+import Heading from "@/components/Typography/Heading.astro";
+import Paragraph from "@/components/Typography/Paragraph.astro";
+import Video from "@/components/Media/Video.astro";
+import Img from "@/components/Media/Img.astro";
+import healthcareSupport from "@/assets/graphics/cases/healthcare-1.mp4";
+import healthcareNursing from "@/assets/graphics/cases/healthcare-2.mp4";
+import supportPoster from "@/assets/graphics/cases/healthcare-1-poster.webp";
+import nursingPoster from "@/assets/graphics/cases/healthcare-2-poster.webp";
+import productCardStudio from "@/assets/graphics/cases/product-card-studio-demo.mp4";
+import productCardPoster from "@/assets/graphics/cases/product-card-studio-demo-poster.webp";
+import productBeforeAfter from "@/assets/graphics/cases/marketplace-examples-transparent.png";
+import videoDimensions from "@/data/video-dimensions.json";
+import iniEvolution from "@/assets/graphics/cases/ini-digital-evolution.png";
+import iniEcosystem from "@/assets/graphics/cases/ini-ecosystem-circles.png";
+import androidUiKit from "@/assets/graphics/cases/android-ui-kit.webp";
+import androidPrototype from "@/assets/graphics/cases/android-ui-kit.mp4";
+import androidPoster from "@/assets/graphics/cases/android-ui-kit-poster.webp";
+import researchScenarios from "@/assets/graphics/cases/swapsquad-scenarios.mp4";
+import scenariosPoster from "@/assets/graphics/cases/swapsquad-scenarios-poster.webp";
+import researchPersonas from "@/assets/graphics/cases/swapsquad-personas.mp4";
+import personasPoster from "@/assets/graphics/cases/swapsquad-personas-poster.webp";
+import flowupEditor from "@/assets/graphics/cases/flowup-post-editor.mp4";
+import flowupPoster from "@/assets/graphics/cases/flowup-post-editor-poster.webp";
+import previewMotion from "@/assets/graphics/cases/private-work-preview.mp4";
+import previewPoster from "@/assets/graphics/cases/private-work-preview-poster.webp";
+
+type Props = Pick<ComponentProps<typeof Section>, "render" | "class">;
+
+const { render = true, class: className } = Astro.props;
+const cases = [
+  {
+    context: "LYNQ",
+    accent: "#dedee3",
+    title: ["Twice the weekly", "delivery for LYNQ"],
+    tags: ["2.1× delivery", "−82% time", "−70% cost"],
+    summary:
+      "We rebuilt LYNQ’s delivery process with AI, from task analysis to post-merge checks. Measured across 10 sprints, Jan–Oct 2026.",
+    media: [
+      {
+        slideshow: true,
+        ratio: 390 / 844,
+        caption: "Guided profile setup, from entry to approval.",
+        cursorNote: "A community app for creatives.",
+      },
+      {
+        story: "overview" as const,
+        ratio: 0.9,
+        caption: "22 → 47 tasks/week. 5.0 → 0.9 days.",
+        cursorNote: "",
+      },
+      {
+        story: "cost" as const,
+        ratio: 1,
+        caption: "€217 → €66 per completed task.",
+        cursorNote: "",
+      },
+      {
+        film: true,
+        ratio: 16 / 9,
+        caption: "Inside LYNQ: a film from inside the community.",
+      },
+      {
+        story: "workflow" as const,
+        ratio: 2072 / 1080,
+        caption: "AI builds. People review and approve.",
+        cursorNote: "",
+      },
+      {
+        story: "documentation" as const,
+        ratio: 1.1,
+        caption: "93% of tasks and 99% of MRs fully described.",
+        cursorNote: "",
+      },
+    ],
+  },
+  {
+    context: "INI Hannover",
+    accent: "#dedee3",
+    title: ["Four healthcare app", "prototypes ready for testing"],
+    tags: ["7 days", "4 Figma Make prototypes", "100+ screens"],
+    summary:
+      "We turned hospital and at-home care workflows into testable prototypes for INI Hannover in one week instead of the usual two months.",
+    results: {
+      context: "INI Hannover",
+      title: "Ready for concept testing.",
+      timeline: "Design & prototyping",
+      before: "2 months",
+      after: "7 days",
+      facts: [
+        {
+          label: "Ready for concept testing",
+          value: "4",
+          detail: "clickable prototypes",
+        },
+        {
+          label: "Hospital workflows & care at home",
+          value: "100+",
+          detail: "screens",
+        },
+      ],
+      note: "Built with Figma Make. INI Hannover tested the concepts to prioritise features and refine the flows before development.",
+    },
+    media: [
+      {
+        image: iniEvolution,
+        ratio: iniEvolution.width / iniEvolution.height,
+        alt: "INI Digital Evolution 2030: a woman using a tablet, introducing INI's digital medical ecosystem.",
+        caption: "Test care concepts before development.",
+        cursorNote: "INI used the concepts to choose what to build.",
+      },
+      {
+        image: iniEcosystem,
+        ratio: iniEcosystem.width / iniEcosystem.height,
+        alt: "INI Digital Ecosystem: a diagram of connected medical products.",
+        caption: "Connected tools for patients and care teams.",
+        cursorNote: "User needs and business value set priorities.",
+      },
+      {
+        video: healthcareSupport,
+        ratio:
+          videoDimensions["healthcare-1.mp4"][0] /
+          videoDimensions["healthcare-1.mp4"][1],
+        poster: supportPoster.src,
+        caption: "Recovery plans and check-ins in one patient app.",
+        cursorNote: "Feedback shaped the flows before development.",
+      },
+      {
+        video: healthcareNursing,
+        ratio:
+          videoDimensions["healthcare-2.mp4"][0] /
+          videoDimensions["healthcare-2.mp4"][1],
+        poster: nursingPoster.src,
+        caption: "Shift summaries and patient handovers.",
+        cursorNote: "Designers generated the code themselves.",
+      },
+    ],
+  },
+  {
+    context: "Visual production",
+    accent: "#dedee3",
+    title: ["1,000 images.", "An AI tool to make more."],
+    tags: [
+      "Built around visual guidelines",
+      "10 days",
+      "Client-operated AI tool",
+    ],
+    summary: "The client can now make new cards with AI, in their own style.",
+    media: [
+      {
+        video: productCardStudio,
+        cropProductStudio: true,
+        poster: productCardPoster.src,
+        startRatio: 0.35,
+        restartOnExit: true,
+        loop: false,
+        unframed: true,
+        ratio:
+          (videoDimensions["product-card-studio-demo.mp4"][0] - 80) /
+          (videoDimensions["product-card-studio-demo.mp4"][1] - 12),
+        caption: "An AI tool for creating product marketing visuals.",
+        cursorNote: "",
+      },
+      {
+        variations: true,
+        ratio: 1.5,
+        unframed: false,
+        caption:
+          "Generate one image or up to four visual directions, all following the same guidelines.",
+        cursorNote: "",
+      },
+      {
+        production: "timeline" as const,
+        ratio: 1,
+        caption:
+          "1,000 images and an AI tool in 10 days, versus an estimated three months by hand.",
+        cursorNote: "",
+      },
+      {
+        production: "ownership" as const,
+        ratio: 1.1,
+        caption: "The client can create future product cards independently.",
+        cursorNote: "",
+      },
+      {
+        image: productBeforeAfter,
+        ratio: productBeforeAfter.width / productBeforeAfter.height,
+        transparent: true,
+        alt: "Before and after: original photos of a candle, backpack, headphones and projector alongside their AI-generated product cards.",
+        caption: "From a product photo to a finished marketing visual.",
+        cursorNote: "",
+      },
+    ],
+  },
+  {
+    context: "More projects",
+    showCaptions: true,
+    accent: "#dedee3",
+    title: ["And many more."],
+    tags: ["~2h handoff", "2 months → 1 week", "Expert review"],
+    summary:
+      "AI takes on the time-consuming groundwork. Our team checks the output and makes the decisions that move each project forward.",
+    media: [
+      {
+        video: flowupEditor,
+        ratio:
+          videoDimensions["flowup-post-editor.mp4"][0] /
+          videoDimensions["flowup-post-editor.mp4"][1],
+        poster: flowupPoster.src,
+        caption: "FlowUp's post editor with live social media previews.",
+        captionBelow: "FlowUp: one post, tailored to each social channel",
+        cursorNote: "Social publishing",
+      },
+      {
+        video: androidPrototype,
+        ratio:
+          videoDimensions["android-ui-kit.mp4"][0] /
+          videoDimensions["android-ui-kit.mp4"][1],
+        poster: androidPoster.src,
+        caption: "Developer-ready specs, generated from designs.",
+        captionBelow: "Developer handoff in about two hours",
+        cursorNote: "Design → specs",
+      },
+      {
+        image: androidUiKit,
+        ratio: androidUiKit.width / androidUiKit.height,
+        alt: "Bridge Android UI kit documenting screen anatomy, navigation and components.",
+        caption: "AI adapts iOS designs for Android.",
+        captionBelow: "AI reuses the iOS design for Android",
+        cursorNote: "Screen anatomy",
+      },
+      {
+        video: researchScenarios,
+        cropResearch: true,
+        ratio:
+          (videoDimensions["swapsquad-scenarios.mp4"][0] * 0.96) /
+          videoDimensions["swapsquad-scenarios.mp4"][1],
+        poster: scenariosPoster.src,
+        caption: "From product brief to screen-level specs.",
+        captionBelow: "Two months of research in one week",
+        cursorNote: "Screen-level specs",
+      },
+      {
+        video: researchPersonas,
+        cropResearch: true,
+        ratio:
+          (videoDimensions["swapsquad-personas.mp4"][0] * 0.96) /
+          videoDimensions["swapsquad-personas.mp4"][1],
+        poster: personasPoster.src,
+        caption: "Player needs that guide product decisions.",
+        captionBelow: "Senior researchers validate the AI's work",
+        cursorNote: "Player needs",
+      },
+      {
+        preview: true,
+        ratio: 4 / 3,
+        caption: "More work. Shared in private. Email us to see more.",
+        cursorNote: "",
+      },
+    ],
+  },
+];
+---
+
+{
+  render && (
+    <Section
+      id="cases-centered"
+      theme="dark"
+      paddingTop="none"
+      paddingBottom="none"
+      class:list={["centered-cases_wrap", className]}
+      containerClass="centered-cases_content"
+      aria-labelledby="centered-cases-title"
+    >
+      <Heading
+        tag="h2"
+        variant="small"
+        id="centered-cases-title"
+        class="sr-only"
+      >
+        Selected work
+      </Heading>
+      {cases.map((item) => (
+        <article
+          class:list={[
+            "centered-cases_case",
+            { "visual-production": item.context === "Visual production" },
+          ]}
+          data-centered-case
+          style={"accent" in item ? `--_tag-color: ${item.accent}` : undefined}
+        >
+          <div class="centered-cases_pin">
+            <div class="centered-cases_stage">
+              <ContentWrapper
+                centered
+                class="centered-cases_header"
+                column1Class="centered-cases_intro"
+              >
+                <Heading tag="h3" variant="h3" class="centered-cases_title">
+                  {item.title[0]}
+                  {item.title[1] && (
+                    <>
+                      <br />
+                      {item.title[1]}
+                    </>
+                  )}
+                </Heading>
+                <Paragraph variant="main" class="centered-cases_summary">
+                  {item.summary}
+                </Paragraph>
+                <ul class="centered-cases_tags" aria-label="Project facts">
+                  {item.tags.map((tag) => (
+                    <li class="centered-cases_tag">{tag}</li>
+                  ))}
+                </ul>
+              </ContentWrapper>
+              <div
+                class="centered-cases_gallery"
+                data-centered-gallery
+                data-lenis-prevent
+                role="region"
+                aria-label={`${item.context}: project gallery. Use arrow keys to browse.`}
+                tabindex="0"
+              >
+                <div
+                  class:list={[
+                    "centered-cases_media",
+                    {
+                      "has-captions":
+                        "showCaptions" in item && item.showCaptions,
+                    },
+                  ]}
+                >
+                  {item.media.map((media) => (
+                    <figure
+                      class:list={[
+                        "centered-cases_figure",
+                        { phone: "slideshow" in media },
+                        { unframed: "unframed" in media && media.unframed },
+                        { "product-studio": "cropProductStudio" in media },
+                        { "research-cropped": "cropResearch" in media },
+                      ]}
+                      data-cursor-label={
+                        "film" in media
+                          ? undefined
+                          : "cursorNote" in media
+                            ? media.cursorNote || undefined
+                            : undefined
+                      }
+                      data-cursor-desktop={
+                        !("film" in media) &&
+                        "cursorNote" in media &&
+                        !!media.cursorNote
+                      }
+                      aria-label={media.caption || "Visual placeholder"}
+                      style={`--_media-ratio: ${media.ratio}`}
+                    >
+                      <div class="centered-cases_frame">
+                        {"slideshow" in media ? (
+                          <ContentLynqScreens />
+                        ) : "film" in media ? (
+                          <ContentLynqFilm />
+                        ) : "story" in media ? (
+                          <ContentLynqStory variant={media.story} />
+                        ) : "production" in media && media.production ? (
+                          <ContentProductionStory variant={media.production} />
+                        ) : "variations" in media ? (
+                          <ContentProductVariations />
+                        ) : "preview" in media ? (
+                          <ContentCasePreview
+                            heading="More work. Shared in private."
+                            caption="EMAIL US TO SEE MORE"
+                            href="mailto:hello@69pixels.com"
+                            src={previewMotion}
+                            poster={previewPoster.src}
+                          />
+                        ) : "video" in media ? (
+                          <Video
+                            src={media.video}
+                            poster={media.poster}
+                            variant="auto"
+                            loop={"loop" in media ? media.loop : undefined}
+                            data-video-start-ratio={
+                              "startRatio" in media
+                                ? media.startRatio
+                                : undefined
+                            }
+                            data-video-restart-on-exit={
+                              "restartOnExit" in media && media.restartOnExit
+                                ? true
+                                : undefined
+                            }
+                            class="centered-cases_visual"
+                            aria-label={media.caption}
+                          />
+                        ) : (
+                          <Img
+                            src={media.image}
+                            alt={media.alt}
+                            variant="constrained"
+                            transparent={
+                              ("unframed" in media && !!media.unframed) ||
+                              ("transparent" in media && !!media.transparent)
+                            }
+                            sizes={
+                              media.image.format === "svg"
+                                ? undefined
+                                : "(min-width: 64rem) 80vw, 88vw"
+                            }
+                            class="centered-cases_visual"
+                          />
+                        )}
+                      </div>
+                      {"captionBelow" in media && (
+                        <figcaption class="centered-cases_caption">
+                          {media.captionBelow}
+                        </figcaption>
+                      )}
+                    </figure>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+        </article>
+      ))}
+    </Section>
+  )
+}
+
+<style is:global>
+  @layer components {
+    .centered-cases_wrap {
+      --_case-background: #0d0d0d;
+      --_tag-color: #a9c9df;
+      scroll-margin-top: 0;
+    }
+    .centered-cases_content {
+      gap: 0;
+      max-width: 84rem;
+    }
+    .centered-cases_case {
+      width: 100%;
+      text-align: center;
+      position: relative;
+    }
+    .centered-cases_stage {
+      position: relative;
+      height: 100svh;
+      display: grid;
+      grid-template-rows: auto minmax(0, 1fr);
+      align-content: start;
+      gap: 5.909svh;
+      padding-block: calc(10.795svh + 2.5rem) 0;
+    }
+    .centered-cases_header {
+      gap: 0;
+      max-width: 43.125rem;
+      margin-inline: auto;
+    }
+    .centered-cases_intro {
+      gap: 0;
+    }
+    .centered-cases_title {
+      margin: 0;
+      font-size: clamp(2.5rem, 3.611vw, 3.25rem);
+      font-weight: var(--primary-semibold);
+      line-height: 1;
+      letter-spacing: var(--letter-spacing-medium);
+    }
+    .centered-cases_summary {
+      margin: 2.25rem 0 0;
+      max-width: 31.625rem;
+      font-size: 0.9375rem;
+      font-weight: var(--primary-regular);
+      line-height: 1.445;
+      color: color-mix(in srgb, var(--light-100) 80%, transparent);
+      text-wrap: pretty;
+    }
+    .centered-cases_case.visual-production .centered-cases_title {
+      font-size: clamp(1.5rem, 6vw, 3.25rem);
+    }
+    .centered-cases_tags {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 0.5rem;
+      margin: 2.0625rem 0 0;
+      padding: 0;
+      list-style: none;
+      font-family: var(--text-mono-font-family);
+      font-size: 0.75rem;
+      font-weight: var(--primary-regular);
+      line-height: 1.125rem;
+      color: var(--_tag-color);
+    }
+    .centered-cases_tag {
+      padding: 0.125rem 0.375rem;
+      background: color-mix(
+        in srgb,
+        var(--_case-background) 94%,
+        var(--light-100)
+      );
+      white-space: nowrap;
+    }
+    .centered-cases_gallery {
+      height: 48.523svh;
+      max-height: 100%;
+      min-height: 0;
+      width: 100vw;
+      margin-inline: calc(50% - 50vw);
+      overflow-x: auto;
+      overflow-y: hidden;
+      overscroll-behavior-x: contain;
+      scrollbar-width: thin;
+      scrollbar-color: var(--dark-700) transparent;
+    }
+    .centered-cases_gallery.is-pinned {
+      overflow: clip;
+    }
+    .centered-cases_gallery:focus-visible {
+      outline: var(--focus-width) solid var(--gray-400);
+      outline-offset: calc(-1 * var(--focus-width));
+    }
+    .centered-cases_media {
+      position: relative;
+      height: 100%;
+      display: flex;
+      width: max-content;
+      gap: var(--space-16);
+      padding-inline: var(--_gallery-start, var(--site-margin))
+        var(--_gallery-end, var(--site-margin));
+      align-items: flex-start;
+    }
+    .centered-cases_figure {
+      height: 100%;
+      width: max-content;
+      flex: none;
+      margin: 0;
+    }
+    .centered-cases_media.has-captions {
+      height: calc(100% - 4rem);
+    }
+    .centered-cases_caption {
+      max-width: 0;
+      min-width: 100%;
+      margin-top: 1.25rem;
+      color: var(--light-100);
+      font-family: inherit;
+      font-size: 1.125rem;
+      font-weight: var(--primary-medium);
+      line-height: 1.4;
+      letter-spacing: var(--letter-spacing-normal);
+      text-align: left;
+    }
+    .centered-cases_frame {
+      position: relative;
+      height: 100%;
+      aspect-ratio: var(--_media-ratio);
+      background: var(--_case-background);
+    }
+    .centered-cases_figure:is(.phone, .unframed) .centered-cases_frame {
+      background: transparent;
+    }
+    .centered-cases_visual {
+      position: absolute;
+      inset: 0;
+      display: block;
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      border-radius: 0;
+    }
+    .centered-cases_figure.product-studio {
+      & .centered-cases_frame {
+        overflow: clip;
+      }
+      & .centered-cases_visual {
+        inset: auto;
+        left: calc(-100% * 40 / 1840);
+        top: calc(-100% * 12 / 1304);
+        width: calc(100% * 1920 / 1840);
+        height: calc(100% * 1316 / 1304);
+        max-width: none;
+      }
+    }
+    .centered-cases_figure.research-cropped {
+      & .centered-cases_frame {
+        overflow: clip;
+      }
+      & .centered-cases_visual {
+        left: calc(-100% / 48);
+        width: calc(100% * 25 / 24);
+        max-width: none;
+      }
+    }
+    .centered-cases_wrap {
+      @media (width < 64rem) {
+        & .centered-cases_stage {
+          height: auto;
+          min-height: 100svh;
+        }
+        & .centered-cases_gallery {
+          height: 22rem;
+        }
+      }
+    }
+  }
+</style>
+
+<script>
+  import { gsap } from "gsap";
+  import { ScrollTrigger } from "gsap/ScrollTrigger";
+  import { mountScrollScene } from "@/utils/motion/scrollScene";
+
+  gsap.registerPlugin(ScrollTrigger);
+  mountScrollScene("[data-centered-case]", (article) => {
+    const stage = article.querySelector<HTMLElement>(".centered-cases_stage");
+    const gallery = article.querySelector<HTMLElement>(
+      "[data-centered-gallery]",
+    );
+    const track = article.querySelector<HTMLElement>(".centered-cases_media");
+    if (!stage || !gallery || !track) return;
+    const first = track.firstElementChild as HTMLElement | null;
+    const last = track.lastElementChild as HTMLElement | null;
+    if (!first || !last) return;
+    const updateSpacing = () => {
+      const start = `${Math.max(0, (gallery.clientWidth - first.offsetWidth) / 2)}px`;
+      const end = "var(--site-margin)";
+      if (
+        track.style.getPropertyValue("--_gallery-start") === start &&
+        track.style.getPropertyValue("--_gallery-end") === end
+      )
+        return false;
+      track.style.setProperty("--_gallery-start", start);
+      track.style.setProperty("--_gallery-end", end);
+      return true;
+    };
+    updateSpacing();
+    const observer = new ResizeObserver(() => {
+      if (updateSpacing()) ScrollTrigger.refresh();
+    });
+    observer.observe(gallery);
+    observer.observe(first);
+    observer.observe(last);
+    const media = gsap.matchMedia();
+    media.add(
+      "(width >= 64rem) and (prefers-reduced-motion: no-preference)",
+      () => {
+        gallery.scrollLeft = 0;
+        gallery.classList.add("is-pinned");
+        gallery.removeAttribute("data-lenis-prevent");
+        const center = (item: HTMLElement) =>
+          item.offsetLeft + item.offsetWidth / 2;
+        const startX = () => gallery.clientWidth / 2 - center(first);
+        const endX = () =>
+          gallery.clientWidth -
+          parseFloat(getComputedStyle(track).paddingRight) -
+          last.offsetLeft -
+          last.offsetWidth;
+        const distance = () => Math.max(0, startX() - endX());
+        const entryDistance = () => window.innerHeight * 0.2;
+        const pin = ScrollTrigger.create({
+          trigger: article,
+          pin: stage,
+          pinSpacer: article.querySelector<HTMLElement>(".centered-cases_pin")!,
+          start: "top top",
+          end: () => "+=" + Math.max(1, distance() - entryDistance()),
+          onRefreshInit: updateSpacing,
+          invalidateOnRefresh: true,
+          anticipatePin: 1,
+        });
+        const title = article.querySelector<HTMLElement>(
+          ".centered-cases_title",
+        );
+        const summary = article.querySelector<HTMLElement>(
+          ".centered-cases_summary",
+        );
+        const tags = article.querySelector<HTMLElement>(".centered-cases_tags");
+        const layers = [title, summary, tags, gallery].filter(
+          (element): element is HTMLElement => element !== null,
+        );
+        gsap.set(layers, { opacity: 1 });
+        gsap.set(track, { x: 0 });
+        const setX = gsap.quickSetter(track, "x", "px");
+        const setOpacity = layers.map((element) =>
+          gsap.quickSetter(element, "opacity"),
+        );
+        const state = { progress: 0 };
+        const motion = { span: 1, initialX: 0, rate: 1, height: 1, exit: 1 };
+        const measureMotion = () => {
+          motion.height = window.innerHeight;
+          motion.span = pin.end - pin.start + motion.height * 1.4;
+          motion.rate =
+            distance() / Math.max(1, pin.end - pin.start + entryDistance());
+          motion.initialX = startX() + motion.height * 0.55 * motion.rate;
+          motion.exit = pin.end - pin.start + motion.height * 0.75;
+        };
+        const smooth = (value: number) =>
+          (1 - Math.cos(Math.PI * gsap.utils.clamp(0, 1, value))) / 2;
+        const entryStarts = [0, 0.06, 0.1, 0.12];
+        const entryEnds = [0.45, 0.51, 0.55, 0.55];
+        const exitStarts = [0, 0.03, 0.05, 0];
+        const exitEnds = [0.5, 0.57, 0.6, 0.65];
+        const renderMotion = () => {
+          const scroll = state.progress * motion.span;
+          setX(motion.initialX - scroll * motion.rate);
+          setOpacity.forEach((set, index) => {
+            const enter = smooth(
+              (scroll / motion.height - entryStarts[index]) /
+                (entryEnds[index] - entryStarts[index]),
+            );
+            const leave = smooth(
+              ((scroll - motion.exit) / motion.height - exitStarts[index]) /
+                (exitEnds[index] - exitStarts[index]),
+            );
+            set(Math.min(enter, 1 - leave));
+          });
+        };
+        measureMotion();
+        const tween = gsap.fromTo(
+          state,
+          { progress: 0 },
+          {
+            progress: 1,
+            ease: "none",
+            onUpdate: renderMotion,
+            scrollTrigger: {
+              trigger: article,
+              start: () => pin.start - window.innerHeight * 0.75,
+              end: () => pin.end + window.innerHeight * 0.65,
+              scrub: true,
+              onRefresh: () => {
+                measureMotion();
+                renderMotion();
+              },
+              invalidateOnRefresh: true,
+            },
+          },
+        );
+        const onKey = (event: KeyboardEvent) => {
+          if (!["ArrowLeft", "ArrowRight", "Home", "End"].includes(event.key))
+            return;
+          event.preventDefault();
+          const trigger = tween.scrollTrigger;
+          if (!trigger) return;
+          const firstPosition = pin.start - entryDistance();
+          const lastPosition = pin.end;
+          const current =
+            trigger.start + trigger.progress * (trigger.end - trigger.start);
+          const next =
+            event.key === "Home"
+              ? firstPosition
+              : event.key === "End"
+                ? lastPosition
+                : current +
+                  ((event.key === "ArrowRight" ? 1 : -1) *
+                    gallery.clientWidth *
+                    0.65) /
+                    Math.max(0.001, motion.rate);
+          const position = gsap.utils.clamp(firstPosition, lastPosition, next);
+          window.scrollTo({ top: position, behavior: "instant" });
+          ScrollTrigger.update();
+          trigger.getTween()?.progress(1);
+          tween.progress(
+            gsap.utils.clamp(
+              0,
+              1,
+              (position - trigger.start) / (trigger.end - trigger.start),
+            ),
+          );
+        };
+        gallery.addEventListener("keydown", onKey);
+        return () => {
+          gallery.removeEventListener("keydown", onKey);
+          gallery.classList.remove("is-pinned");
+          gallery.setAttribute("data-lenis-prevent", "");
+        };
+      },
+    );
+    return () => {
+      observer.disconnect();
+      media.revert();
+      track.style.removeProperty("--_gallery-start");
+      track.style.removeProperty("--_gallery-end");
+    };
+  });
+</script>

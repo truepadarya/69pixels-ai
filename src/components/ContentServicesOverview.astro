@@ -2,6 +2,7 @@
 import type { HTMLAttributes } from "astro/types";
 import Heading from "@/components/Typography/Heading.astro";
 import Paragraph from "@/components/Typography/Paragraph.astro";
+import ContentWrapper from "@/components/Wrapper/ContentWrapper.astro";
 import { getImage } from "astro:assets";
 import { serviceCursorGalleries } from "@/data/serviceCursorGalleries";
 
@@ -17,28 +18,52 @@ const cursorGalleriesEnabled = false;
 
 const services = [
   {
-    title: "Brand & Strategy",
-    gallery: serviceCursorGalleries.brand,
-    description:
-      "We define the positioning and build an identity your team can use across channels.",
-  },
-  {
-    title: "Digital Products",
-    gallery: serviceCursorGalleries.digital,
-    description:
-      "We design apps and platforms around the flows people need, then build interfaces and systems your team can keep developing.",
-  },
-  {
-    title: "Creative Production",
-    gallery: serviceCursorGalleries.creative,
-    description:
-      "We produce commercials, campaigns, motion and 3D assets with art direction that holds across formats.",
-  },
-  {
-    title: "AI Systems & Automation",
+    title: "AI Automation",
     gallery: serviceCursorGalleries.ai,
-    description:
-      "We build custom tools for recurring production tasks, including visual assets and detailed UI handoff. Senior creators define the rules and review the output. Your team can produce consistent work as volume grows.",
+    bullets: [
+      "Automate recurring tasks",
+      "Build custom tools for your team",
+      "Create visuals at scale",
+      "Speed up design and development",
+      "Add AI to your product",
+    ],
+    terms: "T&M, Subscription",
+  },
+  {
+    title: "Brand Foundations",
+    gallery: serviceCursorGalleries.brand,
+    description: "When ambition outgrows identity.",
+    terms: "Fixed Price, T&M",
+  },
+  {
+    title: "MVP Launch",
+    gallery: serviceCursorGalleries.digital,
+    description: "From idea to product-market signal.",
+    terms: "T&M, Subscription",
+  },
+  {
+    title: "Product Evolution",
+    gallery: serviceCursorGalleries.digital,
+    description: "When the product needs to grow up.",
+    terms: "T&M, Subscription",
+  },
+  {
+    title: "Ongoing Design",
+    gallery: serviceCursorGalleries.creative,
+    description: "Continuous taste, clarity, and execution.",
+    terms: "T&M, Subscription",
+  },
+  {
+    title: "Development Partnership",
+    gallery: serviceCursorGalleries.digital,
+    description: "Long-term product and tech collaboration.",
+    terms: "T&M, Subscription",
+  },
+  {
+    title: "Discovery & Strategy",
+    gallery: serviceCursorGalleries.brand,
+    description: "Before anything is built.",
+    terms: "Fixed Price, T&M",
   },
 ];
 
@@ -68,14 +93,23 @@ const previews = cursorGalleriesEnabled
       data-services-overview
       {...rest}
     >
-      <Heading
-        id="services-overview-title"
-        tag="h2"
-        variant="h2"
-        class="section-heading-primary services-overview_heading"
+      <ContentWrapper
+        centered
+        class="services-overview_intro"
+        column1Class="services-overview_intro-content"
       >
-        Creative work under one roof
-      </Heading>
+        <Heading
+          id="services-overview-title"
+          tag="h2"
+          variant="h3"
+          class="services-overview_heading"
+        >
+          Choose the way in
+        </Heading>
+        <Paragraph variant="main-xl" class="services-overview_subheading">
+          Six engagements. Where we enter, what we resolve
+        </Paragraph>
+      </ContentWrapper>
 
       <div class="services-overview_list">
         {services.map((service, index) => (
@@ -83,9 +117,47 @@ const previews = cursorGalleriesEnabled
             <Heading tag="h3" variant="h6">
               {service.title}
             </Heading>
-            <Paragraph variant="main-xl" maxWidth={54}>
-              {service.description}
-            </Paragraph>
+            <div class="services-overview_details">
+              {service.bullets ? (
+                <ul
+                  class="services-overview_bullets text-style-main-xl"
+                  role="list"
+                >
+                  {service.bullets.map((bullet) => (
+                    <li class="services-overview_bullet">{bullet}</li>
+                  ))}
+                </ul>
+              ) : (
+                <Paragraph
+                  variant="main-xl"
+                  class="services-overview_description"
+                >
+                  {service.description}
+                </Paragraph>
+              )}
+              {service.terms && (
+                <Paragraph variant="mono" class="services-overview_terms">
+                  {service.terms.split(", ").map((term, termIndex) => (
+                    <>
+                      {termIndex > 0 && ", "}
+                      <a
+                        class="services-overview_term-link"
+                        data-anchor-focus={
+                          term === "Fixed Price" ? "fixed-project" : undefined
+                        }
+                        href={
+                          term === "Subscription"
+                            ? "#dedicated-subscription"
+                            : "#project-partnership"
+                        }
+                      >
+                        {term}
+                      </a>
+                    </>
+                  ))}
+                </Paragraph>
+              )}
+            </div>
             {cursorGalleriesEnabled && (
               <span
                 class="services-overview_hover text-style-main-xl"
@@ -112,7 +184,7 @@ const previews = cursorGalleriesEnabled
     const media = gsap.matchMedia();
     media.add("(prefers-reduced-motion: no-preference)", () => {
       const items = root.querySelectorAll<HTMLElement>(
-        ".services-overview_heading, .services-overview_item",
+        ".services-overview_intro, .services-overview_item",
       );
       const timeline = gsap.timeline({
         defaults: { ease: "none" },
@@ -142,21 +214,77 @@ const previews = cursorGalleriesEnabled
     }
 
     .services-overview_list {
-      width: 100%;
+      width: min(100%, 64rem);
+      margin-inline: auto;
     }
 
     .services-overview_heading {
       align-self: center;
+      width: 100%;
+      text-align: center;
     }
 
     .services-overview_heading-line {
       display: block;
     }
 
+    .services-overview_intro.layout > .services-overview_intro-content {
+      gap: var(--space-32);
+    }
+
+    .services-overview_subheading,
+    .services-overview_details {
+      color: var(--text-2);
+    }
+
+    .services-overview_details {
+      display: contents;
+      min-width: 0;
+    }
+
+    .services-overview_terms {
+      justify-self: end;
+      text-align: right;
+      color: var(--text-2);
+    }
+
+    .services-overview_term-link {
+      color: inherit;
+      text-decoration: none;
+
+      &:is(:hover, :focus-visible) {
+        color: var(--text);
+      }
+    }
+
+    .services-overview_bullets {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-8);
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .services-overview_bullet {
+      display: flex;
+      align-items: baseline;
+      gap: 0.75em;
+
+      &::before {
+        content: "";
+        flex: 0 0 0.35em;
+        width: 0.35em;
+        height: 0.35em;
+        background: currentColor;
+        transform: translateY(-0.15em);
+      }
+    }
+
     .services-overview_item {
       position: relative;
       display: grid;
-      grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+      grid-template-columns: minmax(0, 1.2fr) minmax(0, 24rem) minmax(0, 0.8fr);
       gap: var(--site-gutter);
       align-items: start;
       min-height: calc(var(--space-96) + var(--space-8));
@@ -183,11 +311,24 @@ const previews = cursorGalleriesEnabled
       font-weight: var(--primary-semibold);
     }
 
-    .services-overview_item > .text {
-      color: var(--text-2);
-    }
-
     .services-overview_wrap {
+      @media (width < 64rem) {
+        :where(&) .services-overview_item {
+          grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+        }
+
+        :where(&) .services-overview_details {
+          display: flex;
+          flex-direction: column;
+          align-items: flex-start;
+          gap: var(--space-16);
+        }
+
+        :where(&) .services-overview_terms {
+          text-align: left;
+        }
+      }
+
       @media (width < 48rem) {
         & {
           gap: var(--space-64);

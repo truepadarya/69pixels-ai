@@ -61,7 +61,7 @@ try {
   assert.ok(targets.length >= 2, "At least two real portraits are reachable");
   const first = targets.find((p) => p.label === "Alex") ?? targets[0];
   await move(first.x, first.y);
-  await b.wait(70);
+  await b.wait(30);
   const opening = await state();
   assert.equal(opening.open, true);
   assert.ok(
@@ -79,7 +79,7 @@ try {
   assert.equal(opened.blend, "normal");
   assert.equal(opened.background, "rgb(0, 0, 0)");
   assert.equal(opened.color, "rgb(255, 255, 255)");
-  assert.equal(opened.size, "12px");
+  assert.equal(opened.size, "14px");
   assert.equal(opened.padding, "2px 4px");
   assert.ok(
     opened.pointers.every((p) => p === "0"),
@@ -177,8 +177,50 @@ try {
     ),
     true,
   );
+  await b.evaluate(`(() => {
+    const target = document.createElement('div');
+    target.id = 'cursor-typing-check';
+    target.dataset.cursorLabel = 'Typing grows this label';
+    target.style.cssText = 'position:fixed;left:20px;top:20px;width:200px;height:80px;z-index:99999';
+    document.body.append(target);
+  })()`);
+  await move(60, 50);
+  const typingFrames = await b.evaluate(`new Promise(resolve => {
+    const frames = [];
+    const start = performance.now();
+    const sample = () => {
+      const text = document.querySelector('[data-square-cursor-text]');
+      const background = document.querySelector('[data-square-cursor-background]');
+      frames.push({
+        time: performance.now() - start,
+        letters: [...text.children].filter(e => getComputedStyle(e).opacity === '1').length,
+        width: background.getBoundingClientRect().width,
+        fullWidth: text.offsetWidth,
+      });
+      if (performance.now() - start < 600) requestAnimationFrame(sample);
+      else resolve(frames);
+    };
+    sample();
+  })`);
+  const growingFrames = typingFrames.filter(
+    (sample) => sample.letters > 0 && sample.letters < 21,
+  );
+  assert.ok(growingFrames.length >= 3, "Typing has intermediate frames");
+  assert.ok(
+    growingFrames.every((sample) => sample.width < sample.fullWidth - 1),
+    "Background stays shorter than the full label while letters appear",
+  );
+  assert.ok(
+    growingFrames.at(-1).width > growingFrames[0].width + 50,
+    "Background grows along with the typed letters",
+  );
+  assert.ok(
+    typingFrames.some((sample) => sample.letters === 23 && sample.time < 500),
+    "23 characters finish typing within half a second",
+  );
+  await b.evaluate(`document.getElementById('cursor-typing-check').remove()`);
   console.log(
-    "PASS: expansion origin, letter typing, normal blend, font/padding, fast re-entry, exit, stationary scroll, reduced motion and Astro lifecycle",
+    "PASS: expansion origin, faster typing, background grows with letters, normal blend, font/padding, fast re-entry, exit, stationary scroll, reduced motion and Astro lifecycle",
   );
 } finally {
   await b.close();

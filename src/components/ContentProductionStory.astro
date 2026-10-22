@@ -1,0 +1,353 @@
+﻿---
+import Heading from "@/components/Typography/Heading.astro";
+import Paragraph from "@/components/Typography/Paragraph.astro";
+import Icon from "@/components/Media/Icon.astro";
+import checkIcon from "@/assets/icons/check.svg";
+import CaseArrow from "@/assets/icons/case-arrow.svg";
+import productPhotoIcon from "@/assets/icons/product-photo-solid.svg";
+import guidelinesIcon from "@/assets/icons/visual-guidelines-solid.svg";
+import productCardsIcon from "@/assets/icons/product-cards-solid.svg";
+
+interface Props {
+  /** Set to `false` to skip rendering this component and its children. */
+  render?: boolean;
+  /** The part of the production story to show. */
+  variant: "timeline" | "ownership";
+  /** Additional CSS classes. */
+  class?: string;
+}
+const { render = true, variant, class: className } = Astro.props;
+---
+
+{
+  render && (
+    <div
+      class:list={["production-story_wrap", variant, className]}
+      data-production-story={variant}
+    >
+      <div class="production-story_content">
+        <Heading tag="h4" variant="inherit" class="production-story_title">
+          {variant === "timeline" ? (
+            <>
+              The repetitive work,
+              <br />
+              built into the tool in
+            </>
+          ) : (
+            <>
+              Your next product.
+              <br />
+              The same standard.
+            </>
+          )}
+        </Heading>
+        {variant === "timeline" ? (
+          <>
+            <div class="production-story_hero">
+              10<span>days</span>
+            </div>
+            <dl class="production-story_timeline">
+              <div class="production-story_ai">
+                <dt>
+                  With our AI tool <span>10 days, delivered</span>
+                </dt>
+                <dd>
+                  <span class="sr-only">10 days</span>
+                  <Icon src={checkIcon} class="production-story_check" />
+                </dd>
+              </div>
+              <div class="production-story_manual">
+                <dt>
+                  Manual production <span>~3 months, estimated</span>
+                </dt>
+                <dd>
+                  <span class="sr-only">Approximately 3 months</span>
+                </dd>
+              </div>
+            </dl>
+          </>
+        ) : (
+          <>
+            <div
+              class="production-story_workflow"
+              aria-label="Product photo plus your visual guidelines produces a new product card"
+            >
+              <div>
+                <Icon
+                  src={productPhotoIcon}
+                  class="production-story_workflow-icon"
+                />
+                <Paragraph
+                  variant="small"
+                  class="production-story_workflow-label"
+                >
+                  Product
+                  <br />
+                  photo
+                </Paragraph>
+              </div>
+              <svg
+                class="production-story_operator"
+                viewBox="0 0 24 24"
+                fill="none"
+                aria-hidden="true"
+              >
+                <path
+                  d="M5 12h14M12 5v14"
+                  stroke="currentColor"
+                  stroke-width="1.5"
+                  stroke-linecap="round"
+                />
+              </svg>
+              <div>
+                <Icon
+                  src={guidelinesIcon}
+                  class="production-story_workflow-icon"
+                />
+                <Paragraph
+                  variant="small"
+                  class="production-story_workflow-label"
+                >
+                  Your visual
+                  <br />
+                  guidelines
+                </Paragraph>
+              </div>
+              <CaseArrow
+                class="production-story_operator arrow"
+                aria-hidden="true"
+              />
+              <div class="production-story_output">
+                <Icon
+                  src={productCardsIcon}
+                  class="production-story_workflow-icon"
+                />
+                <Paragraph
+                  variant="small"
+                  class="production-story_workflow-label"
+                >
+                  New product
+                  <br />
+                  card
+                </Paragraph>
+              </div>
+            </div>
+            <p class="production-story_note">
+              An AI tool that stays with your team.
+            </p>
+          </>
+        )}
+      </div>
+    </div>
+  )
+}
+
+<style is:global>
+  @layer components {
+    .production-story_wrap {
+      --_card-unit: 1cqw;
+      --_card-padding: calc(var(--_card-unit) * 13.2);
+      --_card-gap: calc(var(--_card-unit) * 5.3);
+      position: relative;
+      width: 100%;
+      height: 100%;
+      aspect-ratio: 1;
+      container-type: inline-size;
+      background: var(--_case-background, #0d0d0d);
+      color: var(--light-100);
+      overflow: clip;
+      text-align: left;
+      &.ownership {
+        --_card-unit: calc(1cqw / 1.1);
+        aspect-ratio: 1.1;
+      }
+    }
+    .production-story_content {
+      position: absolute;
+      inset: 12% var(--_card-padding);
+      display: grid;
+      grid-template-rows: auto minmax(0, 1fr) auto;
+      row-gap: var(--_card-gap);
+      align-items: stretch;
+    }
+    .production-story_wrap.timeline .production-story_content {
+      display: grid;
+      grid-template-rows: auto minmax(0, 1fr) auto;
+      row-gap: 0;
+    }
+    .production-story_title {
+      margin: 0;
+      font-size: calc(var(--_card-unit) * 7.12);
+      font-weight: var(--primary-medium);
+      line-height: 1.06;
+      letter-spacing: -0.03em;
+    }
+    .production-story_hero {
+      align-self: center;
+      margin: 0;
+      font-size: calc(var(--_card-unit) * 32);
+      font-weight: var(--primary-medium);
+      line-height: 1;
+      letter-spacing: -0.065em;
+      span {
+        margin-left: calc(var(--_card-unit) * 2.5);
+        font-size: calc(var(--_card-unit) * 8);
+        letter-spacing: -0.04em;
+      }
+    }
+    .production-story_timeline {
+      display: grid;
+      gap: calc(var(--_card-unit) * 3.5);
+      margin: 0;
+      dt {
+        display: flex;
+        justify-content: space-between;
+        gap: calc(var(--_card-unit) * 2);
+        font-size: calc(var(--_card-unit) * 3.4);
+        line-height: 1.2;
+        letter-spacing: -0.03em;
+      }
+      dt span {
+        color: var(--gray-400);
+      }
+      dd {
+        height: calc(var(--_card-unit) * 1.4);
+        margin: calc(var(--_card-unit) * 2) 0 0;
+        background: color-mix(in srgb, #373737 75%, transparent);
+        transform-origin: left center;
+      }
+    }
+    .production-story_ai dd {
+      position: relative;
+      width: 11.1%;
+      background: var(--light-100);
+    }
+    .production-story_check {
+      position: absolute;
+      left: calc(100% + 1.5cqw);
+      top: 50%;
+      width: 2.4cqw;
+      height: auto;
+      translate: 0 -50%;
+      color: var(--light-100);
+      & path {
+        stroke-linecap: round;
+        stroke-linejoin: round;
+        stroke-width: 0.09375rem;
+      }
+    }
+    .production-story_workflow {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      align-self: center;
+      gap: calc(var(--_card-unit) * 2);
+      margin: 0;
+      padding: 0;
+      > div {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: calc(var(--_card-unit) * 3);
+        flex: 1;
+        text-align: center;
+      }
+    }
+    .production-story_workflow-icon {
+      width: calc(var(--_card-unit) * 11);
+      height: calc(var(--_card-unit) * 11);
+      opacity: 0.82;
+    }
+    .production-story_workflow
+      > div:first-child
+      .production-story_workflow-icon {
+      transform: scale(0.85);
+    }
+    .production-story_output .production-story_workflow-icon {
+      transform: scale(1.05);
+    }
+    .production-story_workflow-label {
+      margin: 0;
+      font-size: calc(var(--_card-unit) * 3.4);
+      line-height: 1.2;
+      letter-spacing: -0.03em;
+      font-weight: var(--text-small-font-weight);
+      color: var(--gray-400);
+    }
+    .production-story_operator {
+      color: var(--gray-400);
+      flex: none;
+      align-self: flex-start;
+      width: calc(var(--_card-unit) * 5.625);
+      height: calc(var(--_card-unit) * 5.625);
+      margin-top: calc(var(--_card-unit) * 2.6875);
+    }
+    .production-story_output {
+      color: var(--light-100);
+    }
+    .production-story_note {
+      margin: 0;
+      padding: 0;
+      font-family: var(--text-mono-font-family);
+      font-size: calc(var(--_card-unit) * 2.75);
+      font-weight: var(--primary-regular);
+      line-height: 1.5;
+      letter-spacing: var(--letter-spacing-normal);
+      color: var(--gray-400);
+    }
+    .production-story_workflow-label,
+    .production-story_note {
+      &::before,
+      &::after {
+        content: none;
+      }
+    }
+  }
+</style>
+
+<script>
+  import { gsap } from "gsap";
+  import { mountScrollScene } from "@/utils/motion/scrollScene";
+
+  mountScrollScene('[data-production-story="timeline"]', (root) => {
+    const manual = root.querySelector<HTMLElement>(
+      ".production-story_manual dd",
+    );
+    const ai = root.querySelector<HTMLElement>(".production-story_ai dd");
+    const check = root.querySelector<SVGElement>(".production-story_check");
+    if (!manual || !ai || !check) return;
+    const media = gsap.matchMedia();
+    media.add("(prefers-reduced-motion: no-preference)", () => {
+      gsap.set([manual, ai], { scaleX: 0 });
+      gsap.set(check, { autoAlpha: 0 });
+      const animation = gsap
+        .timeline({ paused: true })
+        .to(manual, { scaleX: 1, duration: 5, ease: "sine.inOut" }, 0.35)
+        .to(ai, { scaleX: 1, duration: 1.1, ease: "sine.inOut" }, 0.35)
+        .to(check, { autoAlpha: 1, duration: 0.2, ease: "power2.out" }, 1.55);
+      let entered = false;
+      const observer = new IntersectionObserver(
+        (entries) => {
+          for (const entry of entries) {
+            if (
+              entry.isIntersecting &&
+              entry.intersectionRatio >= 0.35 &&
+              !entered
+            ) {
+              entered = true;
+              animation.play();
+              observer.disconnect();
+            }
+          }
+        },
+        { threshold: [0, 0.35] },
+      );
+      observer.observe(root);
+      return () => {
+        observer.disconnect();
+        animation.kill();
+      };
+    });
+    return () => media.revert();
+  });
+</script>

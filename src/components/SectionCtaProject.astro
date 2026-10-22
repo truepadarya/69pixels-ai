@@ -1,6 +1,5 @@
 ---
 import Section from "@/components/Wrapper/Section.astro";
-import Paragraph from "@/components/Typography/Paragraph.astro";
 import Heading from "@/components/Typography/Heading.astro";
 import Button from "@/components/Button.astro";
 import Img from "@/components/Media/Img.astro";
@@ -139,12 +138,6 @@ const lanes = [
             >
               Tell us what you're building
             </Heading>
-            <Paragraph
-              variant="large"
-              class="section-heading-support cta-project_lead"
-            >
-              Share a brief or an early idea. We’ll reply with a clear next step.
-            </Paragraph>
             <div class="cta-project_field">
               <input
                 class="cta-project_input"
@@ -182,7 +175,7 @@ const lanes = [
                 element="link"
                 href={`mailto:hello@69pixels.com?subject=Project%20enquiry&body=${encodeURIComponent(initialIdea)}`}
                 class="cta-project_button"
-                variant="compact"
+                data-cursor-color="white"
                 data-project-email
               >
                 Email us
@@ -192,9 +185,8 @@ const lanes = [
                 href="https://calendar.app.google/Snnw3wcumNzSF9Qv6"
                 target="_blank"
                 rel="noopener noreferrer"
-                emphasis="secondary"
                 class="cta-project_button"
-                variant="compact"
+                data-cursor-color="white"
                 data-project-booking
               >
                 Schedule a call
@@ -273,7 +265,6 @@ const lanes = [
           ".cta-project-section_wrap",
         );
         const heading = root.querySelector<HTMLElement>(".cta-project_heading");
-        const lead = root.querySelector<HTMLElement>(".cta-project_lead");
         const field = root.querySelector<HTMLElement>(".cta-project_field");
         const buttons = root.querySelectorAll<HTMLElement>(
           ".cta-project_button",
@@ -282,7 +273,6 @@ const lanes = [
         if (
           !content ||
           !heading ||
-          !lead ||
           !field ||
           !stage ||
           !square ||
@@ -293,7 +283,7 @@ const lanes = [
 
         gsap.set(square, { scaleX: 1, scaleY: 1, transformOrigin: "center" });
 
-        gsap.set([heading, lead, field, ...buttons, ...lanes], {
+        gsap.set([heading, field, ...buttons, ...lanes], {
           autoAlpha: 0,
           y: context.conditions.desktop ? "2rem" : "1.5rem",
           filter: "blur(0.5rem)",
@@ -340,7 +330,7 @@ const lanes = [
             y: -heading.offsetHeight / 2,
             paddingTop: 0,
           });
-          gsap.set([heading, lead, field, ...buttons], {
+          gsap.set([heading, field, ...buttons], {
             autoAlpha: 1,
             y: 0,
             filter: "none",
@@ -496,7 +486,6 @@ const lanes = [
             ease: "sine.inOut",
           })
           .to(heading, { ...reveal, duration: 0.4 }, revealStart)
-          .to(lead, { ...reveal, duration: 0.4 }, revealStart + 0.12)
           .to(field, { ...reveal, duration: 0.45 }, revealStart + 0.24)
           .to(
             buttons,
@@ -801,12 +790,6 @@ const lanes = [
       align-items: center;
       padding: 10rem 1.25rem 0;
     }
-    .cta-project_lead {
-      margin-top: var(--space-32);
-      @media (width < 48rem) {
-        margin-top: var(--space-24);
-      }
-    }
     .cta-project_heading {
       margin: 0;
       font-size: clamp(2rem, min(10.15vw, 22svh), 9.8125rem);
@@ -921,6 +904,31 @@ const lanes = [
       justify-content: center;
       gap: 0.5rem;
       margin-top: 3.25rem;
+    }
+    .cta-project_button.button_wrap.main {
+      --button-background: var(--light-100);
+      --button-border: var(--light-100);
+      --button-text: var(--dark-900);
+      --button-background-hover: var(--brand-500);
+      --button-border-hover: var(--brand-500);
+      --button-text-hover: var(--light-100);
+      min-height: var(--space-56);
+      padding-inline: var(--space-32);
+      border-radius: 0;
+      font-family: var(--text-mono-font-family);
+      font-size: var(--text-mono);
+      font-weight: var(--primary-regular);
+
+      &[data-project-booking] {
+        --button-background: var(--dark-700);
+        --button-border: var(--dark-700);
+        --button-text: var(--light-100);
+      }
+
+      &:focus-visible {
+        background: var(--brand-500);
+        border-color: var(--brand-500);
+      }
     }
     .cta-project_status {
       position: absolute;

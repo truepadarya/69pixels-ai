@@ -1,0 +1,270 @@
+---
+import { Image } from "astro:assets";
+import finder from "@/assets/graphics/tools-dock/finder.png";
+import studio from "@/assets/graphics/tools-dock/69.png";
+import settings from "@/assets/graphics/tools-dock/settings.png";
+
+interface Props {
+  /** Set to `false` to skip rendering this component and its children. */
+  render?: boolean;
+  class?: string;
+}
+const { render = true, class: className } = Astro.props;
+const rimId = `tools-dock-rim-${crypto.randomUUID()}`;
+---
+
+{
+  render && (
+    <div
+      class:list={["tools-dock_wrap", className]}
+      data-tools-dock
+      aria-hidden="true"
+    >
+      <div class="tools-dock_layout">
+        <div class="tools-dock_glass" />
+        <svg class="tools-dock_rim" viewBox="0 0 268 105" fill="none">
+          <defs>
+            <linearGradient
+              id={rimId}
+              x1="0"
+              y1="0"
+              x2="235"
+              y2="105"
+              gradientUnits="userSpaceOnUse"
+            >
+              <stop stop-color="white" stop-opacity="0.6" />
+              <stop offset="0.35" stop-color="white" stop-opacity="0.14" />
+              <stop offset="0.7" stop-color="white" stop-opacity="0.05" />
+              <stop offset="1" stop-color="white" stop-opacity="0.25" />
+            </linearGradient>
+          </defs>
+          <g stroke={`url(#${rimId})`} stroke-width="0.65">
+            <path
+              class="tools-dock_left"
+              d="M52.5 .5H33.5A33 33 0 0 0 .5 33.5V71.5A33 33 0 0 0 33.5 104.5H52.5"
+            />
+            <path
+              class="tools-dock_middle"
+              d="M52.5 .5H215.5M52.5 104.5H215.5"
+            />
+            <path
+              class="tools-dock_right"
+              d="M215.5 .5H234.5A33 33 0 0 1 267.5 33.5V71.5A33 33 0 0 1 234.5 104.5H215.5"
+            />
+          </g>
+        </svg>
+        {[finder, studio, settings].map((icon, index) => (
+          <Image
+            class:list={[
+              "tools-dock_icon",
+              ["finder", "studio", "settings"][index],
+            ]}
+            src={icon}
+            alt=""
+            width={225}
+            height={225}
+            format="webp"
+            quality={90}
+            loading="eager"
+            decoding="async"
+          />
+        ))}
+      </div>
+    </div>
+  )
+}
+
+<style is:global>
+  @layer components {
+    .tools-dock_wrap {
+      width: 70%;
+      aspect-ratio: 268 / 105;
+      container-type: inline-size;
+      position: relative;
+      pointer-events: none;
+    }
+    .tools-dock_layout {
+      position: absolute;
+      inset: 0;
+    }
+    .tools-dock_glass {
+      position: absolute;
+      inset: 0;
+      clip-path: inset(0 0% round 12.3cqw);
+      background: linear-gradient(
+        180deg,
+        rgb(255 255 255 / 9%),
+        rgb(255 255 255 / 6%) 46%,
+        rgb(255 255 255 / 11%)
+      );
+      backdrop-filter: blur(5cqw) saturate(1.15);
+      -webkit-backdrop-filter: blur(5cqw) saturate(1.15);
+    }
+    .tools-dock_rim {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+    }
+    .tools-dock_icon {
+      position: absolute;
+      top: 7.65cqw;
+      width: 23.88cqw;
+      height: 23.88cqw;
+      object-fit: contain;
+    }
+    .tools-dock_icon.finder {
+      left: 7.46cqw;
+    }
+    .tools-dock_icon.studio {
+      left: 38.06cqw;
+    }
+    .tools-dock_icon.settings {
+      left: 68.66cqw;
+    }
+  }
+</style>
+
+<script>
+  import { gsap } from "gsap";
+
+  const instances = new Map<HTMLElement, () => void>();
+  function cleanup() {
+    instances.forEach((dispose) => dispose());
+    instances.clear();
+  }
+  function initialize() {
+    document
+      .querySelectorAll<HTMLElement>("[data-tools-dock]")
+      .forEach((dock) => {
+        if (instances.has(dock)) return;
+        const media = gsap.matchMedia();
+        media.add("(prefers-reduced-motion: no-preference)", () => {
+          const layout = dock.querySelector<HTMLElement>(".tools-dock_layout")!;
+          const left = dock.querySelector(".tools-dock_left")!;
+          const right = dock.querySelector(".tools-dock_right")!;
+          const middle = dock.querySelector(".tools-dock_middle")!;
+          const glass = dock.querySelector(".tools-dock_glass")!;
+          const finder = dock.querySelector(".finder")!;
+          const studio = dock.querySelector(".studio")!;
+          const settings = dock.querySelector(".settings")!;
+          const timeline = gsap.timeline({ paused: true });
+          timeline.fromTo(
+            layout,
+            { opacity: 0 },
+            { opacity: 1, duration: 0.24, ease: "power2.out" },
+            0,
+          );
+          timeline.fromTo(
+            finder,
+            { xPercent: 62.5 },
+            { xPercent: 0, duration: 0.64, ease: "power2.out" },
+            0.06,
+          );
+          timeline.fromTo(
+            settings,
+            { xPercent: -62.5 },
+            { xPercent: 0, duration: 0.64, ease: "power2.out" },
+            0.06,
+          );
+          timeline.fromTo(
+            left,
+            { x: 40 },
+            { x: 0, duration: 0.64, ease: "power2.out" },
+            0.06,
+          );
+          timeline.fromTo(
+            right,
+            { x: -40 },
+            { x: 0, duration: 0.64, ease: "power2.out" },
+            0.06,
+          );
+          timeline.fromTo(
+            glass,
+            { clipPath: "inset(0 14.925% round 12.3cqw)" },
+            {
+              clipPath: "inset(0 0% round 12.3cqw)",
+              duration: 0.64,
+              ease: "power2.out",
+            },
+            0.06,
+          );
+          timeline.fromTo(
+            middle,
+            { attr: { transform: "matrix(0.509 0 0 1 65.794 0)" } },
+            {
+              attr: { transform: "matrix(1 0 0 1 0 0)" },
+              duration: 0.64,
+              ease: "power2.out",
+            },
+            0.06,
+          );
+          timeline.fromTo(
+            studio,
+            { scale: 0.3 },
+            {
+              scale: 1,
+              yPercent: 0,
+              duration: 0.64,
+              ease: "power2.out",
+            },
+            0.06,
+          );
+          timeline.fromTo(
+            studio,
+            { opacity: 0 },
+            { opacity: 1, duration: 0.18, ease: "power2.out" },
+            0.06,
+          );
+          let active = true;
+          let ready = false;
+          let inside = false;
+          let entered = false;
+          const play = () => {
+            if (!active || !ready || !inside || entered) return;
+            entered = true;
+            timeline.play();
+          };
+          const observer = new IntersectionObserver(
+            ([entry]) => {
+              inside = entry.isIntersecting && entry.intersectionRatio >= 0.65;
+              if (entry.isIntersecting && entry.intersectionRatio >= 0.65) {
+                play();
+              } else if (
+                !entry.isIntersecting &&
+                entry.boundingClientRect.top >= window.innerHeight
+              ) {
+                entered = false;
+                timeline.pause(0);
+              }
+            },
+            { threshold: [0, 0.65] },
+          );
+          observer.observe(dock);
+          void Promise.all([
+            document.fonts.ready,
+            ...Array.from(dock.querySelectorAll("img"), (img) =>
+              img.decode().catch(() => {}),
+            ),
+          ]).then(() => {
+            ready = true;
+            play();
+          });
+          return () => {
+            active = false;
+            observer.disconnect();
+          };
+        });
+        instances.set(dock, () => media.revert());
+      });
+  }
+  initialize();
+  document.addEventListener("astro:page-load", initialize);
+  document.addEventListener("astro:before-swap", cleanup);
+  if (import.meta.hot)
+    import.meta.hot.dispose(() => {
+      cleanup();
+      document.removeEventListener("astro:page-load", initialize);
+      document.removeEventListener("astro:before-swap", cleanup);
+    });
+</script>

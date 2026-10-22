@@ -182,22 +182,30 @@ const { render = true } = Astro.props;
           parseFloat(textStyle.paddingTop) +
           parseFloat(textStyle.paddingBottom),
       );
-      const lineStarts: number[] = [];
-      const lineWidths: number[] = [];
+      const letterInterval = 0.018;
+      let revealedWidth = 0;
+      let line = -1;
       let previousTop = -Infinity;
-      letters.forEach((letter, index) => {
-        if (!letter.textContent?.trim()) return;
-        const top = letter.offsetTop;
-        if (top > previousTop + 1) {
-          lineStarts.push(index);
-          lineWidths.push(0);
-          previousTop = top;
+      const letterReveals = letters.map((letter) => {
+        if (letter.textContent?.trim()) {
+          const top = letter.offsetTop;
+          if (top > previousTop + 1) {
+            line += 1;
+            previousTop = top;
+          }
+          revealedWidth = Math.max(
+            revealedWidth,
+            letter.getBoundingClientRect().right - textLeft + paddingRight,
+          );
         }
-        const line = lineWidths.length - 1;
-        lineWidths[line] = Math.max(
-          lineWidths[line],
-          letter.getBoundingClientRect().right - textLeft + paddingRight,
-        );
+
+        return {
+          width: Math.min(captionWidth, Math.max(dot, revealedWidth)),
+          height: Math.min(
+            captionHeight,
+            firstLineHeight + Math.max(0, line) * lineHeight,
+          ),
+        };
       });
       const maskText = () => {
         const width =
@@ -214,40 +222,22 @@ const { render = true } = Astro.props;
       });
       maskText();
       setCaptionMode(true);
-      animation = gsap
-        .timeline()
-        .to(background, {
-          scaleX: lineStarts.length > 1 ? lineWidths[0] / captionWidth : 1,
-          scaleY: lineStarts.length > 1 ? firstLineHeight / captionHeight : 1,
-          duration: 0.24,
-          ease: "power3.out",
-          onUpdate: maskText,
-        })
-        .set(letters, { opacity: 1, stagger: 0.035 }, 0.09);
-      lineStarts.slice(1).forEach((index, line) => {
-        animation!.to(
-          background,
-          {
-            scaleX:
-              line === lineStarts.length - 2
-                ? 1
-                : Math.min(
-                    1,
-                    Math.max(...lineWidths.slice(0, line + 2)) / captionWidth,
-                  ),
-            scaleY:
-              line === lineStarts.length - 2
-                ? 1
-                : Math.min(
-                    1,
-                    (firstLineHeight + (line + 1) * lineHeight) / captionHeight,
-                  ),
-            duration: 0.2,
-            ease: "power2.out",
-            onUpdate: maskText,
-          },
-          0.09 + index * 0.035,
-        );
+      animation = gsap.timeline();
+      letterReveals.forEach(({ width, height }, index) => {
+        const last = index === letters.length - 1;
+        animation!
+          .to(
+            background,
+            {
+              scaleX: last ? 1 : width / captionWidth,
+              scaleY: last ? 1 : height / captionHeight,
+              duration: letterInterval,
+              ease: "none",
+              onUpdate: maskText,
+            },
+            index * letterInterval,
+          )
+          .set(letters[index], { opacity: 1 }, (index + 1) * letterInterval);
       });
     };
 
@@ -264,6 +254,12 @@ const { render = true } = Astro.props;
 
     const updateHover = () => {
       const hit = document.elementFromPoint(x, y);
+      if (hit?.closest("[data-cursor-native]")) {
+        hide();
+        root.classList.add("has-native-cursor");
+        return;
+      }
+      root.classList.remove("has-native-cursor");
       const candidate =
         hit?.closest<HTMLElement>(
           "[data-cursor-label], [data-cursor-gallery]",
@@ -292,6 +288,10 @@ const { render = true } = Astro.props;
 
       pointers.forEach((pointer) => {
         pointer.classList.toggle("is-interactive", isInteractive);
+        pointer.classList.toggle(
+          "is-white",
+          Boolean(hit?.closest('[data-cursor-color="white"]')),
+        );
       });
     };
 
@@ -312,6 +312,15 @@ const { render = true } = Astro.props;
       if (!media.matches || event.pointerType === "touch") return;
       x = event.clientX;
       y = event.clientY;
+      if (
+        event.target instanceof Element &&
+        event.target.closest("[data-cursor-native]")
+      ) {
+        hide();
+        root.classList.add("has-native-cursor");
+        return;
+      }
+      root.classList.remove("has-native-cursor");
       if (x >= root.clientWidth || y >= root.clientHeight) {
         hide();
         return;
@@ -327,6 +336,7 @@ const { render = true } = Astro.props;
     };
 
     const hide = () => {
+      root.classList.remove("has-native-cursor");
       visible = false;
       activeTarget = null;
       animation?.kill();
@@ -478,8 +488,8 @@ const { render = true } = Astro.props;
       max-width: min(28ch, calc(100vw - 0.5rem));
       padding: 0.125rem 0.25rem;
       color: var(--light-100);
-      font-family: var(--font-roboto-mono, "Roboto Mono"), monospace;
-      font-size: 0.75rem;
+      font-family: var(--text-mono-font-family);
+      font-size: 0.8125rem;
       font-weight: 400;
       line-height: 1.4;
       letter-spacing: 0;
@@ -524,6 +534,12 @@ const { render = true } = Astro.props;
       background-color: var(--brand-500);
     }
 
+    .square-cursor_wrap.brand
+      .square-cursor_pointer.is-white
+      .square-cursor_shape {
+      background-color: var(--light-100);
+    }
+
     .square-cursor_wrap.default .square-cursor_pointer.is-visible {
       opacity: 1;
     }
@@ -555,6 +571,16 @@ const { render = true } = Astro.props;
       .has-square-cursor body,
       .has-square-cursor body * {
         cursor: none;
+      }
+
+      .has-square-cursor body [data-cursor-native],
+      .has-square-cursor body [data-cursor-native] * {
+        cursor: auto;
+      }
+
+      .has-square-cursor.has-native-cursor .square-cursor_wrap,
+      .has-square-cursor:has([data-cursor-native]:hover) .square-cursor_wrap {
+        visibility: hidden;
       }
     }
 

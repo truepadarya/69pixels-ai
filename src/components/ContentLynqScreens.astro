@@ -1,0 +1,216 @@
+---
+import Img from "@/components/Media/Img.astro";
+import profile from "@/assets/graphics/cases/lynq-screens/profile.png";
+import registration from "@/assets/graphics/cases/lynq-screens/registration.png";
+import approval from "@/assets/graphics/cases/lynq-screens/approval.png";
+import entry from "@/assets/graphics/cases/lynq-screens/entry.png";
+
+interface Props {
+  /** Set to `false` to skip rendering this component and its children. */
+  render?: boolean;
+  class?: string;
+}
+const { render = true, class: className } = Astro.props;
+const screens = [profile, registration, approval, entry];
+---
+
+{
+  render && (
+    <div
+      class:list={["lynq-screens_wrap", className]}
+      data-lynq-screens
+      data-screen-index="0"
+    >
+      <div
+        class="lynq-screens_phone"
+        role="img"
+        aria-label="LYNQ app: profile setup, registration assistant, approval and welcome screens."
+      >
+        {screens.map((image, index) => (
+          <Img
+            src={image}
+            alt=""
+            variant="constrained"
+            sizes="(min-width: 64rem) 24vw, 14rem"
+            quality="high"
+            transparent
+            loading="eager"
+            class:list={["lynq-screens_image", index === 0 && "is-active"]}
+            aria-hidden="true"
+          />
+        ))}
+      </div>
+      <button
+        class="lynq-screens_control"
+        type="button"
+        data-screens-control
+        aria-label="Pause screen slideshow"
+        aria-pressed="false"
+      >
+        Ⅱ
+      </button>
+    </div>
+  )
+}
+
+<style is:global>
+  @layer components {
+    .lynq-screens_wrap {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      aspect-ratio: 390 / 844;
+      container-type: inline-size;
+      background: transparent;
+    }
+    .lynq-screens_phone {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      overflow: clip;
+      border-radius: 12.3077cqw;
+      background: var(--dark-900);
+    }
+    .lynq-screens_image {
+      position: absolute;
+      inset: 0;
+      display: block;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      background: #0d0d0d;
+      visibility: hidden;
+      z-index: 0;
+      opacity: 0;
+      transition: none;
+    }
+    .lynq-screens_image.is-active {
+      opacity: 1;
+      visibility: visible;
+      z-index: 2;
+      transition: opacity 180ms var(--motion-ease-out);
+    }
+    .lynq-screens_control {
+      position: absolute;
+      bottom: 0.5rem;
+      right: 0.5rem;
+      display: grid;
+      place-items: center;
+      width: 1.75rem;
+      height: 1.75rem;
+      border: 0;
+      border-radius: 0;
+      padding: 0;
+      background: var(--dark-825);
+      color: var(--gray-300);
+      font-size: 0.75rem;
+      line-height: 1;
+      cursor: pointer;
+      opacity: 0;
+    }
+    .lynq-screens_wrap:hover .lynq-screens_control,
+    .lynq-screens_control:focus-visible {
+      opacity: 1;
+    }
+    .lynq-screens_control:focus-visible {
+      outline: var(--focus-width) solid var(--gray-400);
+    }
+    .lynq-screens_wrap {
+      @media (prefers-reduced-motion: reduce) {
+        & .lynq-screens_image {
+          transition: none;
+        }
+      }
+    }
+  }
+</style>
+
+<script>
+  import { mountScrollScene } from "@/utils/motion/scrollScene";
+
+  mountScrollScene("[data-lynq-screens]", (root) => {
+    const images = Array.from(
+      root.querySelectorAll<HTMLImageElement>(".lynq-screens_image"),
+    );
+    const control = root.querySelector<HTMLButtonElement>(
+      "[data-screens-control]",
+    );
+    if (!images.length || !control) return;
+    const reduced = matchMedia("(prefers-reduced-motion: reduce)");
+    let index = 0;
+    let visible = false;
+    let ready = false;
+    let paused = false;
+    let disposed = false;
+    let timer: ReturnType<typeof setTimeout> | undefined;
+    const stop = () => {
+      clearTimeout(timer);
+      timer = undefined;
+    };
+    const advance = () => {
+      const previous = images[index];
+      previous.classList.remove("is-active");
+      index = (index + 1) % images.length;
+      images[index].classList.add("is-active");
+      root.dataset.screenIndex = String(index);
+    };
+    const synchronize = () => {
+      stop();
+      control.textContent = reduced.matches ? "→" : paused ? "▶" : "Ⅱ";
+      control.setAttribute(
+        "aria-label",
+        reduced.matches
+          ? "Next app screen"
+          : paused
+            ? "Play screen slideshow"
+            : "Pause screen slideshow",
+      );
+      control.setAttribute("aria-pressed", String(paused));
+      if (
+        !disposed &&
+        ready &&
+        visible &&
+        !paused &&
+        !document.hidden &&
+        !reduced.matches
+      ) {
+        timer = setTimeout(() => {
+          advance();
+          synchronize();
+        }, 2000);
+      }
+    };
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        visible = entry.isIntersecting && entry.intersectionRatio >= 0.25;
+        synchronize();
+      },
+      { threshold: [0, 0.25] },
+    );
+    observer.observe(root);
+    const onControl = () => {
+      if (reduced.matches) advance();
+      else paused = !paused;
+      synchronize();
+    };
+    control.addEventListener("click", onControl);
+    document.addEventListener("visibilitychange", synchronize);
+    reduced.addEventListener("change", synchronize);
+    void Promise.all(
+      images.map((image) => image.decode().catch(() => {})),
+    ).then(() => {
+      ready = true;
+      synchronize();
+    });
+    synchronize();
+    return () => {
+      disposed = true;
+      stop();
+      observer.disconnect();
+      control.removeEventListener("click", onControl);
+      document.removeEventListener("visibilitychange", synchronize);
+      reduced.removeEventListener("change", synchronize);
+    };
+  });
+</script>

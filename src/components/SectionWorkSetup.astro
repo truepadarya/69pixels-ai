@@ -2,9 +2,6 @@
 import type { ComponentProps } from "astro/types";
 import Section from "@/components/Wrapper/Section.astro";
 import ContentWorkSetup from "@/components/ContentWorkSetup.astro";
-import Img from "@/components/Media/Img.astro";
-import leaves from "@/assets/graphics/work-setup-leaves.png";
-import shadow from "@/assets/graphics/work-setup-shadow.png";
 
 type Props = Pick<ComponentProps<typeof Section>, "render">;
 
@@ -17,40 +14,10 @@ const { render = true } = Astro.props;
   gap="0"
   class="work-setup-section_wrap"
   containerClass="work-setup-section_content"
-  data-botanical-scene
   aria-labelledby="work-setup-title"
 >
-  <div
-    slot="background"
-    class="work-setup-section_decoration"
-    data-botanical-reveal
-    aria-hidden="true"
-  >
-    <Img
-      src={shadow}
-      transparent
-      class="work-setup-section_shadow"
-      data-botanical-shadow
-    />
-    <Img
-      src={leaves}
-      transparent
-      class="work-setup-section_leaves"
-      data-botanical-leaves
-    />
-    <Img
-      src={leaves}
-      transparent
-      class="work-setup-section_foreground"
-      data-botanical-leaves
-    />
-  </div>
   <ContentWorkSetup />
 </Section>
-
-<script>
-  import "@/utils/motion/botanicalScene";
-</script>
 
 <style is:global>
   @layer components {
@@ -69,52 +36,11 @@ const { render = true } = Astro.props;
         & .work-setup-section_content {
           width: var(--site-width);
         }
-        & .work-setup-section_leaves {
-          display: none;
-        }
-        & .work-setup-section_foreground {
-          bottom: -2rem;
-          width: 48rem;
-        }
       }
     }
     .work-setup-section_content {
-      width: min(88%, var(--max-width-main));
+      width: min(96%, var(--max-width-main));
       z-index: 1;
-    }
-    .work-setup-section_decoration {
-      z-index: 0;
-      overflow: clip;
-      pointer-events: none;
-    }
-    .work-setup-section_leaves {
-      position: absolute;
-      top: -0.5rem;
-      left: -1rem;
-      width: calc(100% + 2rem);
-      max-width: none;
-      height: auto;
-      mask-image: linear-gradient(to bottom, black 45%, transparent 65%);
-    }
-    .work-setup-section_foreground {
-      position: absolute;
-      bottom: -3rem;
-      left: -1rem;
-      width: calc(100% + 6rem);
-      max-width: none;
-      height: auto;
-    }
-    .work-setup-section_foreground {
-      mask-image: linear-gradient(to bottom, transparent 50%, black 75%);
-    }
-    .work-setup-section_shadow {
-      position: absolute;
-      bottom: -1rem;
-      left: 0;
-      width: calc(100% + 2rem);
-      max-width: none;
-      height: auto;
-      opacity: 0.35;
     }
   }
 </style>

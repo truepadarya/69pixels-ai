@@ -1,10 +1,24 @@
-﻿import Lenis from "lenis";
+import Lenis from "lenis";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import "lenis/dist/lenis.css";
 
 export const initSmoothScroll = () => {
   const lenis = new Lenis({ autoRaf: true, anchors: false });
-  lenis.on("scroll", ScrollTrigger.update);
+  let pendingFocus: HTMLElement | null = null;
+  const updateScroll = () => {
+    ScrollTrigger.update();
+    if (!pendingFocus) return;
+    const bounds = pendingFocus.getBoundingClientRect();
+    if (
+      bounds.top < window.innerHeight &&
+      bounds.bottom > 0 &&
+      getComputedStyle(pendingFocus).visibility === "visible"
+    ) {
+      pendingFocus.focus({ preventScroll: true });
+      pendingFocus = null;
+    }
+  };
+  lenis.on("scroll", updateScroll);
   let frame = 0;
 
   const getTarget = (hash: string) => {
@@ -15,20 +29,36 @@ export const initSmoothScroll = () => {
     }
   };
 
-  const navigate = (target: HTMLElement, immediate = false) => {
+  const navigate = (
+    target: HTMLElement,
+    immediate = false,
+    focusTarget: HTMLElement | null = null,
+  ) => {
     ScrollTrigger.refresh();
     lenis.resize();
     const margin = parseFloat(getComputedStyle(target).scrollMarginTop) || 0;
     const padding =
       parseFloat(getComputedStyle(document.documentElement).scrollPaddingTop) ||
       0;
-    const destination =
+    const destination = () =>
       target.getBoundingClientRect().top + window.scrollY - margin - padding;
-    lenis.scrollTo(destination, {
-      immediate,
+    pendingFocus = focusTarget;
+    updateScroll();
+    lenis.scrollTo(destination(), {
+      immediate:
+        immediate ||
+        window.matchMedia("(prefers-reduced-motion: reduce)").matches,
       duration: 0.9,
       force: true,
-      onComplete: () => ScrollTrigger.update(),
+      onComplete: () => {
+        ScrollTrigger.update();
+        const corrected = destination();
+        if (Math.abs(corrected - window.scrollY) > 1) {
+          lenis.scrollTo(corrected, { immediate: true, force: true });
+        }
+        focusTarget?.focus({ preventScroll: true });
+        pendingFocus = null;
+      },
     });
   };
 
@@ -65,7 +95,8 @@ export const initSmoothScroll = () => {
     if (!target) return;
     event.preventDefault();
     if (location.hash !== url.hash) history.pushState(null, "", url.hash);
-    navigate(target);
+    const focusId = link.dataset.anchorFocus;
+    navigate(target, false, focusId ? document.getElementById(focusId) : null);
   };
 
   const alignHash = () => {

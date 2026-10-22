@@ -1,0 +1,229 @@
+---
+import type { HTMLAttributes } from "astro/types";
+import Button from "@/components/Button.astro";
+import Heading from "@/components/Typography/Heading.astro";
+import Paragraph from "@/components/Typography/Paragraph.astro";
+
+interface Props extends HTMLAttributes<"div"> {
+  /** Set to `false` to skip rendering this component and its children. */
+  render?: boolean;
+}
+
+const { render = true, class: className, ...rest } = Astro.props;
+const enquiryHref =
+  "mailto:hello@69pixels.com?subject=Design%20subscription%20enquiry";
+
+const benefits = [
+  "1 mid/senior designer + art-director + project manager",
+  "Unlimited design requests",
+  "Fully dedicated to your project",
+  "Quick start",
+  "Estimation and reporting",
+  "Full access to the whole team of various specialists",
+  "Transparent communication",
+  "Flexible system of team augmentation",
+];
+---
+
+{
+  render && (
+    <div
+      class:list={["work-subscription_wrap", "theme-light", className]}
+      {...rest}
+    >
+      <a
+        class="work-subscription_link"
+        href={enquiryHref}
+        tabindex="-1"
+        aria-hidden="true"
+      />
+      <div class="work-subscription_summary">
+        <Heading tag="h3" variant="h6" class="work-subscription_heading">
+          Dedicated subscription
+        </Heading>
+        <Paragraph tag="span" variant="mono" class="work-subscription_badge">
+          MONTHLY
+        </Paragraph>
+        <div class="work-subscription_price-row">
+          <Paragraph variant="h2" class="work-subscription_price">
+            €6,900
+          </Paragraph>
+          <Paragraph tag="span" variant="mono" class="work-subscription_period">
+            /month
+          </Paragraph>
+        </div>
+        <Paragraph variant="mono" class="work-subscription_terms">
+          Minimal booking period – 2 months. Payment once a month.
+        </Paragraph>
+      </div>
+      <div class="work-subscription_details">
+        <ul class="work-subscription_list">
+          {benefits.map((benefit) => (
+            <li class="work-subscription_item">
+              <span class="work-subscription_arrow" aria-hidden="true">
+                ↳
+              </span>
+              <Paragraph variant="main-xl" class="work-subscription_benefit">
+                {benefit}
+              </Paragraph>
+            </li>
+          ))}
+        </ul>
+        <Button
+          element="link"
+          href={enquiryHref}
+          class="work-subscription_button"
+          data-cursor-color="white"
+        >
+          Get started
+        </Button>
+      </div>
+    </div>
+  )
+}
+
+<style is:global>
+  @layer components {
+    .work-subscription_wrap {
+      position: relative;
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+      gap: var(--space-64);
+      padding: clamp(1.5rem, 3.5vw, 3.5rem);
+      background: var(--light-100);
+      color: var(--dark-900);
+      transition: background-color var(--hover-duration) var(--hover-ease);
+
+      &:is(:hover, :focus-within) {
+        background: color-mix(in srgb, var(--light-100) 92%, var(--dark-900));
+      }
+
+      @media (width < 64rem) {
+        grid-template-columns: 1fr;
+        gap: var(--space-48);
+      }
+    }
+
+    .work-subscription_link {
+      position: absolute;
+      inset: 0;
+      z-index: 1;
+    }
+
+    .work-subscription_summary {
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+    }
+
+    .work-subscription_heading {
+      margin-bottom: var(--space-32);
+      font-family: var(--text-mono-font-family);
+      font-size: var(--text-mono);
+      font-weight: var(--primary-regular);
+      letter-spacing: var(--text-mono-letter-spacing);
+    }
+
+    .work-subscription_badge {
+      display: inline-block;
+      padding: 0.2em 0.45em;
+      border-radius: 0;
+      background: var(--dark-900);
+      color: var(--light-100);
+      font-size: var(--text-small);
+      line-height: var(--text-mono-line-height);
+    }
+
+    .work-subscription_price-row {
+      display: flex;
+      align-items: baseline;
+      gap: var(--space-8);
+      margin-top: var(--space-24);
+      margin-bottom: var(--space-32);
+    }
+
+    .work-subscription_price {
+      font-size: var(--h1);
+      white-space: nowrap;
+    }
+
+    .work-subscription_period {
+      white-space: nowrap;
+    }
+
+    .work-subscription_terms {
+      color: color-mix(in srgb, var(--dark-900) 65%, transparent);
+      font-size: var(--text-small);
+      max-width: 44ch;
+      margin-top: auto;
+    }
+
+    .work-subscription_details {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-48);
+      min-width: 0;
+    }
+
+    .work-subscription_list {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-12);
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    .work-subscription_item {
+      display: grid;
+      grid-template-columns: 1em minmax(0, 1fr);
+      gap: 1em;
+      align-items: first baseline;
+      min-height: var(--space-32);
+      font-size: var(--text-main-xl);
+      line-height: var(--text-main-xl-line-height);
+    }
+
+    .work-subscription_arrow {
+      line-height: inherit;
+    }
+
+    .work-subscription_benefit {
+      font-weight: var(--primary-regular);
+      &::before,
+      &::after {
+        content: none;
+      }
+    }
+
+    .work-subscription_button.button_wrap {
+      position: relative;
+      z-index: 2;
+      --button-background-hover: var(--brand-500);
+      --button-border-hover: var(--brand-500);
+      --button-text-hover: var(--light-100);
+      width: 100%;
+      min-height: var(--space-56);
+      border-radius: 0;
+      background: var(--dark-900);
+      color: var(--light-100);
+      font-family: var(--text-mono-font-family);
+      font-size: var(--text-mono);
+      font-weight: var(--primary-regular);
+
+      &:is(:hover, :focus-visible) {
+        background: var(--brand-500);
+        border-color: var(--brand-500);
+        color: var(--light-100);
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .work-subscription_wrap,
+      .work-subscription_button.button_wrap {
+        transition: none;
+      }
+    }
+  }
+</style>
