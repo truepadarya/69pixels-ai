@@ -342,6 +342,44 @@ const cards = [
           max-width: none;
         }
       }
+      @media (width < 64rem), (pointer: coarse) {
+        & .rebuilding_stage {
+          min-height: 0;
+          padding: var(--space-96) var(--site-margin) var(--space-48);
+        }
+        & .rebuilding_title {
+          max-width: 100%;
+        }
+        & .rebuilding_words {
+          white-space: normal;
+        }
+        & .rebuilding_cards {
+          flex-direction: column;
+          width: min(100%, 28rem);
+          max-width: none;
+          gap: var(--space-24);
+        }
+        & .rebuilding_card {
+          flex: auto;
+          aspect-ratio: auto;
+          min-height: 22rem;
+          padding: var(--space-32);
+        }
+        & .rebuilding_card-title-line {
+          white-space: normal;
+        }
+        & .rebuilding_illustration {
+          min-height: 6rem;
+          margin-block: var(--space-32);
+        }
+        & .rebuilding_cue {
+          margin-block: 0 var(--space-64);
+          padding-inline: var(--site-margin);
+        }
+        & .rebuilding_cue-text {
+          font-size: 1.25rem;
+        }
+      }
     }
   }
 </style>
@@ -353,181 +391,185 @@ const cards = [
   gsap.registerPlugin(ScrollTrigger);
   mountScrollScene("[data-rebuilding]", (section) => {
     const media = gsap.matchMedia();
-    media.add("(prefers-reduced-motion: no-preference)", () => {
-      section.classList.add("is-animated");
-      const stage = section.querySelector<HTMLElement>(".rebuilding_stage")!;
-      const title = section.querySelector<HTMLElement>(".rebuilding_title")!;
-      const words = section.querySelectorAll(".rebuilding_words");
-      const cue = section.querySelector<HTMLElement>(".rebuilding_cue")!;
-      const cards = section.querySelectorAll<HTMLElement>(".rebuilding_card");
-      gsap.set(words, { yPercent: 110, opacity: 0 });
-      gsap.to(words, {
-        yPercent: 0,
-        opacity: 1,
-        stagger: 0.24,
-        duration: 0.55,
-        ease: "power2.out",
-        scrollTrigger: {
-          trigger: section,
-          start: "top 25%",
-          end: () => `+=${stage.clientHeight * 0.55}`,
-          scrub: 0.25,
-          invalidateOnRefresh: true,
-        },
-      });
-      const travel = (card: HTMLElement) =>
-        stage.clientHeight / 2 + card.offsetHeight * 0.65;
-      let contactY = 0;
-      let fadeDistance = 1;
-      const measureOverlap = () => {
-        contactY =
-          title.offsetTop +
-          title.offsetHeight -
-          stage.clientHeight / 2 +
-          cards[0].offsetHeight / 2;
-        fadeDistance = Math.max(
-          title.offsetHeight * 1.15,
-          cards[0].offsetHeight * 0.85,
-          1,
-        );
-      };
-      measureOverlap();
-      gsap.set(title, { opacity: 1 });
-      gsap.set(cue, { autoAlpha: 0, xPercent: -50, yPercent: -50 });
-      const setTitleOpacity = gsap.quickSetter(title, "opacity");
-      gsap.set(cards, {
-        xPercent: -50,
-        yPercent: -50,
-        y: (i) => travel(cards[i]),
-        x: (i) => stage.clientWidth * [-0.012, 0.008, 0.012][i],
-        rotation: (i) => [-1.4, 1.2, -0.9][i],
-      });
-      let sceneEnd = Infinity;
-      const renderTitle = () => {
-        if (window.scrollY >= sceneEnd) {
-          setTitleOpacity(0);
-          return;
-        }
-        const y = Number(gsap.getProperty(cards[0], "y"));
-        const overlap = gsap.utils.clamp(0, 1, (contactY - y) / fadeDistance);
-        const fade = overlap * overlap * (3 - 2 * overlap);
-        const lastCardY = Number(gsap.getProperty(cards[2], "y"));
-        const exitProgress = gsap.utils.clamp(
-          0,
-          1,
-          (stage.clientHeight * 0.03 - lastCardY) / (stage.clientHeight * 0.25),
-        );
-        const exitFade = exitProgress * exitProgress * (3 - 2 * exitProgress);
-        setTitleOpacity((1 - 0.9 * fade) * (1 - exitFade));
-      };
-      const timeline = gsap.timeline({
-        scrollTrigger: {
-          trigger: section,
-          start: "top top",
-          end: () =>
-            `+=${stage.clientHeight * Number(getComputedStyle(section).getPropertyValue("--_scroll-length"))}`,
-          pin: stage,
-          scrub: 0.35,
-          invalidateOnRefresh: true,
-          onRefreshInit: measureOverlap,
-          onRefresh: (self) => {
-            sceneEnd = self.end;
-            renderTitle();
-            gsap.set(cue, {
-              top: self.end - self.start + stage.clientHeight * 0.3,
-            });
+    media.add(
+      "(prefers-reduced-motion: no-preference) and (width >= 64rem) and (pointer: fine)",
+      () => {
+        section.classList.add("is-animated");
+        const stage = section.querySelector<HTMLElement>(".rebuilding_stage")!;
+        const title = section.querySelector<HTMLElement>(".rebuilding_title")!;
+        const words = section.querySelectorAll(".rebuilding_words");
+        const cue = section.querySelector<HTMLElement>(".rebuilding_cue")!;
+        const cards = section.querySelectorAll<HTMLElement>(".rebuilding_card");
+        gsap.set(words, { yPercent: 110, opacity: 0 });
+        gsap.to(words, {
+          yPercent: 0,
+          opacity: 1,
+          stagger: 0.24,
+          duration: 0.55,
+          ease: "power2.out",
+          scrollTrigger: {
+            trigger: section,
+            start: "top 25%",
+            end: () => `+=${stage.clientHeight * 0.55}`,
+            scrub: 0.25,
+            invalidateOnRefresh: true,
           },
-        },
-        onUpdate: renderTitle,
-      });
-      const flights = [
-        {
-          start: 1.0,
-          duration: 3.2,
-          drift: -0.02,
-          rotation: 0.7,
-          exitRotation: -0.6,
-        },
-        {
-          start: 1.7,
-          duration: 3.28,
-          drift: -0.006,
-          rotation: -0.6,
-          exitRotation: 0.8,
-        },
-        {
-          start: 2.4,
-          duration: 3.24,
-          drift: 0.02,
-          rotation: 0.6,
-          exitRotation: -0.4,
-        },
-      ];
-      cards.forEach((card, index) => {
-        const flight = flights[index];
-        timeline.fromTo(
-          card,
-          { y: () => travel(card) },
-          {
-            y: () => -travel(card),
-            duration: flight.duration,
-            ease: (progress: number) =>
-              progress + 0.1 * Math.sin(2 * Math.PI * progress),
-          },
-          flight.start,
-        );
-        timeline.to(
-          card,
-          {
-            x: () => stage.clientWidth * flight.drift,
-            duration: flight.duration,
-            ease: "none",
-          },
-          flight.start,
-        );
-        timeline.to(
-          card,
-          {
-            rotation: flight.rotation,
-            duration: flight.duration * 0.52,
-            ease: "sine.inOut",
-          },
-          flight.start,
-        );
-        timeline.to(
-          card,
-          {
-            rotation: flight.exitRotation,
-            duration: flight.duration * 0.48,
-            ease: "sine.inOut",
-          },
-          flight.start + flight.duration * 0.52,
-        );
-      });
-      const pin = timeline.scrollTrigger!;
-      sceneEnd = pin.end;
-      renderTitle();
-      gsap.set(cue, {
-        top: pin.end - pin.start + stage.clientHeight * 0.3,
-      });
-      gsap.to(cue, {
-        autoAlpha: 1,
-        duration: 0.45,
-        ease: "power2.out",
-        scrollTrigger: {
-          trigger: cue,
-          start: "center 70%",
-          toggleActions: "play none none reverse",
-        },
-      });
-      return () => {
-        section.classList.remove("is-animated");
-        title.style.removeProperty("opacity");
-        gsap.set(cue, {
-          clearProps: "transform,translate,opacity,visibility,top",
         });
-      };
-    });
+        const travel = (card: HTMLElement) =>
+          stage.clientHeight / 2 + card.offsetHeight * 0.65;
+        let contactY = 0;
+        let fadeDistance = 1;
+        const measureOverlap = () => {
+          contactY =
+            title.offsetTop +
+            title.offsetHeight -
+            stage.clientHeight / 2 +
+            cards[0].offsetHeight / 2;
+          fadeDistance = Math.max(
+            title.offsetHeight * 1.15,
+            cards[0].offsetHeight * 0.85,
+            1,
+          );
+        };
+        measureOverlap();
+        gsap.set(title, { opacity: 1 });
+        gsap.set(cue, { autoAlpha: 0, xPercent: -50, yPercent: -50 });
+        const setTitleOpacity = gsap.quickSetter(title, "opacity");
+        gsap.set(cards, {
+          xPercent: -50,
+          yPercent: -50,
+          y: (i) => travel(cards[i]),
+          x: (i) => stage.clientWidth * [-0.012, 0.008, 0.012][i],
+          rotation: (i) => [-1.4, 1.2, -0.9][i],
+        });
+        let sceneEnd = Infinity;
+        const renderTitle = () => {
+          if (window.scrollY >= sceneEnd) {
+            setTitleOpacity(0);
+            return;
+          }
+          const y = Number(gsap.getProperty(cards[0], "y"));
+          const overlap = gsap.utils.clamp(0, 1, (contactY - y) / fadeDistance);
+          const fade = overlap * overlap * (3 - 2 * overlap);
+          const lastCardY = Number(gsap.getProperty(cards[2], "y"));
+          const exitProgress = gsap.utils.clamp(
+            0,
+            1,
+            (stage.clientHeight * 0.03 - lastCardY) /
+              (stage.clientHeight * 0.25),
+          );
+          const exitFade = exitProgress * exitProgress * (3 - 2 * exitProgress);
+          setTitleOpacity((1 - 0.9 * fade) * (1 - exitFade));
+        };
+        const timeline = gsap.timeline({
+          scrollTrigger: {
+            trigger: section,
+            start: "top top",
+            end: () =>
+              `+=${stage.clientHeight * Number(getComputedStyle(section).getPropertyValue("--_scroll-length"))}`,
+            pin: stage,
+            scrub: 0.35,
+            invalidateOnRefresh: true,
+            onRefreshInit: measureOverlap,
+            onRefresh: (self) => {
+              sceneEnd = self.end;
+              renderTitle();
+              gsap.set(cue, {
+                top: self.end - self.start + stage.clientHeight * 0.3,
+              });
+            },
+          },
+          onUpdate: renderTitle,
+        });
+        const flights = [
+          {
+            start: 1.0,
+            duration: 3.2,
+            drift: -0.02,
+            rotation: 0.7,
+            exitRotation: -0.6,
+          },
+          {
+            start: 1.7,
+            duration: 3.28,
+            drift: -0.006,
+            rotation: -0.6,
+            exitRotation: 0.8,
+          },
+          {
+            start: 2.4,
+            duration: 3.24,
+            drift: 0.02,
+            rotation: 0.6,
+            exitRotation: -0.4,
+          },
+        ];
+        cards.forEach((card, index) => {
+          const flight = flights[index];
+          timeline.fromTo(
+            card,
+            { y: () => travel(card) },
+            {
+              y: () => -travel(card),
+              duration: flight.duration,
+              ease: (progress: number) =>
+                progress + 0.1 * Math.sin(2 * Math.PI * progress),
+            },
+            flight.start,
+          );
+          timeline.to(
+            card,
+            {
+              x: () => stage.clientWidth * flight.drift,
+              duration: flight.duration,
+              ease: "none",
+            },
+            flight.start,
+          );
+          timeline.to(
+            card,
+            {
+              rotation: flight.rotation,
+              duration: flight.duration * 0.52,
+              ease: "sine.inOut",
+            },
+            flight.start,
+          );
+          timeline.to(
+            card,
+            {
+              rotation: flight.exitRotation,
+              duration: flight.duration * 0.48,
+              ease: "sine.inOut",
+            },
+            flight.start + flight.duration * 0.52,
+          );
+        });
+        const pin = timeline.scrollTrigger!;
+        sceneEnd = pin.end;
+        renderTitle();
+        gsap.set(cue, {
+          top: pin.end - pin.start + stage.clientHeight * 0.3,
+        });
+        gsap.to(cue, {
+          autoAlpha: 1,
+          duration: 0.45,
+          ease: "power2.out",
+          scrollTrigger: {
+            trigger: cue,
+            start: "center 70%",
+            toggleActions: "play none none reverse",
+          },
+        });
+        return () => {
+          section.classList.remove("is-animated");
+          title.style.removeProperty("opacity");
+          gsap.set(cue, {
+            clearProps: "transform,translate,opacity,visibility,top",
+          });
+        };
+      },
+    );
     return () => media.revert();
   });
 </script>

@@ -1,4 +1,6 @@
 ---
+import Img from "@/components/Media/Img.astro";
+import filmPoster from "@/assets/graphics/cases/lynq-film.jpg";
 interface Props {
   /** Set to `false` to skip rendering this component and its children. */
   render?: boolean;
@@ -23,6 +25,28 @@ const source =
         title="LYNQ - Meaningful. Local. Connections."
         allow="autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media"
       />
+      <a
+        class="lynq-film_link"
+        href="https://vimeo.com/1054848178"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        <Img
+          src={filmPoster}
+          alt=""
+          variant="constrained"
+          sizes="(min-width: 48rem) 40rem, 100vw"
+          class="lynq-film_poster"
+        />
+        <span class="lynq-film_play" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="currentColor">
+            <path d="m8 5 11 7-11 7z" />
+          </svg>
+        </span>
+        <span class="sr-only">
+          Watch the LYNQ film on Vimeo (opens in a new tab)
+        </span>
+      </a>
     </div>
   )
 }
@@ -44,6 +68,44 @@ const source =
       width: 100%;
       height: 100%;
       border: 0;
+    }
+    .lynq-film_link {
+      display: none;
+    }
+    .lynq-film_wrap {
+      @media (width < 64rem), (pointer: coarse) {
+        & .lynq-film_player {
+          display: none;
+        }
+        & .lynq-film_link {
+          display: block;
+          position: absolute;
+          inset: 0;
+          color: white;
+        }
+        & .lynq-film_poster {
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+        }
+        & .lynq-film_play {
+          position: absolute;
+          top: 50%;
+          left: 50%;
+          translate: -50% -50%;
+          display: grid;
+          place-items: center;
+          width: 3.5rem;
+          height: 3.5rem;
+          border: var(--border-width) solid rgb(255 255 255 / 60%);
+          border-radius: 50%;
+          background: rgb(0 0 0 / 65%);
+          & svg {
+            width: 1.5rem;
+            height: 1.5rem;
+          }
+        }
+      }
     }
   }
 </style>

@@ -290,7 +290,7 @@ const cases = [
       >
         Selected work
       </Heading>
-      {cases.map((item) => (
+      {cases.map((item, caseIndex) => (
         <article
           class:list={[
             "centered-cases_case",
@@ -326,6 +326,7 @@ const cases = [
               </ContentWrapper>
               <div
                 class="centered-cases_gallery"
+                id={`case-gallery-${caseIndex + 1}`}
                 data-centered-gallery
                 role="region"
                 aria-label={`${item.context}: project gallery. Use arrow keys to browse.`}
@@ -437,6 +438,53 @@ const cases = [
                   ))}
                 </div>
               </div>
+              <div
+                class="centered-cases_navigation"
+                role="group"
+                aria-label={`${item.context}: gallery controls`}
+              >
+                <p
+                  class="centered-cases_counter"
+                  data-gallery-counter
+                  aria-live="polite"
+                  aria-atomic="true"
+                >
+                  01 / {String(item.media.length).padStart(2, "0")}
+                </p>
+                <div class="centered-cases_arrows">
+                  <button
+                    type="button"
+                    class="centered-cases_arrow previous"
+                    data-gallery-previous
+                    aria-label="Previous gallery item"
+                    aria-controls={`case-gallery-${caseIndex + 1}`}
+                    disabled
+                  >
+                    <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                      <path
+                        d="M5 12h14m-6-6 6 6-6 6"
+                        stroke="currentColor"
+                        stroke-width="1.5"
+                      />
+                    </svg>
+                  </button>
+                  <button
+                    type="button"
+                    class="centered-cases_arrow"
+                    data-gallery-next
+                    aria-label="Next gallery item"
+                    aria-controls={`case-gallery-${caseIndex + 1}`}
+                  >
+                    <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                      <path
+                        d="M5 12h14m-6-6 6 6-6 6"
+                        stroke="currentColor"
+                        stroke-width="1.5"
+                      />
+                    </svg>
+                  </button>
+                </div>
+              </div>
             </div>
           </div>
         </article>
@@ -461,6 +509,9 @@ const cases = [
       width: 100%;
       text-align: center;
       position: relative;
+    }
+    .centered-cases_navigation {
+      display: none;
     }
     .centered-cases_stage {
       position: relative;
@@ -619,7 +670,7 @@ const cases = [
         & .centered-cases_stage {
           height: auto;
           min-height: 0;
-          grid-template-rows: auto auto;
+          grid-template-rows: auto auto auto;
           gap: var(--space-32);
           padding-block: calc(var(--nav-height) + var(--space-24))
             var(--space-64);
@@ -658,6 +709,47 @@ const cases = [
         }
         & .centered-cases_media {
           height: auto;
+        }
+        & .centered-cases_navigation {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          width: 100%;
+          padding-inline: var(--site-margin);
+          color: var(--light-100);
+        }
+        & .centered-cases_counter {
+          margin: 0;
+          font-family: var(--text-mono-font-family);
+          font-size: 0.75rem;
+          line-height: 1.5;
+          color: var(--gray-400);
+        }
+        & .centered-cases_arrows {
+          display: flex;
+          gap: 0.5rem;
+        }
+        & .centered-cases_arrow {
+          display: grid;
+          place-items: center;
+          width: 2.75rem;
+          height: 2.75rem;
+          padding: 0;
+          border: var(--border-width) solid var(--gray-600);
+          background: transparent;
+          color: inherit;
+          cursor: pointer;
+          & svg {
+            width: 1.25rem;
+            height: 1.25rem;
+          }
+          &.previous svg {
+            rotate: 180deg;
+          }
+          &:disabled {
+            opacity: 0.25;
+            cursor: default;
+          }
         }
         & .centered-cases_figure {
           width: min(
@@ -743,17 +835,92 @@ const cases = [
       return true;
     };
     updateSpacing();
+    const figures = [...track.querySelectorAll<HTMLElement>("figure")];
+    const previous = article.querySelector<HTMLButtonElement>(
+      "[data-gallery-previous]",
+    );
+    const next = article.querySelector<HTMLButtonElement>(
+      "[data-gallery-next]",
+    );
+    const counter = article.querySelector<HTMLElement>(
+      "[data-gallery-counter]",
+    );
+    const positions = () =>
+      figures.map((figure) =>
+        Math.min(
+          gallery.scrollWidth - gallery.clientWidth,
+          Math.max(0, figure.offsetLeft - first.offsetLeft),
+        ),
+      );
+    const updateNavigation = () => {
+      const offsets = positions();
+      const atEnd =
+        gallery.scrollLeft >= gallery.scrollWidth - gallery.clientWidth - 2;
+      const index = atEnd
+        ? figures.length - 1
+        : offsets.reduce(
+            (best, offset, i) =>
+              Math.abs(offset - gallery.scrollLeft) <
+              Math.abs(offsets[best] - gallery.scrollLeft)
+                ? i
+                : best,
+            0,
+          );
+      if (previous) previous.disabled = gallery.scrollLeft < 2;
+      if (next) next.disabled = atEnd;
+      const label = `${String(index + 1).padStart(2, "0")} / ${String(figures.length).padStart(2, "0")}`;
+      if (counter && counter.textContent !== label) counter.textContent = label;
+    };
+    const navigate = (direction: number) => {
+      const offsets = positions();
+      const target =
+        direction > 0
+          ? offsets.find((offset) => offset > gallery.scrollLeft + 2)
+          : offsets
+              .slice()
+              .reverse()
+              .find((offset) => offset < gallery.scrollLeft - 2);
+      if (target === undefined) return;
+      gallery.scrollTo({
+        left: target,
+        behavior: matchMedia("(prefers-reduced-motion: reduce)").matches
+          ? "instant"
+          : "smooth",
+      });
+    };
+    const onPrevious = () => navigate(-1);
+    const onNext = () => navigate(1);
+    previous?.addEventListener("click", onPrevious);
+    next?.addEventListener("click", onNext);
+    gallery.addEventListener("scroll", updateNavigation, { passive: true });
+    updateNavigation();
     let measureFrame = 0;
     const observer = new ResizeObserver(() => {
       cancelAnimationFrame(measureFrame);
       measureFrame = requestAnimationFrame(() => {
         if (updateSpacing()) refreshScrollLayout();
+        updateNavigation();
       });
     });
     observer.observe(gallery);
     observer.observe(first);
     observer.observe(last);
     const media = gsap.matchMedia();
+    media.add("(width < 64rem), (pointer: coarse)", () => {
+      const videos = [
+        ...gallery.querySelectorAll<HTMLVideoElement>(
+          "video.centered-cases_visual",
+        ),
+      ];
+      videos.forEach((video) => {
+        video.controls = true;
+      });
+      return () => {
+        videos.forEach((video) => {
+          video.controls = false;
+        });
+      };
+    });
     media.add(
       "(width >= 64rem) and (pointer: fine) and (prefers-reduced-motion: no-preference)",
       () => {
@@ -886,6 +1053,9 @@ const cases = [
       },
     );
     return () => {
+      previous?.removeEventListener("click", onPrevious);
+      next?.removeEventListener("click", onNext);
+      gallery.removeEventListener("scroll", updateNavigation);
       cancelAnimationFrame(measureFrame);
       observer.disconnect();
       media.revert();

@@ -182,24 +182,27 @@ const previews = cursorGalleriesEnabled
 
   mountScrollScene("[data-services-overview]", (root) => {
     const media = gsap.matchMedia();
-    media.add("(prefers-reduced-motion: no-preference)", () => {
-      const items = root.querySelectorAll<HTMLElement>(
-        ".services-overview_intro, .services-overview_item",
-      );
-      const timeline = gsap.timeline({
-        defaults: { ease: "none" },
-        scrollTrigger: {
-          trigger: root,
-          start: "top 80%",
-          end: "bottom 85%",
-          scrub: true,
-          invalidateOnRefresh: true,
-        },
-      });
+    media.add(
+      "(prefers-reduced-motion: no-preference) and (width >= 64rem) and (pointer: fine)",
+      () => {
+        const items = root.querySelectorAll<HTMLElement>(
+          ".services-overview_intro, .services-overview_item",
+        );
+        const timeline = gsap.timeline({
+          defaults: { ease: "none" },
+          scrollTrigger: {
+            trigger: root,
+            start: "top 80%",
+            end: "bottom 85%",
+            scrub: true,
+            invalidateOnRefresh: true,
+          },
+        });
 
-      gsap.set(items, { autoAlpha: 0, y: "var(--reveal-distance-main)" });
-      timeline.to(items, { autoAlpha: 1, y: 0, duration: 1, stagger: 1 });
-    });
+        gsap.set(items, { autoAlpha: 0, y: "var(--reveal-distance-main)" });
+        timeline.to(items, { autoAlpha: 1, y: 0, duration: 1, stagger: 1 });
+      },
+    );
     return () => media.revert();
   });
 </script>
