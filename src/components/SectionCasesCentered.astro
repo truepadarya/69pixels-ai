@@ -349,6 +349,10 @@ const cases = [
                         { "product-studio": "cropProductStudio" in media },
                         { "research-cropped": "cropResearch" in media },
                         {
+                          "story-card":
+                            "story" in media || "production" in media,
+                        },
+                        {
                           "story-workflow":
                             "story" in media && media.story === "workflow",
                         },
@@ -631,8 +635,20 @@ const cases = [
         & .centered-cases_summary {
           margin-top: var(--space-24);
         }
+        & .centered-cases_intro {
+          min-width: 0;
+          max-width: 100%;
+        }
+        & .centered-cases_title {
+          overflow-wrap: anywhere;
+        }
         & .centered-cases_tags {
           margin-top: var(--space-20);
+        }
+        & .centered-cases_tag {
+          max-width: 100%;
+          white-space: normal;
+          overflow-wrap: anywhere;
         }
         & .centered-cases_gallery {
           height: auto;
@@ -661,6 +677,16 @@ const cases = [
         & .centered-cases_figure.story-workflow {
           --_media-touch-ratio: 0.78;
           --_touch-media-height: 26rem;
+        }
+        & .centered-cases_figure.story-card {
+          --_touch-media-height: 26rem;
+          & .centered-cases_frame {
+            aspect-ratio: auto;
+          }
+          & .centered-cases_frame > * {
+            position: relative;
+            height: auto;
+          }
         }
         & .centered-cases_frame > * {
           position: absolute;

@@ -102,6 +102,18 @@ const benefits = [
         grid-template-columns: 1fr;
         gap: var(--space-48);
       }
+      @media (width < 64rem), (pointer: coarse) {
+        .work-subscription_summary {
+          container-type: inline-size;
+        }
+        .work-subscription_price {
+          font-size: min(var(--h1), 28cqw);
+        }
+        .work-subscription_price-row {
+          max-width: 100%;
+          flex-wrap: wrap;
+        }
+      }
     }
 
     .work-subscription_link {
