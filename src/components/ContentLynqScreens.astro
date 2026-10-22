@@ -108,6 +108,12 @@ const screens = [profile, registration, approval, entry];
       line-height: 1;
       cursor: pointer;
       opacity: 0;
+      @media (width < 64rem), (pointer: coarse) {
+        z-index: 3;
+        width: 2.75rem;
+        height: 2.75rem;
+        opacity: 1;
+      }
     }
     .lynq-screens_wrap:hover .lynq-screens_control,
     .lynq-screens_control:focus-visible {

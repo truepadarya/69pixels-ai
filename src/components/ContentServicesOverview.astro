@@ -252,6 +252,12 @@ const previews = cursorGalleriesEnabled
       color: inherit;
       text-decoration: none;
 
+      @media (width < 64rem), (pointer: coarse) {
+        display: inline-flex;
+        align-items: center;
+        min-height: 2.75rem;
+      }
+
       &:is(:hover, :focus-visible) {
         color: var(--text);
       }

@@ -36,7 +36,7 @@ const homeUrl = `${import.meta.env.BASE_URL.replace(/\/$/, "")}/`;
                 </a>
               </li>
               <li>
-                <a class="footer_link" href={`${homeUrl}#cases`}>
+                <a class="footer_link" href={`${homeUrl}#cases-centered`}>
                   Work
                 </a>
               </li>
@@ -229,6 +229,17 @@ const homeUrl = `${import.meta.env.BASE_URL.replace(/\/$/, "")}/`;
     }
 
     .footer_wrap {
+      @media (width < 64rem), (pointer: coarse) {
+        .footer_link,
+        .footer_logo {
+          display: inline-flex;
+          align-items: center;
+          min-height: 2.75rem;
+        }
+        .footer_logo > img {
+          height: 2rem;
+        }
+      }
       @media (width < 64rem) {
         .footer_details {
           display: grid;

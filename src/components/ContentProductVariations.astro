@@ -107,6 +107,11 @@ const variants = [
       line-height: 1.5;
       letter-spacing: var(--letter-spacing-normal);
       color: var(--gray-400);
+      @media (width < 64rem), (pointer: coarse) {
+        bottom: 6%;
+        font-size: max(0.625rem, 1.833cqw);
+        line-height: 1.3;
+      }
     }
     .product-variations_source {
       position: absolute;
@@ -162,6 +167,17 @@ const variants = [
         width: 3.75cqw;
         height: 3.75cqw;
         flex: none;
+      }
+      @media (width < 64rem), (pointer: coarse) {
+        width: 2.75rem;
+        height: 2.75rem;
+        left: 50%;
+        translate: -50% -50%;
+        z-index: 6;
+        & svg {
+          width: 1.125rem;
+          height: 1.125rem;
+        }
       }
     }
     .has-square-cursor body .product-variations_stack[data-cursor-native],
